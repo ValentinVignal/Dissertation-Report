@@ -1,0 +1,107 @@
+\documentclass[12pt]{report}
+\usepackage[top=1in,bottom=1in,left=1.5in,right=1.5in]{geometry}
+ \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable}
+% \usepackage{hyperref}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{helvet}
+\usepackage{datetime}
+\newdateformat{mydate}{\twodigit{\THEDAY}\ \monthname[\THEMONTH] \THEYEAR}
+\renewcommand{\baselinestretch}{1.6}
+\renewcommand*\contentsname{\center TABLE OF CONTENTS}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+
+\titleformat
+{\chapter} % command
+[display] % shape
+{\bfseries\Large} % format
+{\centering CHAPTER \thechapter} % label
+{0.5ex} % sep
+{
+    \vspace{1ex}
+    \centering
+} % before-code
+\titlespacing{\chapter}{0cm}{0cm}{1cm}
+ 
+\begin{document}
+\pagestyle{empty}
+\setlength{\parindent}{0cm}
+\begin{center}
+    {\textbf{\Large TITLE}}\\
+    \vspace{2cm}
+    {\textbf{\Large Valentin Vignal}}\\
+    \textbf{(BSc, CentraleSupélec)}\\
+    \vspace{2cm}
+   {\textbf{\Large A THESIS SUBMITTED FOR THE DEGREE OF MASTER OF COMPUTING\\ SCHOOL OF COMPUTING\\ NATIONAL UNIVERSITY OF SINGAPORE\\}}
+    \vspace{2.5cm}
+    {\textbf{\Large 2020}}\\
+    \vspace{2.5cm}
+    {\textbf{\large Advisor:}}\\
+    {\textbf{\large Examiners: }}
+\end{center}
+\newpage
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{2}
+\begin{center}
+    \textbf{\Large DECLARATION}\\
+    \vspace{2cm}
+    I hereby declare that this thesis is my original work and it has been written by me in its entirety. I have duly acknowledged all the sources of information which have been used in the thesis. This thesis has also not been submitted for any degree in any university previously.\\
+    \vspace{5cm}
+    \begin{tabular}{c}
+ \hrulefill \\
+ Valentin Vignal \\
+ \mydate\today\\
+\end{tabular}
+\end{center}
+\newpage
+\begin{center}
+    \textbf{\Large ACKNOWLEDGEMENTS}\\
+\end{center}
+blablabla thank you
+\newpage
+\tableofcontents
+\newpage
+\begin{center}
+    \textbf{\Large ABSTRACT}
+\end{center}
+My asbtract text
+
+\listoftables
+\listoffigures
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+My Introduction
+
+\chapter{Background}
+\section{Section}
+Text for section
+
+\subsection*{Example}
+Subsection text
+\section{Other section}
+Other text
+
+\newpage
+\chapter{Another Chapter}
+Chapter text
+\section{Section}
+Section text
+
+
+\chapter{Conclusion}
+My Conclusion
+
+\section*{Future work}
+Future work
+\newpage
+\bibliographystyle{plain}
+\bibliography{refs}
+
+% \appendix
+% \chapter{Full experimental results}
+\end{document}
