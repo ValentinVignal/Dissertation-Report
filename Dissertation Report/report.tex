@@ -6,6 +6,7 @@
 \usepackage[english]{babel}
 \usepackage{hyperref}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{musicography}
 % \usepackage{biblatex}
 % \addbibresource{biblio/Dissertation.bib}
 \usepackage{helvet}
@@ -167,6 +168,8 @@ I also yould like to thanks the Doctor Dorien Herremans who gave me some preciou
 % ####################################################################################################
 % ####################################################################################################
 
+\setlength{\parindent}{0.6cm}
+
 % ----- Specification -----
 % The thesis must contain a summary of not more than 500 words written in the English Language. If prior approval from the Faculty has been obtained at the time of admission for a thesis to be written in a language other than English, it must contain a summary of not more than 500 words written in that language in addition to a summary not exceeding 500 words written in the English Language. The summary must be included in the thesis.
 
@@ -254,7 +257,7 @@ As said previously, the vertical position of a note indicates its frequency :
    \begin{minipage}{0.5\textwidth}
      \centering
      \includegraphics[width=.9\linewidth]{images/music/stave/note_names.jpg}
-     \caption{Interpolation for Data 1}
+     \caption{Notes on a musical stave}
      \label{fig:note_names}
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
@@ -268,6 +271,27 @@ As said previously, the vertical position of a note indicates its frequency :
 The figures \ref{fig:note_names} and \ref{fig:piano_keys} show the correspondence between the notes on a musical stave and on a piano keyboard. By default the notes correspond to the white keys of the piano (it is the C major scale).
 
 One thing to know is that, between 2 followings notes (or piano keys, including white and black keys), the ratio between the fundamental frequencies of the 2 notes is always equal to $\sqrt{12}$. It means that if we consider the notes $A4$ and $A5$ (2 A in the octaves 4 and 5), the ratio between the fundamental frequencies is $2$. This information will help to understand chords construction.
+
+The length of a note is defined by its shape as shown in the Table \ref{tab:notes_duration}. This table is describing the relation between the length of a note, and its shape on the muscial stave.
+
+\begin{table} [ht]
+    \begin{center}
+        \begin{tabular} {c|c|c}
+            Name & Duration & Symbol \\
+            \hline
+            Whole note & $4$ beats & {\Large \musWhole} \\ 
+            Half note & $2$ beats & {\Large \musHalf} \\
+            Quarter note & $1$ beat & {\Large \musQuarter} \\
+            Eighth note & $1/2$ beat & {\Large \musEighth} \\
+            Sixteenth note & $1/4$ beat & {\Large \musSixteenth} \\
+        \end{tabular}
+        \caption{Note names and duration}
+        \label{tab:notes_duration}
+    \end{center}
+\end{table}
+
+In this work, we won't consider shorter notes than Sixteenth notes because most of the songs are not using them.
+
 
 \subsection{MIDI}
 
@@ -288,43 +312,140 @@ The pianoroll is a common representation of a musical stale in the softwares for
     \caption{Pianoroll example from the software FL Studio}
 \end{figure}
 
-The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the famous software \textit{FL Studio}. The composers of electronic music like EDM, Techno et caetera uses this view to compose and arrange their songs.
+The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the famous software \textit{FL Studio}. The composers of electronic music like EDM, Techno et caetera use this view to compose and arrange their songs.
 
 % -------------------- Music Theory --------------------
 
 \section{Music theory}
 
+In this section, I will describe and explain some rules from the music theory which are related to this work. The rules I am going to talk about are the more common ones and most of the songs are following them.
+
 \subsection{Scale and Rhythm}
 
-\subsection*{scale}
-Major, Minor (natural, harmonic, melodic)
-stay on major : most used
+\subsection*{Scale}
+
+A \textit{scale} is a set of notes. Because the human ear is now used to it, the notes of a scale will sound nice when they are played together. In traditional Western music, it generally consists of 7 notes. They are several types of scales, the most common is the \textit{Major scale} or the \textit{Natural Minor Scale}. For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
+
+Another type of scales often used by the musicians to creates their \textit{solos} are the \textit{Pentatonic} scales.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5 \textwidth]{images/music/piano/pentatonic_scale.png}
+    \label{fig:pentatonic_scale_piano}
+    \caption{C Major Pentatonic scale (or A Minor Pentatonic scale)}
+\end{figure}
+
+As seen in the Figure \ref{fig:pentatonic_scale_piano}, the C Major pentatonic scale (which uses the same notes as the A Minor pentatonic scale) uses only five notes (A, C, D, E and G) which are contained in the C Major Scale. It is known that playing in this scale will easily produce enjoyable and in tune melodies or any musical parts. 
+
 
 \subsection{Rhythm}
-consistent in pop music. usually not to complicated ("double croche")
-ternair -> most of the music are in binaire, stay in this
 
-\subsection{Chords}
+The rhythm is an important part of the current music like \textit{Pop Music}. It has the tendency to remains consistent through the song and repeat some patterns. It helps the listener to easily follow the progression and allows him to listen what he's expecting.
 
-explain the 7 chords. of major, how there are constructed.
-Sounds good because : harmonics are shared
+However, there are no such rules for rhythm as there are for scales and harmonies. This is why classical music is not considered as a rhythmic music.
+
+I this work, I considered and will consider only binary rhythm (each beat is divided into 2 smaller equal beats) and not ternary rhythm (each beat is divided into 3 smaller equal beats) because the binary rhythm is the most common rhythm.
+
+\subsection{Harmonics}
+
+In this section, I will introduce some physical concept about musical sounds and then illustrate how it can explain some musical rules.
+
+\subsubsection{Harmonics}
+
+A sound is a sum of harmonics:
+
+\begin{equation}
+    s(t) = \sum_{n=1}^{\infty} \alpha_{n} \sin(n f t + \phi_{n})
+\end{equation}
+With $f$ the fundamental frequency and $\phi$ the phase difference value.
+
+Let's take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$ for a common tuning.
+Then the $2^{nd}$ harmonic is $A5$ $880Hz$. So, when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
+Let's take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$. It means it is possible to hear a $E5$ from a played $A4$.
+The table \ref{tab:A4_harmonics} is referencing the firsts harmonics of the note $A4$.
+
+\begin{table} [ht]
+    \begin{center}
+        \begin{tabular} {c||c|c|c}
+            Harmonic number & Frequency ($Hz$) & Note Name & Musical Interval \\
+            \hline
+            $1$ & $440$ & $A4$ & Unison \\
+            $2$ & $880$ & $A5$ & Octave \\
+            $3$ & $1320$ & $E5$ & Fifth \\
+            $4$ & $1760$ & $A6$ & Octave \\
+            $5$ & $2200$ & $C\sh6$ & Major Third \\
+            $6$ & $2640$ & $E6$ & Fifth \\
+        \end{tabular}
+        \caption{Harmonics of $A4$}
+        \label{tab:A4_harmonics}
+    \end{center}
+\end{table}
+From the table \ref{tab:A4_harmonics}, we can notice:
+\begin{itemize}
+    \item The $A$ and $E$ notes are linked together (\textit{Fifth} or reversed \textit{Fourth} interval).
+    \item The $A$ and $C\sh$ notes are linked together (\textit{Major Third} interval).
+\end{itemize}
 
 
-\subsection{Harmonisation}
+\subsubsection{Chords}
 
-Classical music:
-Bach's Chorales, the second voice follow the shape of the lead one
-Pop music :
-Usually during a chorus: lead singer is supported by the back singers
+And this is why a Major chord sound nice to the ears. A $A$ $Major$ chord is composed with 3 notes : $A$, $C\sh$ and $E$. All the notes are already contained in the harmonics of a $A$ sound.
 
-% -------------------- Music arragement  --------------------
+A Minor chords ($A$ $Minor$ is $A$, $C$, $E$) will also sounds acceptable to the human ears because $A$ and $C$ share $E$ in their harmonics (\textit{Fifth} interval and \textit{Third Major} interval respectively) 
+
+\subsubsection{Dissonance}
+
+When 2 frequencies are close to each other and added up, it is possible to observe a resonance phenomena:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/music/waveform/resonance.jpg}
+    \label{fig:resonance}
+    \caption{Resonance waveform}
+\end{figure}
+The figure \ref{fig:resonance} shows the waveform generated by a $B4$ ($494Hz$) and a $C5$ ($523Hz$) (\textit{semitone} interval).
+This phenomena is explained by the equation:
+
+\begin{equation}
+    \cos(f) + \cos(f + \delta f) = 2 \cos(\frac{2f + \delta f}{2}) \cos(\frac{\delta f}{2})
+\end{equation}
+
+This phenomena is unpleasant to hear and this is why, musician usually try to avoid to play notes generating a resonance between their harmonics:
+\begin{itemize}
+    \item \textit{Semitone} interval (ex: $A$ and $A\sh$)
+    \item \textit{Tone} interval (ex: $A$ and $B$)
+    \item \textit{Tritone} interval (ex: $A$ and $D\sh$)
+\end{itemize}
+
+
+\subsubsection{Harmony}
+
+Either for classical music (Bach Chorales) or pop music (Back Singers), a common method to \textit{fill a song} is to add harmony parts to the lead melody. The harmony parts usually follow the lead melody but on other notes.
+An example is provided in the figure \ref{fig:harmony_example}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75 \textwidth]{images/music/stave/harmony.jpg}
+    \label{fig:harmony_example}
+    \caption{Lead voice and its harmony part}
+\end{figure}
+
+The harmony parts will usually avoid unpleasant interval and mostly try to create the following ones: 
+\begin{itemize}
+    \item \textit{Octave} and \textit{unison} interval
+    \item \textit{Fifth} interval
+    \item \textit{Fourth} interval
+    \item \textit{Major Third} interval
+    \item \textit{Minor Third} interval
+\end{itemize}
+
+
+% -------------------- Music arrangement  --------------------
 
 \section{Music arrangement}
 
-It is an all work
-
-people are very know and do all the arrangement of the pop music today
-
+Arranging a song is using all the previous observations and rules to create the harmony parts of a song given the lead melody. It 
 
 % ----------------------------------------------------------------------------------------------------
 % Related work
