@@ -13,10 +13,15 @@
 \usepackage{datetime}
 \newdateformat{mydate}{\twodigit{\THEDAY}\ \monthname[\THEMONTH] \THEYEAR}
 \renewcommand{\baselinestretch}{1.6}
-\renewcommand*\contentsname{\center TABLE OF CONTENTS}
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
+% \renewcommand{\contentsname}{\center TABLE OF CONTENTS}
+\addto\captionsenglish{% Replace "english" with the language you use
+    \renewcommand{\contentsname}{TABLE OF CONTENTS}%
+    \renewcommand{\listfigurename}{LIST OF FIGURES}
+    \renewcommand{\listtablename}{LIST OF TABLES}
+}
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{proposition}{Proposition}
 
 \titleformat
 {\chapter} % command
@@ -207,6 +212,36 @@ My asbtract text
 % #####################################################################################################
 % #####################################################################################################
 \newpage
+\begin{center}
+    \textbf{\Large LIST OF SYMBOLS}\\
+    \vspace{2cm}
+    \begin{table} [ht]
+        \begin{center}
+            \begin{tabular} {ll}
+            AE & Auto Encoder \\
+            AI & Artificial Intelligence \\
+            CNN & Convolutional Neural Network \\
+            GAN & Generative Adversial Network \\
+            KLD & Kullback-Leibler Divergence \\
+            LSTM & Long Short-Term Memory \\
+            MIDI & Musical Instrument Digital Interface \\
+            ML & Machine Learning \\
+            MVAE & Multimodal Variational AutoEncoder \\
+            NN & Neural Network \\
+            RBM & Restricted Bolzmann Machine \\
+            ReLU & Rectified Linear Unit \\
+            RL & Reinforcement Learning \\
+            RMVAE & Recurrent Multimodal Variational AutoEncoder \\
+            RNN & Recurrent Neural Network \\
+            SGD & Stochastic Gradient Descent \\
+            VAE & Variational AutoEncoder \\
+            VRAE & Variational Recurrent AutoEncoder \\
+            \end{tabular}
+        \end{center}
+    \end{table}
+    
+\end{center}
+\newpage
 
 \pagenumbering{arabic}
 
@@ -228,7 +263,7 @@ My Introduction
 % ----------------------------------------------------------------------------------------------------
 \chapter{Background}
 
-In this section, I will introduce some background knowledge that might be useful to the reader. Since this project is about music generation, I will explain and illustrate some basic concepts about music.
+In this chapter, I will introduce some background knowledge that might be useful to the reader. Since this project is about music generation, I will explain and illustrate some basic concepts about music.
 
 I will consider the Western music using equal temperament and don't consider the inharmonicity of stringed instruments. These are common assumptions in all the existing works about music generation.
 
@@ -295,11 +330,29 @@ In this work, we won't consider shorter notes than Sixteenth notes because most 
 
 \subsection{MIDI}
 
-The \textit{MIDI} format ($.mid$) is a format to save music as a file. However, it doesn't save the actual \textit{sound} of it. The way it works is very similar to the representation of a musical stave.
+% The \textit{MIDI} format ($.mid$) is a format to save music as a file. However, it doesn't save the actual \textit{sound} of it. The way it works is very similar to the representation of a musical stave.
 
-In a midi file is a set of instructions. It will save for each instruments, for each notes (pitch) the times when the note starts and ends and some other information (like the velocity et caetera).
+% In a midi file is a set of instructions. It will save for each instruments, for each notes (pitch) the times when the note starts and ends and some other information (like the velocity et caetera).
 
-To read a midi file, the computer has a collection of sound for every instruments, notes, velocity et caetera, and plays these sounds depending of the instructions read in the file.
+% To read a midi file, the computer has a collection of sound for every instruments, notes, velocity et caetera, and plays these sounds depending of the instructions read in the file.
+
+\textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
+It was first used to carry musical messages between electronic instruments, software and devices. These messages are events about note information (for example, pitch, velocity, panning...) an some other parameters (for example, vibrato, volume...). 
+The to most important messages are:
+\begin{itemize}
+    \item \textit{Note on} is indicating that a note has to be played. It contains the channel information (which can be considered as an instrument), the pitch information (what note should be played) and the velocity. We could right an event as follow :
+    \begin{equation}
+        <NoteOn, 0, 50, 127>
+    \end{equation}
+    To describe the event \textit{Start to play the note $D3$ with the maximum velocity (127) for the channel (instrument) 0}
+    \item \textit{note off} is indicating to stop playing a note (like release the keyboard key). The given parameters should be the same as the ones given to the \textit{Note On} event.
+    \begin{equation}
+        <NoteOff, 0, 50, 127>
+    \end{equation}
+    will stop the note started with the previous \textit{Note On} event.
+\end{itemize}
+
+Each note is associated with a time value which can be expressed in number of ticks (time division). The header of file should specify how may ticks there are per quarter note.
 
 \subsection{Pianoroll}
 
@@ -447,25 +500,241 @@ The harmony parts will usually avoid unpleasant interval and mostly try to creat
 
 Arranging a song is using all the previous observations and rules to create the harmony parts of a song given the lead melody. It 
 
+
+% -------------------- Neural Network architecture --------------------
+
+\section{Neural Network architectures}
+
+\subsection{Convolutional neural network}
+
+\subsection{AutoEncoder}
+
+\subsection{Variational AutoEncoder}
+
+% Multimodal explained in my work part
+
+\subsection{Generative Adversial Network}
+
+\subsection{Recurrent Neural Networks}
+
+\subsection{Transformers}
+
 % ----------------------------------------------------------------------------------------------------
 % Related work
 % ----------------------------------------------------------------------------------------------------
+
+% Level 1: Representation
+% Level 2: objective
+% Level 3: architecture
+% Level 4: strategie
+
 \chapter{Related works}
 
-2 fields: audio and music representation.
-In this paper we work on representation
+I will expose in this chapter the work that has already been done about music generation with deep neural networks.
+In a first time, I will expose the different objectives of some implementations.
+Then I will introduce 
 
-\section{Audio}
+% -------------------- Objectives  --------------------
+
+\section{Objectives}        % Change the name
+
+In this section, I will describe some examples of what it is possible to do with neural networks to generate music
+
+\subsection{Generator}
+
+First it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
+
+It is also possible to create several musical parts at the same time. Each of them can be either monophonic or polyphonic.
+The musical parts can be considered as different instruments or voices for a Chorale.
+The challenge is to create musical parts that work together.
+
+\subsection{Accompaniment}
+
+Given a melody, or some musical parts, the goal is to create new musical parts which can be combined with the input and be played together.
+
+% -------------------- Music Representation--------------------
 
 \section{Music Representation}
+
+In this section, I will present different types of inputs the recent works are using.
+
+\subsection{Audio Signal} 
+
+The first of data used to create music is the audio signal. Some works \cite{oord_wavenet:_2016} have been done to generate some an music audio signal.
+This signal can be represented either by its waveform \cite{oord_wavenet:_2016}, its Fourier Transform, or its spectrogram (figures \ref{fig:waveform_example}, \ref{fig:spectrogram_example}).
+
+\begin{figure}[H]
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{images/music/waveform/waveform.png}
+     \caption{Example of an audio waveform}
+     \label{fig:waveform_example}
+   \end{minipage}\hfill
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=\linewidth]{images/music/spectrogram/spectrogram.jpg}
+     \caption{Example of audio spectrogram}
+     \label{fig:spectrogram_example}
+   \end{minipage}
+\end{figure}
+
+Using the audio signal allows the model to handle every aspect of the song at the same time, and every song in the same way.
+The biggest issue of this method is that the number of points in time is incredibly huge. The usual sampling frequency is $48kHz$. 
+Therefore, the challenge is to stay consistent through time.
+
+\subsection{MIDI Signal}
+
+Most of the work done on music generation is using the \textit{MIDI} representation (or any other translation of midi like pianoroll or text).
+
+\subsubsection{Pianoroll}
+
+The pianoroll representation can be considerate as an image so usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017}.
+
+\begin{figure}[H]
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{images/music/pianoroll/pianoroll_small.jpg}
+   \end{minipage}\hfill
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=\linewidth]{images/music/pianoroll/pianoroll_small_array.jpg}
+   \end{minipage}
+ \caption{Example of correspondence between a pianoroll representation and an array}
+ \label{fig:pianoroll_to_array}
+\end{figure}
+
+The figure \ref{fig:pianoroll_to_array} shows a very naive example of how to convert a pianoroll view to an array.
+
+\subsubsection{Text}
+
+Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbach:_2016}
+
+\begin{figure}[H]
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{images/music/pianoroll/pianoroll_small_2.jpg}
+   \end{minipage}\hfill
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     B5, \_, B5, \_, E6, \_, E6, \_, D6, \_, D6, B5, \_, B5, D6, \_ 
+   \end{minipage}
+ \caption{Example of correspondence between a pianoroll representation and a text}
+ \label{fig:pianoroll_to_text}
+\end{figure}
+
+The figure \ref{fig:pianoroll_to_text} shows as simple example of how it is possible to convert an pianoroll view to a text.
+
+However, using text to represent image usually force the framework to work only in a monophonic way.
+
+% TODO: Speak about Word2Vec
+
+
+\subsubsection{Chords}
+
+This is the last approach I will describe in this paper.
+As the same way as Jazz music, it is possible to simplify the description of a musical piece by writing down the chords.
+
+\begin{figure}[H]
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{images/music/pianoroll/pianoroll_small.jpg}
+   \end{minipage}\hfill
+   \begin{minipage}{0.5\textwidth}
+     \centering
+     \includegraphics[width=.9\linewidth]{images/music/stave/stave_with_chords.jpg}
+   \end{minipage}
+ \caption{Example of correspondence between a pianoroll and its chords representation}
+ \label{fig:pianoroll_to_chords}
+\end{figure}
+
+For instance, in the figure \ref{fig:pianoroll_to_chords}, the bass line can be simplified by considering the chords.
+The chords are then writen and be considered as notes.
+
+% TODO: Speak about BachBot
+%       Survey descritpion 
+% Note that a somehow similar model has been used for polyphonic music generation in
+% the BachBot system [66] (analyzed in Section 7.3.1.3). In this model, for each time step, the
+% various notes are represented as a sequence and a special delimiter symbol (|||) indicates
+% the next time frame (with constant time step of an eighth note __(
+% ). Notes are ordered, in a
+% descending pitch (soprano voice being the first one). Each note is encoded as its MIDI pitch
+% value and a boolean indicating if it is tied to a note at the same pitch from previous frame.
+% An example is shown at Figure 4.8, encoding two successive chords (the first having the
+
+
+% TODO: Speak about Chords2Vec
+%       Survey descritpion 
+% Note that a somehow similar model has been used for polyphonic music generation in
+% the BachBot system [66] (analyzed in Section 7.3.1.3). In this model, for each time step, the
+% various notes are represented as a sequence and a special delimiter symbol (|||) indicates
+% the next time frame (with constant time step of an eighth note (<croche symbol>). Notes are ordered, in a
+% descending pitch (soprano voice being the first one). Each note is encoded as its MIDI pitch
+% value and a boolean indicating if it is tied to a note at the same pitch from previous frame.
+% An example is shown at Figure 4.8, encoding two successive chords (the first having the
+% duration of a quarter note) and the second one possessing a fermata (noted as (.)).
+
+
+% -------------------- Encoding --------------------
+
+\section{Encoding}
+
+\subsection{Features}
+
+It is possible to extract features from the data to help the neural network to understand how music works.
+\begin{itemize}
+    \item The first option is to do it manually and give the features as an input of the model
+    \item The second option is to let the model learn it by itself. This is the choice I have made for this project.
+\end{itemize}
+
+\subsubsection{Metadata}
+
+The features that can be passed as an input to the model can also be metadata as the time signature or the key of the music...
+In this project I chose to not include any metadata in the model because of the difficulty to find or reconstruct them for the available dataset.
+
+\subsection{Tensor encoding}
+
+It is possible to extract two different methods on how to encode the tensor which will be given to the neural network
+
+The first method is the \textit{value encoding}.
+It is means that the values in the input and/or output tensor are actually meaning full.
+For example, it can be an integer which is the pitch of a note.
+
+The second method is called \textit{item encoding}.
+Instead of having the number of the pitch in the tensor (let's say $60$), it will be a very sparse tensor with a bunch on $0$ and a $1$ at the position $60$ in the pitch dimension.
+This values stored in the tensors can be considered as \textit{activation} values.
+This is the retained method in this work.
+
+
+\section{Architectures}
+
+In this section, I will present different architectures that have already been used for music generation. It will expose the architecture of my project in the section \ref{sec:model_architecture}.
+
+\subsection{RBM}
+
+\subsection{AE}
+
+\subsection{VAE}
+
+\subsection{GAN}
+
+\subsection{Reinforcement learning}
+
+\section{Generation Process}
+
+\subsection{Sampling}
+
+\subsection{Input Manipulation}
+
+\subsection{Feed forward and RNN architecture}
 
 % ----------------------------------------------------------------------------------------------------
 % Contribution
 % ----------------------------------------------------------------------------------------------------
 \newpage
 \chapter{Contribution}
+\label{chap:contribution}
 
-\section{Challenges}
+\section{Objectives}
 
 Explain we want a model who can play with me like a band player.
 
@@ -479,6 +748,7 @@ Explain how the data is represented
 
 
 \section{Model Architecture}
+\label{sec:model_architecture}
 Section text
 
 % ----------------------------------------------------------------------------------------------------
