@@ -2,7 +2,8 @@
 \usepackage[top=1in,bottom=1in,left=1.5in,right=1.5in]{geometry}
  \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption}
+\usetikzlibrary{automata,arrows,positioning,calc}
 \usepackage[english]{babel}
 \usepackage{hyperref}
 \usepackage[ruled,vlined]{algorithm2e}
@@ -22,6 +23,7 @@
 % \newtheorem{theorem}{Theorem}
 % \newtheorem{lemma}{Lemma}
 % \newtheorem{proposition}{Proposition}
+
 
 \titleformat
 {\chapter} % command
@@ -225,10 +227,12 @@ My asbtract text
             GRU & Gated Recurrent Unit \\
             KLD & Kullback-Leibler Divergence \\
             LSTM & Long Short-Term Memory \\
+            MDMM & Multimodal Deep Markov Model \\
             MIDI & Musical Instrument Digital Interface \\
             ML & Machine Learning \\
             MVAE & Multimodal Variational AutoEncoder \\
             NN & Neural Network \\
+            PoE & Product of Experts \\
             RBM & Restricted Bolzmann Machine \\
             ReLU & Rectified Linear Unit \\
             RL & Reinforcement Learning \\
@@ -621,6 +625,76 @@ The most used cells used are the LSTM cell and the GRU cell. The architectures a
 
 \subsection{Transformers}
 
+\subsection{Multimodel Variational AutoEncoder}
+
+The MVAE has been introducted by Mike Wu et al. \cite{wu_multimodal_2018}.
+The figure \ref{fig:mvae_graph} represent the graphical model of the MVAE.
+The gray circles represent the observed variables.
+The MVAE uses a \textit{Product of Experts} (PoE) inference network and a sub-sampled training paradigm to solve the multi-modal inference problem.
+
+% Good example how to use tikz:
+% https://tex.stackexchange.com/questions/193694/drawing-graph-of-markov-chain-with-patches-using-tikz
+\begin{figure}
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    \node[state](z){$z$};
+    \node[state, fill=lightgray](x1)[below left of=z]{$x_1$};
+    \node[above=0.5cm](dots)[below of=z]{$...$};
+    \node[state, fill=lightgray](xn)[below right of=z]{$x_N$};
+    \path
+        (z) edge    node{}    (x1)
+            edge    node{}    (xn);
+    \end{tikzpicture}
+\caption{Graphical model of the MVAE}
+\label{fig:mvae_graph}
+\end{center}
+\end{figure}
+
+
+The conditional independence assumptions in the generative model (figure \ref{fig:mvae_graph}) imply a relation among joint- and single-modality posteriors :
+
+\begin{equation}
+    \begin{split}
+        p(z|x_1, ..., x_N) & = \frac{p(x_1, ..., x_N | z) p(z)}{p(x_1, ..., x_N)} \\
+        & = \frac{p(z)}{p(x_1, ..., x_N)} \prod_{i=1}^{N} p(x_i | z) \\
+        & = \frac{p(z)}{p(x_1, ... x_N)} \prod_{i=1}^{N} \frac{p(z|x_i)p(x_i)}{p(z)} \\
+        & = \frac{\prod_{i=1}^{N} p(z|x_i)}{\prod_{i=1}^{N-1} p(z)} \frac{\prod_{i=1}^{N}p(x_i)}{p(x_1, ..., x_N)} \\
+        & \propto \frac{\prod_{i=1}^{N} p(z|x_i)}{\prod_{i=1}^{N-1} p(z)}
+        \approx \frac{\prod_{i=1}^{N} (\widetilde{q}(z|x_i)p(z))}{\prod_{i=1}^{N-1} p(z)}
+        = p(z) \prod_{i=1}^{N} \widetilde{q}(z | x_i) \\
+        & \text{With $\widetilde{q}(z|x_i)$ the model approximation of $\frac{p(z|x_i)}{p(z)}$}
+    \label{eq:poe}
+    \end{split}
+\end{equation}
+
+The PoE can be used , including a \textit{“prior expert”}, as the approximating distribution for the joint-posterior.
+
+\begin{figure}[h]
+    \centering
+    \newlength{\MyOtherHeight}
+    \settoheight{\MyOtherHeight}{\includegraphics[width=0.9 \textwidth]{images/nn/architectures/mvae_all.jpg}}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=.9 \textwidth]{images/nn/architectures/mvae_all.jpg}
+        \caption{With all the modalities}
+        \label{fig:mvae_architecture_all}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=.9 \textwidth]{images/nn/architectures/mvae_missing.jpg}
+        \caption{With missing modalities}
+        \label{fig:mvae_architecture_missing}
+    \end{subfigure}
+    \caption{MVAE architecture}
+    \label{fig:mvae_architecture}
+\end{figure}
+
+The figure \ref{fig:mvae_architecture} shows how the PoE can handle missing modalities by simply ignoring them.
+
+\subsection{Muldimodal Deep Markov Model}
+
 % ----------------------------------------------------------------------------------------------------
 % Related work
 % ----------------------------------------------------------------------------------------------------
@@ -837,7 +911,10 @@ In this section, I will present different architectures that have already been u
 \chapter{Contribution}
 \label{chap:contribution}
 
+% -------------------- Objectives --------------------
+
 \section{Objectives}
+\label{seq:objectives}
 
 As a musician, I wanted to create an model architecture who could copy the way I think about music.
 The challenge is to use only one trained model to be able to 
@@ -936,12 +1013,95 @@ And since I consider in this part only monophonic music, there is only on note (
     \exists! note \in notes_{[0:129]}, note = 1
 \end{equation}
 
-
-
+% -------------------- Architecture --------------------
 
 \section{Model Architecture}
 \label{sec:model_architecture}
-Section text
+
+To do so, I have created a new architecture which is able to handle all the objectives defined in the section \ref{seq:objectives}.
+
+To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
+
+I use the capability of the MVAE to reconstruct data and handle several modalities at the same time with the help of the product of expert operation.
+But because the MVAE doesn't handle time across the data, it had to be transformed.
+And that is basically what does th MDMM.
+However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder).
+
+
+% Good example how to use tikz:
+% https://tex.stackexchange.com/questions/193694/drawing-graph-of-markov-chain-with-patches-using-tikz
+\begin{figure}
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    \node[state, fill=lightgray](x11)[]{$x_1^1$};
+    \node[](dots1)[right of=x11]{$...$};
+    \node[state, fill=lightgray](x1n)[right of=dots1]{$x_1^N$};
+    \node[state, rectangle](enc11)[below of=x11]{$\text{Enc}^1$};
+    \node[state, rectangle](enc1n)[below of=x1n]{$\text{Enc}^N$};
+    \node[state, rectangle, below=1.5cm, minimum width=3cm](poe1) at ($(enc11)!0.5!(enc1n)$) {PoE};
+    \node[state, rectangle](samp1)[below of=poe1]{Sampling};
+    \node[state, rectangle](lstm1)[below of=samp1]{LSTM};
+    
+    \node[state, fill=lightgray, right=2cm](xt1)[right of=x1n]{$x_t^1$};
+    \node[](dots2)[right of=xt1]{$...$};
+    \node[state, fill=lightgray](xtn)[right of=dots2]{$x_t^N$};
+    \node[state, rectangle](enct1)[below of=xt1]{$\text{Enc}^1$};
+    \node[state, rectangle](enctn)[below of=xtn]{$\text{Enc}^N$};
+    \node[state, rectangle, below=1.5cm, minimum width=3cm](poet) at ($(enct1)!0.5!(enctn)$) {PoE};
+    \node[state, rectangle](sampt)[below of=poet]{Sampling};
+    \node[state, rectangle](lstmt)[below of=sampt]{LSTM};
+    
+    \node[minimum width=2cm](lstmdots) at ($(lstm1)!0.5!(lstmt)$) {...};
+    
+    \node[](lstm0)[left of=lstm1]{};
+    \node[](lstminf)[right of=lstmt]{};
+    
+    \node[](dec1)[below of=lstm1]{};
+    \node[state, rectangle, left=0.5cm](dect1)[below left of=lstmt]{$\text{Dec}^1$};
+    \node[state, rectangle, right=0.5cm](dectn)[below right of=lstmt]{$\text{Dec}^N$};
+    \node[state](yt1)[below of=dect1]{$y_{t+1}^1$};
+    \node[state](ytn)[below of=dectn]{$y_{t+1}^N$};
+    \node[](dots3) at ($(yt1)!0.5!(ytn)$)   {...};
+    
+    \node[minimum width=2cm](dotspoe) at ($(poe1)!0.5!(poet)$) {...};
+    
+    \path
+        (x11)   edge    node{}      (enc11)
+        (x1n)   edge    node{}      (enc1n)
+        (enc11) edge    node{$\mu_1^1$, $\sigma_1^1$}   (poe1)
+        (enc1n) edge    node{$\mu_1^N$, $\sigma_1^N$}   (poe1)
+        (poe1)  edge    node{$\mu_1$, $\sigma_1$}   (samp1)
+                edge[dashed]    node{} (dotspoe)
+        (dotspoe)   edge[dashed]    node{}  (poet)
+        (samp1) edge    node{$z_1$}   (lstm1)
+        
+        (xt1)   edge    node{}      (enct1)
+        (xtn)   edge    node{}      (enctn)
+        (enct1) edge    node{$\mu_t^1$, $\sigma_t^1$}   (poet)
+        (enctn) edge    node{$\mu_t^N$, $\sigma_t^N$}   (poet)
+        (poet)  edge    node{$\mu_t$, $\sigma_t$}   (sampt)
+        (sampt) edge    node{$z_t$}   (lstmt)
+        
+        (lstm0) edge    node{}  (lstm1)
+        (lstm1) edge    node{}  (lstmdots)
+        %        edge    node{}  (dec1)
+        (lstmdots)  edge    node{}  (lstmt)
+        (lstmt) edge    node{}  (lstminf)
+                edge    node{}  (dect1)
+                edge    node{}  (dectn)
+        (dect1) edge    node{}  (yt1)
+        (dectn) edge    node{}  (ytn);
+        
+    \end{tikzpicture}
+\caption{Architecture of the RMVAE}
+\label{fig:rmvae_architecture}
+\end{center}
+\end{figure}
+
+% -------------------- Loss Function --------------------
+
+\section{Loss Function}
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
