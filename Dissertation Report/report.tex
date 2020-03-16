@@ -2,11 +2,11 @@
 \usepackage[top=1in,bottom=1in,left=1.5in,right=1.5in]{geometry}
  \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings}
 \usetikzlibrary{automata,arrows,positioning,calc}
 \usepackage[english]{babel}
 \usepackage{hyperref}
-\usepackage[ruled,vlined]{algorithm2e}
+%\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{musicography}
 % \usepackage{biblatex}
 % \addbibresource{biblio/Dissertation.bib}
@@ -36,6 +36,9 @@
     \centering
 } % before-code
 \titlespacing{\chapter}{0cm}{0cm}{1cm}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 % The content of the thesis should be in the following order:
 %   - Title page
@@ -217,33 +220,31 @@ My asbtract text
 \begin{center}
     \textbf{\Large LIST OF SYMBOLS}\\
     \vspace{2cm}
-    \begin{table} [ht]
-        \begin{center}
-            \begin{tabular} {ll}
-            AE & Auto Encoder \\
-            AI & Artificial Intelligence \\
-            CNN & Convolutional Neural Network \\
-            GAN & Generative Adversial Network \\
-            GRU & Gated Recurrent Unit \\
-            KLD & Kullback-Leibler Divergence \\
-            LSTM & Long Short-Term Memory \\
-            MDMM & Multimodal Deep Markov Model \\
-            MIDI & Musical Instrument Digital Interface \\
-            ML & Machine Learning \\
-            MVAE & Multimodal Variational AutoEncoder \\
-            NN & Neural Network \\
-            PoE & Product of Experts \\
-            RBM & Restricted Bolzmann Machine \\
-            ReLU & Rectified Linear Unit \\
-            RL & Reinforcement Learning \\
-            RMVAE & Recurrent Multimodal Variational AutoEncoder \\
-            RNN & Recurrent Neural Network \\
-            SGD & Stochastic Gradient Descent \\
-            VAE & Variational AutoEncoder \\
-            VRAE & Variational Recurrent AutoEncoder \\
-            \end{tabular}
-        \end{center}
-    \end{table}
+    \begin{longtable}{ll}
+        AE & Auto Encoder \\
+        AI & Artificial Intelligence \\
+        CNN & Convolutional Neural Network \\
+        FC & Fully Connected \\
+        GAN & Generative Adversial Network \\
+        GRU & Gated Recurrent Unit \\
+        KLD & Kullback-Leibler Divergence \\
+        LSTM & Long Short-Term Memory \\
+        MDMM & Multimodal Deep Markov Model \\
+        MIDI & Musical Instrument Digital Interface \\
+        ML & Machine Learning \\
+        MVAE & Multimodal Variational AutoEncoder \\
+        NN & Neural Network \\
+        PoE & Product of Experts \\
+        RBM & Restricted Bolzmann Machine \\
+        ReLU & Rectified Linear Unit \\
+        RL & Reinforcement Learning \\
+        RMVAE & Recurrent Multimodal Variational AutoEncoder \\
+        RNN & Recurrent Neural Network \\
+        RPoE & Recurrent Product of Experts \\
+        SGD & Stochastic Gradient Descent \\
+        VAE & Variational AutoEncoder \\
+        VRAE & Variational Recurrent AutoEncoder \\
+    \end{longtable}
     
 \end{center}
 \newpage
@@ -302,7 +303,7 @@ As said previously, the vertical position of a note indicates its frequency :
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=.9\linewidth]{images/music/piano/piano_keys.png}
+     \includegraphics[width=.9\linewidth]{images/music/piano/piano_keys.jpg}
      \caption{Notes on Piano}
      \label{fig:piano_keys}
    \end{minipage}
@@ -390,7 +391,7 @@ Another type of scales often used by the musicians to creates their \textit{solo
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5 \textwidth]{images/music/piano/pentatonic_scale.png}
+    \includegraphics[width=0.5 \textwidth]{images/music/piano/pentatonic_scale.jpg}
     \caption{C Major Pentatonic scale (or A Minor Pentatonic scale)}
     \label{fig:pentatonic_scale_piano}
 \end{figure}
@@ -407,6 +408,7 @@ However, there are no such rules for rhythm as there are for scales and harmonie
 I this work, I considered and will consider only binary rhythm (each beat is divided into 2 smaller equal beats) and not ternary rhythm (each beat is divided into 3 smaller equal beats) because the binary rhythm is the most common rhythm.
 
 \subsection{Harmonics}
+\label{seq:harmonics}
 
 In this section, I will introduce some physical concept about musical sounds and then illustrate how it can explain some musical rules.
 
@@ -546,6 +548,7 @@ The figure \ref{fig:max_pooling} shows how the max pooling operation works.
     \centering
     \includegraphics[width=0.75 \textwidth]{images/nn/layers/max_pooling.png}
     \caption{Max pooling operation}
+    Source: \href{https://en.wikipedia.org/wiki/File:Max_pooling.png}{Wikipedia}
     \label{fig:max_pooling}
 \end{figure}
 
@@ -562,6 +565,7 @@ The figure \ref{fig:autoencoder} illustrates this architecture.
     \centering
     \includegraphics[width=0.75 \textwidth]{images/nn/architectures/autoencoder.png}
     \caption{AutoEncoder}
+    Source: \href{https://commons.wikimedia.org/wiki/File:Autoencoder_structure.png}{Wikipedia}
     \label{fig:autoencoder}
 \end{figure}
 
@@ -602,6 +606,7 @@ A RNN is a neural network where connections between nodes form a direct graph al
     \centering
     \includegraphics[width=0.75 \textwidth]{images/nn/architectures/rnn.jpg}
     \caption{Recurrent Neural Network}
+    Source: \href{https://fr.wikipedia.org/wiki/Fichier:Recurrent_neural_network_unfold.svg}{Wikipedia}
     \label{fig:rnn}
 \end{figure}
 
@@ -612,12 +617,14 @@ The most used cells used are the LSTM cell and the GRU cell. The architectures a
      \centering
      \includegraphics[width=.95\linewidth]{images/nn/layers/lstm.jpg}
      \caption{LSTM cell}
+     Source: \href{https://commons.wikimedia.org/wiki/File:Long_Short-Term_Memory.svg}{Wikipedia}
      \label{fig:lstm}
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
      \centering
      \includegraphics[width=.95\linewidth]{images/nn/layers/gru.jpg}
      \caption{GRU cell}
+     Source: \href{https://en.wikipedia.org/wiki/Recurrent_neural_network#/media/File:Gated_Recurrent_Unit.svg}{Wikipedia}
      \label{fig:gru}
    \end{minipage}
 \end{figure}
@@ -688,6 +695,7 @@ The PoE can be used , including a \textit{“prior expert”}, as the approximat
         \label{fig:mvae_architecture_missing}
     \end{subfigure}
     \caption{MVAE architecture}
+    Source: Mike Wu's paper \cite{wu_multimodal_2018}.
     \label{fig:mvae_architecture}
 \end{figure}
 
@@ -742,14 +750,16 @@ This signal can be represented either by its waveform \cite{oord_wavenet:_2016},
 \begin{figure}[H]
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=.9\linewidth]{images/music/waveform/waveform.png}
+     \includegraphics[width=.9\linewidth, height=4cm]{images/music/waveform/waveform.png}
      \caption{Example of an audio waveform}
+     Source: \href{https://www.needpix.com/photo/856116/audio-aural-ear-hearing-music-musical-recording-silhouette-sonic}{Needpix.com}
      \label{fig:waveform_example}
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=\linewidth]{images/music/spectrogram/spectrogram.jpg}
+     \includegraphics[width=\linewidth, height=4cm]{images/music/spectrogram/spectrogram.jpg}
      \caption{Example of audio spectrogram}
+     Source: \href{https://commons.wikimedia.org/wiki/File:Spectrogram_of_Bach\%27s_Chorales_for_Organ.jpg}{Wikipedia}
      \label{fig:spectrogram_example}
    \end{minipage}
 \end{figure}
@@ -929,6 +939,7 @@ The created model can also handle missing data (for example a missing measure fr
 To summarize, the objective is to create a unique trained model which can generate or arrange a musical piece whatever is already present or missing.
 
 \section{Data representation}
+\label{seq:data_represetation}
 
 This project works with MIDI data. These music representation is explained in the section \ref{seq:midi}. \\
 The shortest beat division is a quarter of a beat (sixteenth note: \musSixteenth) \\
@@ -1015,17 +1026,19 @@ And since I consider in this part only monophonic music, there is only on note (
 
 % -------------------- Architecture --------------------
 
-\section{Model Architecture}
+\section{RMVAE Architecture}
 \label{sec:model_architecture}
 
 To do so, I have created a new architecture which is able to handle all the objectives defined in the section \ref{seq:objectives}.
 
 To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
 
+\subsection{Global Architecture}
+
 I use the capability of the MVAE to reconstruct data and handle several modalities at the same time with the help of the product of expert operation.
 But because the MVAE doesn't handle time across the data, it had to be transformed.
 And that is basically what does th MDMM.
-However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder).
+However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder). This architecture is discribe in the figure \ref{fig:rmvae_architecture}.
 
 
 % Good example how to use tikz:
@@ -1099,9 +1112,393 @@ However, the training process of a MDMM is quite complicated and slow. Because o
 \end{center}
 \end{figure}
 
+\subsection{Encoder}
+
+Each instruments (each modalities) has its own encoder.
+As explained in the section \ref{seq:data_represetation}, the input tensor for one instrument has the following shape: \texttt{(nb\_steps, 16, 128, channels)}.
+For a given instrument $i$, and a given step $t$, the tensor (with a shape of \texttt{(16, 128, channels)}) can be considered as a pianoroll image, hence usual imaging operations can be applied.
+
+The encoder $\text{Enc}^i$ process each steps of a the instrument $i$. And encoder is composed of:
+\begin{enumerate}
+    \item Convolutional layers and pooling layers
+    \item Fully Connected layers
+\end{enumerate}
+The general architecture of the encoder is showed in the figure \ref{fig:rmvae_encoder}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/nn/architectures/rmvae/encoder.jpg}
+    \caption{RMVAE encoder architecture}
+    \label{fig:rmvae_encoder}
+\end{figure}
+
+The filter sizes of the convolutional layers are \texttt{(5, 5)}.
+I chose this dimension so the NN can process a third major interval and an entier beat with only one layer.
+
+\subsection{PoE}
+
+For a given instrument $i$ and a given step $t$, the output of the encoder $\text{Enc}^i$ will then go through 2 different FC layers $\text{fc}^i_\mu$ and $\text{fc}^i_\sigma$ which will return the mean and variance of the encoded distribution (figure \ref{fig:rmvae_poe_fc}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/nn/architectures/rmvae/poe_fc.jpg}
+    \caption{RMVAE PoE Fully Connected layers}
+    \label{fig:rmvae_poe_fc}
+\end{figure}
+
+Then, for a given step $t$, all the distribution representation go through the PoE layer to be combined and sampled as shown in the figure \ref{fig:mvae_architecture}.
+
+\subsection{Recurrent layers}
+
+I have now all the latent represenations for every steps : $\{z_1, ..., z_T\}$.
+
+\subsubsection{LSTM cells}
+
+To learn, how this latent space evolves through time, RMVAE uses recurrent layers with LSTM cells (figures \ref{fig:rnn} , \ref{fig:lstm}).
+This is shown in the figure \ref{fig:rmvae_lstm}.
+
+
+\begin{figure}
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    \node[state](z1)[]{$z_1$};
+    \node[state](z2)[right of=z1]{$z_2$};
+    \node[](dotsz)[right of=z2]{...};
+    \node[state](zt)[right of=dotsz]{$z_T$};
+    
+    \node[state, rectangle](lstm1)[below of=z1]{$\text{LSTM}$};
+    \node[state, rectangle](lstm2)[below of=z2]{$\text{LSTM}$};
+    \node[minimum width=1cm](dotslstm)[below of=dotsz]{...};
+    \node[state, rectangle](lstmt)[below
+    of=zt]{$\text{LSTM}$};
+    
+    \node[state](zp2)[below of=lstm1]{$\widetilde{z}_2$};
+    \node[state](zp3)[below of=lstm2]{$\widetilde{z}_3$};
+    \node[](dotsz)[below of=dotslstm]{...};
+    \node[state](zpt1)[below of=lstmt]{$\widetilde{z}_{T+1}$};
+    
+    \node[minimum width=1cm](whitelstmleft)[left of=lstm1]{};
+    \node[minimum width=1cm](whitelstmright)[right of=lstmt]{};
+    
+    % -----
+    
+    \draw (z1) -> (lstm1);
+    \draw (z2) -> (lstm2);
+    \draw (zt) -> (lstmt);
+    
+    \draw (whitelstmleft) -> (lstm1);
+    \draw (lstm1) -> (lstm2);
+    \draw (lstm2) -> (dotslstm);
+    \draw (dotslstm) -> (lstmt);
+    \draw (lstmt) -> (whitelstmright);
+    
+    \draw (lstm1) -> (zp2);
+    \draw (lstm2) -> (zp3);
+    \draw (lstmt) -> (zpt1);
+    
+    \end{tikzpicture}
+\end{center}
+\caption{RMVAE LSTM layer}
+\label{fig:rmvae_lstm}
+\end{figure}
+
+\subsubsection{RPoE}
+
+To try to catch the time as good as possible, I implemented a new layer architecture. I call it Recurrent Product of Experts (RPoE).
+
+The result of the Product of Experts at the step $t$ is given as a modality for the Product of Experts at the step $t+1$.
+
+The architecture is showed in the figure \ref{fig:rpoe_architecture}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/architectures/rmvae/rpoe_architecture.jpg}
+    \caption{RPOE architecture}
+    \label{fig:rpoe_architecture}
+\end{figure}
+
+
+\subsection{Decoder}
+
+Each instruments (each modalities) has its own decoder.
+The decoder $\text{Dec}^i$ associated to the instrument $i$ will, for a given step $t$, reconstruct back the output with the same shape as the input (\texttt{(16, 128, channels)}).
+
+A decoder is composed of:
+\begin{enumerate}
+    \item Fully Connected layers
+    \item Transposed Convolutional layers
+\end{enumerate}
+The dimensions of the layers of the encoder $\text{Enc}^i$ are the same as the dimensions of the decoder $\text{Dec}^i$.
+
+The decoder global architecture is showed in the figure \ref{fig:rmvae_decoder}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/architectures/rmvae/decoder.jpg}
+    \caption{RMVAE decoder architecture}
+    \label{fig:rmvae_decoder}
+\end{figure}
+
+\subsection{Last layer}
+
+The last layer of the NN is a Fully Connected layer with a well chosen activation function.
+
+\subsubsection{Polyphonic Music}
+
+For polyphonic music (section \ref{seq:poly}), the activation function is a \textit{sigmoid} function for the \texttt{channel 1} which represents the activation of the notes.
+The activation function for the \texttt{channel 2} is a \textit{ReLU} function.
+
+\subsubsection{Monophonic Music}
+
+For monophonic music (section \ref{seq:mono}), the activation function is s \textit{sigmoid} function for the \textit{additional note} (index 129: $note_{continue}$) because it is an activation note indicating if it wants to continue the previous note or play a new one. And for the other 128 notes, the activation function is a \textit{softmax} function since only one note can be played at the same time.
+
+At the beginning of my project, I was considering the $note_{continue}$ as a \textit{normal note} and simply apply a softmax across all the notes.
+But the result was disappointing: the highest frequency of $note_{continue}$ in the dataset was to high.
+The network wasn't generating anything because of the $note_{continue}$ had the highest probability and the network didn't want to generate any new note anymore.
+
 % -------------------- Loss Function --------------------
 
 \section{Loss Function}
+
+For this project, I created new loss functions to help the network to understand how music works.
+As a musician, I asked myself how I would proceed if I was given the same task as the NN (generation of music, accompaniment...).
+This is how I got the idea to create those new loss functions.
+
+In a song, when a musician is playing, it is not possible for him play every one of the 12 notes whenever he wants.
+A music usually follows a pattern, a chord progression, and he has to follows it.
+From the chords played, the scale, some notes will sounds better to the human ears than other.
+But there is no \textit{"ground truth"} for a solo part for example.
+Every solo can be considered as a \textit{"ground truth"} if it sounds nice.
+And I wanted my model to be able to \textit{improvise}, generate new music.
+
+I got the idea of helping the model to do \textit{acceptable mistakes} and restraint it do \textit{unacceptable mistakes}.
+In other word, during the training part, it the model doesn't hit the note it should have hit, I don't want to \textit{punish} him to much with a high loss value if the note sounds actually nice with the music.
+On the other side, I want to \textit{punish} it if the note it hits is completely wrong with a higher loss value.
+
+To summarize what I previously just said, during the training part, if a model hits a note which sounds nice, a reward is given by adding a negative number to the loss.
+If the hit note doesn't sound nice, then a penalty is given by adding a positive number to the loss.
+The algorithm \ref{alg:loss} describe the process.
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{$noteTruth, notePredict$}
+        \Ensure{$loss$}
+        \Statex
+        \State {$reward > 0, penalty >0$}
+        \Function{Loss}{$noteTruth, notePredict$}
+            \State {$loss \gets \texttt{commonLoss}(noteTruth, notePredict)$}
+            \If{$\texttt{soundsGood}(notePredict)$}
+                \State $loss \gets loss - reward$
+            \Else
+                \State $loss \gets loss + penalty$
+            \EndIf
+            \State \Return {$loss$}
+        \EndFunction
+    \end{algorithmic}
+    \caption{Add a Reward or a penalty to the generated note}
+    \label{alg:loss}
+\end{algorithm}
+
+The difficulty is to create the function \texttt{soundsGood} from the algorithm \ref{alg:loss}.
+The following sections describe the idea I have had to know whether a note sounds nice or not.
+
+\subsection{Scale}
+
+I call this loss function \textit{Scale} because the idea is to reconstruct the \textit{local scale}.
+This loss function takes as inputs all the instruments output:
+\begin{center}
+$\texttt{Scale}(truth, predict)$
+\end{center}
+where the shape of the input tensors is \texttt{(nb\_instruments, 16, 128)} for both which the represent the activated notes (where there is a 1) of every instruments for the next measure. The figure \ref{fig:loss_scale} shows the operations of this function.
+
+The idea is to take all the played notes for all the instruments in the truth tensor.
+Because the same note from different octaves should be considered as the same note, I apply a segment sum to get in the end a tensor of shape \texttt{(12,)} which corresponds to the 12 notes.
+The details of the segment sum operation are explained in the appendix \ref{appendix:segment_sum}.
+
+
+\begin{figure}[h]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    
+    \node[state](truth)[left=1.cm]{ truth };
+    \node[state](predict)[right of=truth, right=1.cm]{predict};
+    
+    \node[state, rectangle](t1)[below of=truth]{reduce sum};
+    \node[state, rectangle](t2)[below of=t1]{segment sum};
+    
+    \node[state, rectangle](p1)[below of=predict]{reduce sum};
+    \node[state, rectangle](p2)[below of=p1]{segment sum};
+    
+    \node[state, rectangle](t3)[below of=t2]{$1 - 2 \times \text{clip}_{01}(.)$};
+    
+    \node[state, rectangle](n1)[below right of=t3, below=0.5cm]{scalar product};
+    
+    \node[state](loss)[below of=n1]{Loss};
+    
+    
+    \path[]
+        (truth) edge    node[left]{\texttt{(nb\_instruments, 16, 128)}}   (t1)
+        (t1)    edge    node[left]{\texttt{(128,)}}   (t2)
+        
+        (predict)   edge    node{\texttt{(nb\_instruments, 16, 128)}}   (p1)
+        (p1)    edge    node{\texttt{(128,)}}   (p2)
+        
+        (t2)    edge    node[left]{\texttt{(12,)}}    (t3)
+        (t3)    edge    node[left]{\texttt{(12,)}}    (n1)
+        (p2)    edge    node{\texttt{(12,)}}    (n1)
+        (n1)    edge    node{\texttt{(1,)}} (loss);
+        
+    \end{tikzpicture}
+\end{center}
+\caption{Scale Loss}
+\label{fig:loss_scale}
+\end{figure}
+
+\subsection{Rhythm}
+
+The idea behind the Rhythm loss is that we want to preserve the rhythm of the music.
+Indeed, the rhythm is sometimes important and consistence is need through the musical piece.
+Thus, to preserve it, every time the model plays a note that is not played at the same time as an instrument in the ground truth, it gets a penalty.
+Conversely, every time the model plays a note at the same time as another one in the ground truth, it gets a reward.
+
+The implementation showed in the figure \ref{fig:loss_rhythm} is very similar as the Scale implementation.
+
+
+\begin{figure}[h]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    
+    \node[state](truth)[left=1.cm]{ truth };
+    \node[state](predict)[right of=truth, right=1.cm]{predict};
+    
+    \node[state, rectangle](t1)[below of=truth]{reduce sum};
+    
+    \node[state, rectangle](p1)[below of=predict]{reduce sum};
+    
+    \node[state, rectangle](t2)[below of=t1]{$1 - 2 \times \text{clip}_{01}(.)$};
+    
+    \node[state, rectangle](n1)[below right of=t2, below=0.5cm]{scalar product};
+    
+    \node[state](loss)[below of=n1]{Loss};
+    
+    
+    \path[]
+        (truth) edge    node[left]{\texttt{(nb\_instruments, 16, 128)}}   (t1)
+        
+        (predict)   edge    node{\texttt{(nb\_instruments, 16, 128)}}   (p1)
+        
+        (t1)    edge    node[left]{\texttt{(16,)}}    (t2)
+        (t2)    edge    node[left]{\texttt{(16,)}}    (n1)
+        (p1)    edge    node{\texttt{(16,)}}    (n1)
+        (n1)    edge    node{\texttt{(1,)}} (loss);
+        
+    \end{tikzpicture}
+\end{center}
+\caption{Rhythm Loss}
+\label{fig:loss_rhythm}
+\end{figure}
+
+\subsection{Harmony}
+
+I explained in the section \ref{seq:harmonics} that some notes will sound smooth together because of their common harmonics.
+On the other side, some notes won't be elegant when played together because of the resonance problem between some of their harmonics.
+
+This is something every composer has in mind when he creates a second musical part which will harmonize the first one.
+He will keep the second voice in the scale and he will keep an acceptable musical interval between the notes of the 2 melodic parts.
+
+The figure \ref{fig:harmony_circle} shows the acceptable and non-acceptable musical intervals for the note $A$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/music/circle_harmony.jpg}
+    \caption{Harmony Circle for $A$}
+    \label{fig:harmony_circle}
+\end{figure}
+
+From this figure, I realized there are actually \textit{3 forbidden musical intervals}:
+\begin{itemize}
+    \item The \textit{semitone} interval
+    \item The \textit{tone} interval
+    \item The \textit{tritone} interval. Actually, this interval was named \textit{"Diabolus in musica"} ("Devil in the music") and was forbidden by the church.
+\end{itemize}
+
+To prevent the model to generate such intervals, I created a loss function which gives a penalties every time there is one of this intervals.
+To do so, I created a subfunction $\text{harmony}_n$ which penalize the presence of the $n^{th}$ interval (counted in semitone).
+
+The operations of the cost function harmony and $\text{harmony}_n$ are showed in the figures \ref{fig:loss_harmony} and \ref{fig:loss_harmony_n}.
+The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}.
+
+
+\begin{figure}[h]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    
+    \node[state](n0)[]{predict};
+    
+    \node[state, rectangle](h1)[below left of=n0, left=2.cm]{$\text{harmony}_1$};
+    \node[state, rectangle](h2)[below of=n0, below=1.cm]{$\text{harmony}_2$};
+    \node[state, rectangle](h6)[below right of=n0, right=2.cm]{$\text{harmony}_6$};
+    
+    \node[state, rectangle](s)[below of=h2, below=1.cm]{sum};
+    
+    \node[state](loss)[below of=s]{Loss};
+    
+    \path[]
+        (n0)    edge    node{}  (h1)
+                edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}   (h2)
+                edge    node{}  (h6)
+        (h1)    edge    node{}  (s)
+        (h2)    edge    node[anchor=center]{\texttt{(1,)}}  (s)
+        (h6)    edge    node{}  (s)
+        (s)     edge    node{\texttt{(1,)}} (loss);
+        
+    \end{tikzpicture}
+\end{center}
+\caption{Harmony Loss}
+\label{fig:loss_harmony}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    
+    \node[state](predict)[]{predict};
+    
+    \node[state, rectangle](n1)[below of=predict]{reduce sum};
+    \node[state, rectangle](n2)[below of=n1]{segment sum};
+    
+    \node[state, rectangle](r)[below right of=n2]{$\text{roll}_n$};
+    
+    \node[state, rectangle](s)[below left of=r]{scalar product};
+    
+    \node[state](loss)[below of=s]{Loss};
+    
+    
+    \path[]
+        (predict)   edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}    (n1)
+        (n1)    edge    node{\texttt{(128,)}}   (n2)
+        (n2)    edge    node[right]{\texttt{(12,)}}    (r)
+                edge    node[left]{\texttt{(12,)}}  (s)
+        (r)     edge    node[right]{\texttt{(12,)}} (s)
+        (s)     edge    node{\texttt{(1,)}} (loss);
+        
+    \end{tikzpicture}
+\end{center}
+\caption{$\text{Harmony}_n$ Loss}
+\label{fig:loss_harmony_n}
+\end{figure}
+
+
+
+
+
+
+
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
@@ -1120,7 +1517,7 @@ My Conclusion
 % ----------------------------------------------------------------------------------------------------
 
 \section*{Future work}
-Future work
+Find the scale with some already known scale template ?
 \newpage
 
 % ####################################################################################################
@@ -1138,9 +1535,56 @@ Future work
 % ####################################################################################################
 % ####################################################################################################
 
+\newpage
+
+\chapter{Appendices}
 \appendix
 
-% \chapter{Full experimental results}
+\section{Interpolation project}
+
+\section{Segment Sum}
+\label{appendix:segment_sum}
+
+The segment sum operation allows me to sum the values of a vector of shape \texttt{(128,)} (corresponding of all the different notes in the different octaves) in a vector of shape \texttt{(12,)} (corresponding to the different 12 notes).
+
+The figure \ref{fig:segment_sum} describes what the segment sum operation would perform if there were only 4 different notes (\textit{A, B, C, D}) and 3 different octaves (\textit{1, 2, 3}) for a total of 12 notes.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/tensor/segment_sum.jpg}
+    \caption{Segment sum operation}
+    \label{fig:segment_sum}
+\end{figure}
+
+\section{$\text{Roll}_n$}
+\label{appendix:roll_n}
+
+The $\text{Roll}_n$ operation takes a one dimensional tensor, takes the first $n$ values and put append them at the end.
+The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:roll_2} shows an example with $n=2$.
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{tensor, n} 
+        \Ensure{$tensor$ (Rolled tensor)}
+        \Statex
+        \Function{Roll}{$tensor, n$}
+            \For{$k \gets 1$ to $n$}
+                \State {$firstElement \gets tensor.pop(0)$}
+                \State {$tensor.append(firstElement)$}
+            \EndFor
+            \State \Return {$tensor$}
+        \EndFunction
+        \end{algorithmic}
+    \caption{$\text{Roll}_n$ function}
+    \label{alg:roll_n}
+\end{algorithm}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/tensor/roll_2.jpg}
+    \caption{$\text{Roll}_2$ example}
+    \label{fig:roll_2}
+\end{figure}
 
 \end{document}
 
