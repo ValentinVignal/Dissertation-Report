@@ -2,7 +2,7 @@
 \usepackage[top=1in,bottom=1in,left=1.5in,right=1.5in]{geometry}
  \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings, setspace}
 \usetikzlibrary{automata,arrows,positioning,calc}
 \usepackage[english]{babel}
 \usepackage{hyperref}
@@ -188,6 +188,8 @@ I also yould like to thanks the Doctor Dorien Herremans who gave me some preciou
 \end{center}
 My asbtract text
 
+\url{https://github.com/ValentinVignal/midiGenerator}
+
 % ####################################################################################################
 % ####################################################################################################
 % List of Tables
@@ -229,6 +231,7 @@ My asbtract text
         GRU & Gated Recurrent Unit \\
         KLD & Kullback-Leibler Divergence \\
         LSTM & Long Short-Term Memory \\
+        MCMC & Markov Chain Monte Carlo \\
         MDMM & Multimodal Deep Markov Model \\
         MIDI & Musical Instrument Digital Interface \\
         ML & Machine Learning \\
@@ -553,6 +556,7 @@ The figure \ref{fig:max_pooling} shows how the max pooling operation works.
 \end{figure}
 
 \subsection{AutoEncoder}
+\label{seg:back:ae}
 
 An AE is composed of a \textit{encoder} and a \textit{decoder}.
 First, the input goes into the encoder. The output of the encoder is the latent space (the hidden layers), which is smaller than the input.
@@ -572,7 +576,7 @@ The figure \ref{fig:autoencoder} illustrates this architecture.
 \subsection{Variational AutoEncoder}
 % Multimodal explained in my work part
 
-A VAE is an autoencoder. The steps are the following:
+A VAE \cite{doersch_tutorial_2016} is an autoencoder. The steps are the following:
 \begin{enumerate}
     \item The input goes first in the encoder which encodes it as a gaussian distribution over the latent space.
     \item A point is sample from this distribution.
@@ -589,7 +593,7 @@ To regularize the output of the decoder, an extra term is added to the loss func
 
 \subsection{Generative Adversial Network}
 
-GAN are composed of two models that are trained simultaneously:
+GAN \cite{noauthor_gan_2017, goodfellow_generative_2016} are composed of two models that are trained simultaneously:
 \begin{itemize}
     \item The \textit{Generator} will learn how to create images that look real
     \item The \textit{Discriminator} will learn how to differentiate real and generated images.
@@ -722,7 +726,9 @@ Then I will introduce
 
 \section{Objectives}        % Change the name
 
-In this section, I will describe some examples of what it is possible to do with neural networks to generate music
+In this section, I will describe some examples of what it is possible to do with neural networks to generate music.
+
+As explained in the section \ref{seq:objectives}, the goal of this project is to create a single model able to do everything.
 
 \subsection{Generator}
 
@@ -731,10 +737,13 @@ First it is possible to create a music melody. It can be either monophonic (only
 It is also possible to create several musical parts at the same time. Each of them can be either monophonic or polyphonic.
 The musical parts can be considered as different instruments or voices for a Chorale.
 The challenge is to create musical parts that work together.
+This is the most common objective choice among the existing works \cite{liang_automatic_2017} \cite{chuan_modeling_nodate}.
 
 \subsection{Accompaniment}
 
 Given a melody, or some musical parts, the goal is to create new musical parts which can be combined with the input and be played together.
+
+This is for example the goal of DeepBach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016}.
 
 % -------------------- Music Representation--------------------
 
@@ -770,11 +779,12 @@ Therefore, the challenge is to stay consistent through time.
 
 \subsection{MIDI Signal}
 
-Most of the work done on music generation is using the \textit{MIDI} representation (or any other translation of midi like pianoroll or text).
+Most of the work done  on music generation is using the \textit{MIDI} representation (or any other translation of midi like pianoroll or text). \cite{chuan_modeling_nodate, hadjeres_deepbach:_2016, huang_counterpoint_2017, liang_automatic_2017}
 
 \subsubsection{Pianoroll}
 
-The pianoroll representation can be considerate as an image so usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017}.
+The pianoroll representation can be considerate as an image so usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017, chuan_modeling_nodate}.
+The figure \ref{fig:pianoroll_to_array} shows a very naive example of how to convert a pianoroll view to an array.
 
 \begin{figure}[H]
    \begin{minipage}{0.5\textwidth}
@@ -789,7 +799,45 @@ The pianoroll representation can be considerate as an image so usual deep learni
  \label{fig:pianoroll_to_array}
 \end{figure}
 
-The figure \ref{fig:pianoroll_to_array} shows a very naive example of how to convert a pianoroll view to an array.
+\bigskip
+
+Chin-Hua Chuan et al. \cite{chuan_modeling_nodate} introduced another representation which is supposed to help the model to understand relations between notes.
+They use \textit{Tonnetz} matrix to represent polyphnic music.
+As explained in their paper, \textit{"Tonnetz is a graphical representation used by music theorists and musicologists in order to study tonality and tonal spaces"}.
+
+Instead of encoding the notes in a one-dimensional vector (figure \ref{fig:tonnetz}), they encode them in a 2-dimensional vector where the relative positions between two notes is meaningful.
+
+The figure \ref{fig:tonnetz} illustrates a common form of tonnetz.
+Each node in the tonnetz network represents one of the 12 pitch classes.
+The nodes on the same horizontal line follow the circle-of-fifth ordering: the adjacent right neighbor is the perfect-fifth and the adjacent left is the perfect-fourth.
+Three nodes connected as a triangle in the network form a triad, and the two triangles connected in the vertical direction by sharing a baseline are the parallel major and minor triads.
+For example, the upside-down triangle filled with diagonal lines in the figure \ref{fig:tonnetz} is C major triad, and the solid triangle on the top is C minor triad. Note that the size of the network can be expanded boundlessly; therefore, a pitch class can appear in multiple places throughout the network.
+
+In Chuan's paper, they extended this matrix.
+The figure \ref{fig:tonnetz_extended} shows an extended tonnetz matrix example.
+They include is this extended matrix the pitch (octave number) which was missing in the first one.
+
+\begin{figure}[h]
+    \centering
+    \newlength{\MyOtherHeightThree}
+    \settoheight{\MyOtherHeightThree}{\includegraphics[width=0.9 \textwidth]{images/music/pianoroll/tonnetz_extended.jpg}}
+    \begin{subfigure}[t]{0.38\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/music/pianoroll/tonnetz.jpg}
+        \caption{}
+        \label{fig:tonnetz}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/music/pianoroll/tonnetz_extended.jpg}
+        \caption{}
+        \label{fig:tonnetz_extended}
+    \end{subfigure}
+    \caption{(a) tonnetz and (b) the extended tonnetz matrix with pitch register}
+    Source: Ching-Hua Chuan's paper \cite{chuan_modeling_nodate}.
+    \label{fig:tonnetz_representation}
+\end{figure}
 
 \subsubsection{Text}
 
@@ -809,10 +857,41 @@ Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbac
 \end{figure}
 
 The figure \ref{fig:pianoroll_to_text} shows as simple example of how it is possible to convert an pianoroll view to a text.
-
 However, using text to represent image usually force the framework to work only in a monophonic way.
+A common choice of the existing works that are working with is text is to embed the text into a fix-sized vector using a \textit{word2vec} model \cite{liang_automatic_2017}.
 
-% TODO: Speak about Word2Vec
+\bigskip
+
+Despite the text constraint, Feynman Liang and al. \cite{liang_automatic_2017} managed to encode polyphonic music in text and use it to correctly train their model: "BachBot".
+
+They quantizer time into sixteenth notes (\musEighth). Consecutive frames are separated by a unique delimiter ("\texttt{|||}").
+Within each frame, they represent individual notes rather than entire chords.
+Each frame consists of four (Soprano, Alto, Tenor, and Bass) \texttt{<Pitch; Tie>} tuples where $\texttt{Pitch} \in \{0; 1; \dots ; 127\}$ represents the MIDI pitch of a note and $\texttt{Tie} \in \{\texttt{True}; \texttt{False}\}$ distinguishes whether a note is tied with a note at the same pitch from the
+previous frame or is articulated at the current timestep.
+They \textit{order notes within a frame in descending MIDI pitch}.
+The figure \ref{fig:relatedwork_bachbot} shows the encoding process.
+
+\begin{figure}[h]
+    \centering
+    \newlength{\MyOtherHeightTwo}
+    \settoheight{\MyOtherHeightTwo}{\includegraphics[width=0.9 \textwidth]{images/related_works/bachbot/bachbot_encoding_stave.jpg}}
+    \begin{subfigure}[t]{0.28\textwidth}
+        \centering
+        \includegraphics[width=.9 \textwidth]{images/related_works/bachbot/bachbot_encoding_stave.jpg}
+        \caption{ {\setstretch{1.}Three musical chords in traditional music notation. The red arrows indicate the order in which notes are sequentially encoded.}}
+        \label{fig:relatedwork_bachbot_stave}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.67\textwidth}
+        \centering
+        \includegraphics[width=.9 \textwidth]{images/related_works/bachbot/bachbot_encoding_text.jpg}
+        \caption{A corresponding sequential encoding of the three chords in an eighth-note time quantization (for illustration, broken over three columns). Each line within a column corresponds to an individual token in the encoded sequence. ||| delimit frames and (.) indicate a fermata is present within the corresponding frame.}
+        \label{fig:relatedwork_bachbot_text}
+    \end{subfigure}
+    \caption{BachBot's example encoding of three musical chords ending with a fermata ("pause") chord}
+    Source: Feynman Lian's paper \cite{liang_automatic_2017}.
+    \label{fig:relatedwork_bachbot}
+\end{figure}
 
 
 \subsubsection{Chords}
@@ -867,7 +946,7 @@ The chords are then writen and be considered as notes.
 
 \subsection{Features}
 
-It is possible to extract features from the data to help the neural network to understand how music works.
+It is possible to extract features from the data to help the neural network to understand how music works, like the chords, the current key signature...
 \begin{itemize}
     \item The first option is to do it manually and give the features as an input of the model
     \item The second option is to let the model learn it by itself. This is the choice I have made for this project.
@@ -875,8 +954,27 @@ It is possible to extract features from the data to help the neural network to u
 
 \subsubsection{Metadata}
 
-The features that can be passed as an input to the model can also be metadata as the time signature or the key of the music...
+The features that can be passed as an input to the model can also be metadata like the time signature or the key of the music...
+
+Deep Bach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016} consider the fermata symbol (figure \ref{fig:fermata}) and the beat subdivision number (an integer between 1 and 4).
+
+\begin{figure}[htbp]
+     \centering
+     \includegraphics[width=.1\linewidth]{images/music/symbols/fermata.png}
+     \caption{Fermata symbol}
+     Source: \href{https://publicdomainvectors.org/en/free-clipart/Music-symbol/70183.html}{publicdomainvector}
+     \label{fig:fermata}
+\end{figure}
+
 In this project I chose to not include any metadata in the model because of the difficulty to find or reconstruct them for the available dataset.
+However, I not intentionally gives to the model the information about the beats number and subdivisions by considering the entire measure as one input.
+
+\bigskip
+
+Another way to help the model by giving it information without actually passing metadata is to normalize the data.
+For example, BachBot \cite{liang_automatic_2017} and other works \cite{chuan_modeling_nodate} transpose all their dataset in either C major or A major key.
+
+For the same reason as not passing metadata, I don't normalize the data before training my models.
 
 \subsection{Tensor encoding}
 
@@ -896,11 +994,23 @@ This is the retained method in this work.
 
 In this section, I will present different architectures that have already been used for music generation. It will expose the architecture of my project in the section \ref{sec:model_architecture}.
 
+
 \subsection{RBM}
 
 \subsection{AE}
 
+The AutoEncoder architecture is explained in the section \ref{seg:back:ae}.
+This is the most common architecture used for music generation at the time I am writing this report.
+The AutoEncoder can be recurrent as Feynman Liang et al.'s BachBot \cite{liang_automatic_2017, chuan_modeling_nodate, hadjeres_deepbach:_2016} or not.
+
+For instance, BachBot \cite{liang_automatic_2017} and DeepBach \cite{hadjeres_deepbach:_2016} use an encoder/decoder architecture with LSMT layers on the latent space. \cite{chuan_modeling_nodate}
+
 \subsection{VAE}
+
+\subsection{RMVAE}
+
+Since I created this new architecture, there is no existing work using this architecture.
+My project is, for now, the only work done using a Recurrent Multimodal Variational AutoEncoder to generate music.
 
 \subsection{GAN}
 
@@ -913,6 +1023,45 @@ In this section, I will present different architectures that have already been u
 \subsection{Input Manipulation}
 
 \subsection{Feed forward and RNN architecture}
+
+This is the easiest and most common generation process through all the work. \cite{liang_automatic_2017, chuan_modeling_nodate}
+And input is given to the model.
+The model returns an output.
+The figure \ref{fig:feed_forward_generation_process} illutrates this process.
+This output can be the next frame/beat/measure of the music.
+
+I also chose this generation process for my project.
+In my case, the model returns the next measure of the music.
+
+\begin{figure}[h]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    \node[state, rectangle](model){model};
+    \node[state, fill=lightgray](input)[left of=model]{input};
+    \node[state](output)[right of=model]{output};
+    \path
+        (input) edge    node{}  (model)
+        (model) edge    node{}  (output);
+    \end{tikzpicture}
+\caption{Feed forward generation process}
+\label{fig:feed_forward_generation_process}
+\end{center}
+\end{figure}
+
+\subsubsection{DeepBach}
+
+DeepBach \cite{hadjeres_deepbach:_2016} uses a Markov Chain Monte Carlo algorithm to re-harmonize a song and transform it. 
+From the existing song, it re-predicting every notes one by one.
+The algorithm is describe in the figure 
+
+\begin{figure}[htbp]
+     \centering
+     \includegraphics[width=.5\linewidth]{images/related_works/deepbach_algo.jpg}
+     \caption{Graphical representation of DeepBach's neural network architecture for the soprano prediction}
+     Source: DeepBach paper \cite{hadjeres_deepbach:_2016}
+     \label{fig:relatedworks:deepbach_architecture}
+\end{figure}
 
 % ----------------------------------------------------------------------------------------------------
 % Contribution
@@ -1585,6 +1734,8 @@ The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:rol
     \caption{$\text{Roll}_2$ example}
     \label{fig:roll_2}
 \end{figure}
+
+\section{BandPlayer}
 
 \end{document}
 
