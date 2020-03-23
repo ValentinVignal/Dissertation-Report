@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings, setspace}
 \usetikzlibrary{automata,arrows,positioning,calc}
+\usepackage[nottoc]{tocbibind}
 \usepackage[english]{babel}
 \usepackage{hyperref}
 %\usepackage[ruled,vlined]{algorithm2e}
@@ -26,15 +27,15 @@
 
 
 \titleformat
-{\chapter} % command
-[display] % shape
-{\bfseries\Large} % format
-{\centering CHAPTER \thechapter} % label
-{0.5ex} % sep
-{
-    \vspace{1ex}
-    \centering
-} % before-code
+    {\chapter} % command
+    [display] % shape
+    {\bfseries\Large} % format
+    {\centering CHAPTER \thechapter} % label
+    {0.5ex} % sep
+    {
+        \vspace{1ex}
+        \centering
+    } % before-code
 \titlespacing{\chapter}{0cm}{0cm}{1cm}
 
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -162,11 +163,11 @@
     \textbf{\Large ACKNOWLEDGEMENTS}\\
 \end{center}
 
-I would like to express my thanks my special thanks or gratitude to my advisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
+I would like to express my special thanks or gratitude to my advisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
 
 Secondly I would also like to thanks all the member of the research team, and especially the PhD. students Abdul Fatir and Yaqi Xie who, despite their busy schedules, taught me, and help me in many scenarios.
 
-I also yould like to thanks the Doctor Dorien Herremans who gave me some precious advices at the beginning of my project.
+I also yould like to thanks the Doctor Dorien Herremans who gave me precious advises at the beginning of my project.
 
 \newpage
 \tableofcontents
@@ -183,12 +184,26 @@ I also yould like to thanks the Doctor Dorien Herremans who gave me some preciou
 % ----- Specification -----
 % The thesis must contain a summary of not more than 500 words written in the English Language. If prior approval from the Faculty has been obtained at the time of admission for a thesis to be written in a language other than English, it must contain a summary of not more than 500 words written in that language in addition to a summary not exceeding 500 words written in the English Language. The summary must be included in the thesis.
 
-\begin{center}
-    \textbf{\Large SUMMARY}
-\end{center}
-My asbtract text
+% \begin{center}
+%     \textbf{\Large SUMMARY}
+% \end{center}
+\chapter*{Summary}
+\addcontentsline{toc}{chapter}{Summary}      % To not display number of chapter in table of content
 
-\url{https://github.com/ValentinVignal/midiGenerator}
+This paper introduces the work I have done for my dissertation.
+As a musician, I like to play music, improvise and create or arrange songs.
+The main goal of this dissertation is to create a neural network architecture able to handle all the tasks a musician or a composer can do.
+
+To do so, I created a new architecture that I call RMVAE (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see section \ref{sec:back:rnn}).
+Only one trained model can be used to create a melody, several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
+
+As a musician I also tried to integrate prior musical knowledge to the model by creating 3 cost functions (section \ref{sec:loss}).
+
+For this project, I used the MIDI dataset which is Bach's Chorales dataset from the music21 corpus \cite{noauthor_music21corpuschorales_nodate} and used their framework \cite{noauthor_music21_nodate} to open and create MIDI files.
+The deep learning framework I used it Tensorflow/Keras \cite{noauthor_tensorflow_nodate, noauthor_keras_nodate}.
+I made my python code for this dissertation available online: \url{https://github.com/ValentinVignal/midiGenerator}.
+
+The results show that the extra losses are not helping the model which indicates that the neural network is able to understand those musical rules and tendencies by its own.
 
 % ####################################################################################################
 % ####################################################################################################
@@ -229,7 +244,7 @@ My asbtract text
         C-RBM & Convolutional Restricted Boltzmann Machine \\
         CNN & Convolutional Neural Network \\
         FC & Fully Connected \\
-        GAN & Generative Adversial Network \\
+        GAN & Generative Adversarial Network \\
         GRU & Gated Recurrent Unit \\
         KLD & Kullback-Leibler Divergence \\
         LSTM & Long Short-Term Memory \\
@@ -298,8 +313,8 @@ It is very useful for anyone to be able to write down their work to save it or s
     \label{fig:musical_stave_example}
 \end{figure}
 
-The vertical axis is the frequence axis an the horizontal axis corresponds to the time axis.
-In the figure \ref{fig:musical_stave_example}, we know that the tempo is $100 BPM$, that the scale is \textit{G major} and the measure are divided in 4 beats ($4/4$ inscription).
+The vertical axis is the frequency axis an the horizontal axis corresponds to the time axis.
+In the figure \ref{fig:musical_stave_example}, it is written that the tempo is $100 BPM$, the scale is \textit{G major} (one \musSharp) and the measure are divided with 4 beats ($4/4$ inscription).
 As said previously, the vertical position of a note indicates its frequency :
 
 \begin{figure}[H]
@@ -319,9 +334,9 @@ As said previously, the vertical position of a note indicates its frequency :
 
 The figures \ref{fig:note_names} and \ref{fig:piano_keys} show the correspondence between the notes on a musical stave and on a piano keyboard. By default the notes correspond to the white keys of the piano (it is the C major scale).
 
-One thing to know is that, between 2 followings notes (or piano keys, including white and black keys), the ratio between the fundamental frequencies of the 2 notes is always equal to $\sqrt{12}$. It means that if we consider the notes $A4$ and $A5$ (2 A in the octaves 4 and 5), the ratio between the fundamental frequencies is $2$. This information will help to understand chords construction.
+One thing to know is that, between 2 followings notes (or piano keys, including white and black keys), the ratio between the fundamental frequencies of the 2 notes is always equal to $\sqrt{12}$. It means that if we consider the notes $A4$ and $A5$ (2 $A$ notes in the octaves 4 and 5), the ratio between the fundamental frequencies is $2$. This information will help to understand chords construction.
 
-The length of a note is defined by its shape as shown in the Table \ref{tab:notes_duration}. This table is describing the relation between the length of a note, and its shape on the muscial stave.
+The length of a note is defined by its shape as shown in the Table \ref{tab:notes_duration}. This table is describing the relation between the length of a note, and its shape on the musical stave.
 
 \begin{table} [ht]
     \begin{center}
@@ -339,7 +354,7 @@ The length of a note is defined by its shape as shown in the Table \ref{tab:note
     \end{center}
 \end{table}
 
-In this work, we won't consider shorter notes than Sixteenth notes because most of the songs are not using them.
+In this work, we won't consider shorter notes than Sixteenth notes because most of the songs are not using them. This is a common assumption in the existing work.
 
 
 \subsection{MIDI}
@@ -353,46 +368,47 @@ In this work, we won't consider shorter notes than Sixteenth notes because most 
 
 \textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
 It was first used to carry musical messages between electronic instruments, software and devices. These messages are events about note information (for example, pitch, velocity, panning...) an some other parameters (for example, vibrato, volume...). 
-The to most important messages are:
+The to most important messages I will consider are:
 \begin{itemize}
     \item \textit{Note on} is indicating that a note has to be played. It contains the channel information (which can be considered as an instrument), the pitch information (what note should be played) and the velocity. We could right an event as follow :
     \begin{equation}
         <NoteOn, 0, 50, 127>
     \end{equation}
     To describe the event \textit{Start to play the note $D3$ with the maximum velocity (127) for the channel (instrument) 0}
-    \item \textit{note off} is indicating to stop playing a note (like release the keyboard key). The given parameters should be the same as the ones given to the \textit{Note On} event.
+    \item \textit{Note off} is indicating to stop playing a note (for instance, release the keyboard key). The given parameters are the same as the ones given to the \textit{Note On} event.
     \begin{equation}
         <NoteOff, 0, 50, 127>
     \end{equation}
     will stop the note started with the previous \textit{Note On} event.
 \end{itemize}
 
-Each note is associated with a time value which can be expressed in number of ticks (time division). The header of file should specify how may ticks there are per quarter note.
+Each note is associated with a time value which can be expressed in number of ticks (time division). The header of file specifies how may ticks there are per quarter note.
 
 \subsection{Pianoroll}
 
-The pianoroll is a common representation of a musical stale in the softwares for music production.
+The pianoroll is a common representation of a musical stale in the music production softwares.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75 \textwidth]{images/music/pianoroll/pianoroll_flstudio.jpg}
-    \caption{Pianoroll example from the software FL Studio}
+    \caption{Pianoroll example from the software FL Studio \cite{noauthor_fl_nodate}}
     \label{fig:pianoroll_flstudio}
 \end{figure}
 
-The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the famous software \textit{FL Studio}. The composers of electronic music like EDM, Techno et caetera use this view to compose and arrange their songs.
+The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the famous software \textit{FL Studio} \cite{noauthor_fl_nodate}. The composers of electronic music like EDM, Techno et caetera use this view to compose and arrange their songs.
 
 % -------------------- Music Theory --------------------
 
 \section{Music theory}
 
-In this section, I will describe and explain some rules from the music theory which are related to this work. The rules I am going to talk about are the more common ones and most of the songs are following them.
+In this section, I will describe and explain some rules from the music theory which are related to this work. The rules I am going to explain about are the most common ones and most of the songs tend to follow them.
 
 \subsection{Scale and Rhythm}
 
-\subsection*{Scale}
+\subsubsection{Scale}
 
-A \textit{scale} is a set of notes. Because the human ear is now used to it, the notes of a scale will sound nice when they are played together. In traditional Western music, it generally consists of 7 notes. They are several types of scales, the most common is the \textit{Major scale} or the \textit{Natural Minor Scale}. For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
+A \textit{scale} is a set of notes. Because the human ear is now used to it, the notes of a scale will sound nice when they are played together. In traditional Western music, it generally consists of 7 notes. They are several types of scales.
+The most common is the \textit{Major scale} or the \textit{Natural Minor Scale}. For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
 
 Another type of scales often used by the musicians to creates their \textit{solos} are the \textit{Pentatonic} scales.
 
@@ -404,21 +420,24 @@ Another type of scales often used by the musicians to creates their \textit{solo
     \label{fig:pentatonic_scale_piano}
 \end{figure}
 
-As seen in the Figure \ref{fig:pentatonic_scale_piano}, the C Major pentatonic scale (which uses the same notes as the A Minor pentatonic scale) uses only five notes (A, C, D, E and G) which are contained in the C Major Scale. It is known that playing in this scale will easily produce enjoyable and in tune melodies or any musical parts. 
+As seen in the figure \ref{fig:pentatonic_scale_piano}, the C Major pentatonic scale (which uses the same notes as the A Minor pentatonic scale) uses only five notes (A, C, D, E and G) which are contained in the C Major Scale. It is known that playing in this scale will easily produce enjoyable and in-tune melodies or any musical parts. 
 
 
-\subsection{Rhythm}
+\subsubsection{Rhythm}
 
-The rhythm is an important part of the current music like \textit{Pop Music}. It has the tendency to remains consistent through the song and repeat some patterns. It helps the listener to easily follow the progression and allows him to listen what he's expecting.
+The rhythm is an important part of the current music like \textit{Pop Music}. It has the tendency to remain consistent through the song and to repeat some patterns.
+It helps the listener to easily follow the progression and allows him to listen what he's expecting to.
 
-However, there are no such rules for rhythm as there are for scales and harmonies. This is why classical music is not considered as a rhythmic music.
+However, rhythm is more flexible than scale and harmonies, and there is no rhythm theory someone could follow.
+This is why classical music is not considered as a rhythmic music.
 
-I this work, I considered and will consider only binary rhythm (each beat is divided into 2 smaller equal beats) and not ternary rhythm (each beat is divided into 3 smaller equal beats) because the binary rhythm is the most common rhythm.
+I this work, I considered and will consider only binary rhythm (each beat is divided into 2 smaller equal beats) and not ternary rhythm (each beat is divided into 3 smaller equal beats) because the binary rhythm is the most common one.
+
 
 \subsection{Harmonics}
 \label{sec:harmonics}
 
-In this section, I will introduce some physical concept about musical sounds and then illustrate how it can explain some musical rules.
+In this section, I will introduce some physical concept about musical sounds and timbre and then illustrate how it can explain some musical rules.
 
 \subsubsection{Harmonics}
 
@@ -427,12 +446,13 @@ A sound is a sum of harmonics:
 \begin{equation}
     s(t) = \sum_{n=1}^{\infty} \alpha_{n} \sin(n f t + \phi_{n})
 \end{equation}
-With $f$ the fundamental frequency and $\phi$ the phase difference value.
+where $f$ is the fundamental frequency and $\phi$ the phase.
 
-Let's take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$ for a common tuning.
-Then the $2^{nd}$ harmonic is $A5$ $880Hz$. So, when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
-Let's take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$. It means it is possible to hear a $E5$ from a played $A4$.
-The table \ref{tab:A4_harmonics} is referencing the firsts harmonics of the note $A4$.
+Let's take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$.
+Then the $2^{nd}$ harmonic is $A5$ $880Hz$.
+The consequence is , when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
+Let us take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$. It means it is possible to hear a $E5$ from a played $A4$.
+The table \ref{tab:A4_harmonics} is referencing the firsts harmonics of the $A4$ note.
 
 \begin{table} [ht]
     \begin{center}
@@ -450,6 +470,7 @@ The table \ref{tab:A4_harmonics} is referencing the firsts harmonics of the note
         \label{tab:A4_harmonics}
     \end{center}
 \end{table}
+
 From the table \ref{tab:A4_harmonics}, we can notice:
 \begin{itemize}
     \item The $A$ and $E$ notes are linked together (\textit{Fifth} or reversed \textit{Fourth} interval).
@@ -459,9 +480,10 @@ From the table \ref{tab:A4_harmonics}, we can notice:
 
 \subsubsection{Chords}
 
-And this is why a Major chord sound nice to the ears. A $A$ $Major$ chord is composed with 3 notes : $A$, $C\sh$ and $E$. All the notes are already contained in the harmonics of a $A$ sound.
+The links between notes illustrated in the table \ref{tab:A4_harmonics} explains why a Major chord sound \textit{nice} or \textit{smooth}.
+A $A$ $Major$ chord is composed with 3 notes : $A$, $C\sh$ and $E$. All the notes are already contained in the harmonics of a $A$ sound.
 
-A Minor chords ($A$ $Minor$ is $A$, $C$, $E$) will also sounds acceptable to the human ears because $A$ and $C$ share $E$ in their harmonics (\textit{Fifth} interval and \textit{Third Major} interval respectively) 
+A Minor chords ($A$ $Minor$ is $A$, $C$, $E$) will also sounds acceptable to the human ears because $A$ and $C$ share $E$ in their harmonics (respectively the \textit{Fifth} interval and \textit{Third Major} interval) 
 
 \subsubsection{Dissonance}
 
@@ -474,13 +496,13 @@ When 2 frequencies are close to each other and added up, it is possible to obser
     \label{fig:resonance}
 \end{figure}
 The figure \ref{fig:resonance} shows the waveform generated by a $B4$ ($494Hz$) and a $C5$ ($523Hz$) (\textit{semitone} interval).
-This phenomena is explained by the equation:
+This phenomena is explained by the trigonometric identity:
 
 \begin{equation}
     \cos(f) + \cos(f + \delta f) = 2 \cos(\frac{2f + \delta f}{2}) \cos(\frac{\delta f}{2})
 \end{equation}
 
-This phenomena is unpleasant to hear and this is why, musician usually try to avoid to play notes generating a resonance between their harmonics:
+This phenomena is unpleasant to hear and this is why, musician usually try to avoid to play notes that generate a resonance between their harmonics:
 \begin{itemize}
     \item \textit{Semitone} interval (ex: $A$ and $A\sh$)
     \item \textit{Tone} interval (ex: $A$ and $B$)
@@ -490,7 +512,7 @@ This phenomena is unpleasant to hear and this is why, musician usually try to av
 
 \subsubsection{Harmony}
 
-Either for classical music (Bach Chorales) or pop music (Back Singers), a common method to \textit{fill a song} is to add harmony parts to the lead melody. The harmony parts usually follow the lead melody but on other notes.
+Either for classical music (Bach Chorales) or pop music (back singers), a common method to \textit{fill a song} is to add harmony parts to the lead melody. The harmony parts usually follow the lead melody but on other notes.
 An example is provided in the figure \ref{fig:harmony_example}.
 
 \begin{figure}[H]
@@ -514,17 +536,24 @@ The harmony parts will usually avoid unpleasant interval and mostly try to creat
 
 \section{Music arrangement}
 
-Arranging a song is using all the previous observations and rules to create the harmony parts of a song given the lead melody. It 
+Arranging a song is an entire musical field an a job.
+It is the art of giving an existing melody musical variety.
+To put it more simply, it is creating a accompaniment for an melody.
+I can includes chords, change the rhythm, add other musical parts.
+
+To give an example, arranging a song could be create a piano/guitar/drums/bass parts from lyrics and a voice melody.
 
 
 % -------------------- Neural Network architecture --------------------
 
 \section{Neural Network architectures}
 
+In this section, I will briefly describe some neural network architectures.
+
 \subsection{Convolutional neural network}
 
 The convolutional networks are often used on images because they can preserve the spatial information.
-A CNN can include two types of layers :
+A CNN usually includes two types of layers :
 \begin{itemize}
     \item A convolutional layer
     \item A pooling layer
@@ -534,7 +563,7 @@ A CNN can include two types of layers :
 
 For a 2D convolution, the convolutional layer which takes as input a tensor of shape \texttt{(height, width, channels)}.
 The \textit{filter} of the convolutional layer will have a shape \texttt{(h, w, channels)}.
-Then the layer will do a convolutional operation between the filter and the input through the axes corresponding to the \texttt{height} and the \texttt{width}.
+Then the layer will do a $2D$ convolutional operation between the filter and the input through the axes corresponding to the \texttt{height} and the \texttt{width}.
 
 \begin{equation}
     y_{\tau} = \sum_{t=0}^{l-1} w_{t} \times x_{\tau + t}
@@ -545,12 +574,12 @@ The equation \ref{eq:convo} shows the mathematical transformation for a 1D convo
 
 \subsubsection{Pooling Layer}
 
-A pooling layer is used to reduce the size of a tensor. It extracts a value from a region of the tensor. It can be:
+A pooling layer is used to reduce the size of a tensor. It extracts a value from a region of the tensor. Two common poolings are:
 \begin{itemize}
-    \item \textit{Average pooling} takes the average of the region
-    \item \textit{Max pooling} takes the maximum of the region
+    \item The \textit{Average pooling} which takes the average of the region
+    \item The \textit{Max pooling} which takes the maximum of the region
 \end{itemize}
-The figure \ref{fig:max_pooling} shows how the max pooling operation works.
+The figure \ref{fig:max_pooling} illustrates how the max pooling operation works.
 
 \begin{figure}[H]
     \centering
@@ -564,11 +593,13 @@ The figure \ref{fig:max_pooling} shows how the max pooling operation works.
 \label{sec:back:ae}
 
 An AE \cite{moor_topological_2020, tschannen_recent_2018, rudolph_structuring_2019} is composed of a \textit{encoder} and a \textit{decoder}.
-First, the input goes into the encoder. The output of the encoder is the latent space (the hidden layers), which is smaller than the input.
-The output of the encoder becomes the input of the decoder. The goal of the decoder is to reconstruct the input from the latent space.
-The hidden layers of the AE are smaller than the input which is supposed to force the network to compress the input and reduce its dimensions.
-The AE is then forced to learn "high level features" about the inputs.
-The figure \ref{fig:autoencoder} illustrates this architecture.
+First, the input goes into the encoder.
+The output of the encoder is the latent space (the hidden layers), which is smaller than the input.
+The output of the encoder becomes the input of the decoder.
+The goal of the decoder is to reconstruct the input from the latent space.
+The hidden layers of the AE are smaller than the input which forces the network to compress the input and reduce its dimensions.
+Therefor, the AE has to learn "high level features" about the inputs.
+The figure \ref{fig:autoencoder} summarizes this architecture.
 
 \begin{figure}[H]
     \centering
@@ -596,23 +627,30 @@ To regularize the output of the decoder, an extra term is added to the loss func
     \mathbb{D}_{KL} (\mathcal{N}(\mu_{encoded}, \sigma_{encoded}), \mathcal{N}(0, 1))
 \end{equation}
 
-\subsection{Generative Adversial Network}
+\subsection{Generative Adversarial Network}
 \label{sec:back:gan}
 
 GAN \cite{noauthor_gan_2017, goodfellow_generative_2016, goodfellow_generative_2014} are composed of two models that are trained simultaneously:
 \begin{itemize}
-    \item The \textit{Generator} will learn how to create images that look real
-    \item The \textit{Discriminator} will learn how to differentiate real and generated images.
+    \item The \textit{Generator} will learn how to create data that look real
+    \item The \textit{Discriminator} will learn how to differentiate real and generated data.
 \end{itemize}
 
-The discriminator can be trained with real images and images generated by the generator. The goal of the discriminator is to classify the real images as \textit{"Real"} and the generated images as \textit{"Fake"}.
-On the other side, the generator takes some noise as an input to generate an image. And his goal is to make the discriminator classify his generated images as \textit{"Real"}.
+The discriminator is trained with real data and data generated by the generator. The goal of the discriminator is to classify the real data as \textit{"Real"} and the generated data as \textit{"Fake"}.
+On the other side, the generator takes some noise as an input to generate a datum.
+Its goal is to make the discriminator classify its generated data as \textit{"Real"}.
+
+Through training, the generator will get better and create more consistent data so the discriminator classify them as Real.
+It will then for the the discriminator to get better and classify real and fake data more precisely.
+Thus, the generator is forced to create data which look more real.
+And so on...
 
 \subsection{Recurrent Neural Networks}
+\label{sec:back:rnn}
 
 A RNN is a neural network where connections between nodes form a direct graph along a temporal sequence. The general architecture is showed in the figure \ref{fig:rnn}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.75 \textwidth]{images/nn/architectures/rnn.jpg}
     \caption{Recurrent Neural Network}
@@ -622,7 +660,7 @@ A RNN is a neural network where connections between nodes form a direct graph al
 
 The most used cells used are the LSTM cell and the GRU cell. The architectures are showed in the figures \ref{fig:lstm} and \ref{fig:gru}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
    \begin{minipage}{0.5\textwidth}
      \centering
      \includegraphics[width=.95\linewidth]{images/nn/layers/lstm.jpg}
@@ -641,6 +679,60 @@ The most used cells used are the LSTM cell and the GRU cell. The architectures a
 
 
 \subsection{Transformers}
+\label{sec:back:transformers}
+
+The Transformers \cite{vaswani_attention_2017, noauthor_transformer_nodate, giacaglia_transformers_2019, allard_what_2020, alammar_illustrated_nodate} have be introduced to the world by Ashish Vaswani et al. \cite{vaswani_attention_2017-1}.
+It is an attention mechanism illustrated in the figure \ref{fig:arch:transformer}.
+On this figure, the encoder is on the left and the decoder on the right.
+
+The scaled dot-product attention and multi-head attention layers are drawn in the figures \ref{fig:scaled_dot_product_attention} and \ref{fig:multi_head_attention}.
+
+\begin{figure}[htbp]
+    \centering
+    \newlength{\MyOtherHeightFour}
+    \settoheight{\MyOtherHeightFour}{\includegraphics[width=0.9 \textwidth]{images/related_works/transformer/multi_head_attention.jpg}}
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=.6\textwidth]{images/related_works/transformer/scaled_dot_product_attention.jpg}
+        \caption{Scaled Dot-Product Attention}
+        Source: Ashish Vaswani et al.'s paper \cite{vaswani_attention_2017-1}
+        \label{fig:scaled_dot_product_attention}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=.9 \textwidth]{images/related_works/transformer/multi_head_attention.jpg}
+        \caption{Multi-Head Attention}
+        Source: Ashish Vaswani et al.'s paper \cite{vaswani_attention_2017-1}
+        \label{fig:multi_head_attention}
+    \end{subfigure}
+    \caption{Scaled Dot-Product Attention and Multi-Head Attention}
+    Source: Ashish Vaswani et al.'s paper \cite{vaswani_attention_2017-1}
+    \label{fig:arch:attention}
+\end{figure}
+
+The scaled dot-product attention operation is the follows the equation \ref{eq:scaled_dot_product_attention}.
+\begin{equation}
+    \text{Attention} (Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V
+    \label{eq:scaled_dot_product_attention}
+\end{equation}
+where $d_k$ is the number of dimensions.
+
+And the multi-head attention operation follows the the equation \ref{eq:multi_head_attention}.
+\begin{equation}
+    \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \dots, \text{head}_d) W^O
+    \label{eq:multi_head_attention}
+\end{equation}
+where $\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$.
+
+To summarise the process, Q, K and V are respectively called the queries, the keys and the values.
+Their attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors.
+The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.
+
+The advantage of the transformer is that it is able to learn long-range dependencies.
+This is a challenge in many sequences tasks.
+However, a transformer doesn't take into account the position of the input from a sequence. 
+Therefor, a positional encoding must be added.
 
 \subsection{Multimodel Variational AutoEncoder}
 \label{sec:back:mvae}
@@ -652,7 +744,7 @@ The MVAE uses a \textit{Product of Experts} (PoE) inference network and a sub-sa
 
 % Good example how to use tikz:
 % https://tex.stackexchange.com/questions/193694/drawing-graph-of-markov-chain-with-patches-using-tikz
-\begin{figure}
+\begin{figure}[htbp]
 \begin{center}
     \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
     \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
@@ -714,6 +806,8 @@ The figure \ref{fig:mvae_architecture} shows how the PoE can handle missing moda
 
 \subsection{Muldimodal Deep Markov Model}
 \label{sec:back:mdmm}
+
+% TODO: Explain MDMM
 
 \subsection{Neural Autoregressive Distribution Estimation}
 \label{sec:back:nade}
@@ -831,7 +925,7 @@ RBMs are Energy-based models and a join configuration $(x, h)$ has an energy giv
     E(x, h) = -\sum_i a_i x_i - \sum_j b_j h_j - \sum_{(i, j)} x_i h_j w_{ij}
 \end{equation}
 
-The probability that the network gives outputs $x^{*}$ is given by summing over all possible hidden vectors:
+The probability that the network outputs $x^{*}$ is given by summing over all possible hidden vectors:
 
 \begin{equation}
     p(x^{*}) = \frac{1}{Z} \sum_h e^{- E(x^{*} h)}
@@ -841,7 +935,7 @@ where $Z$ is the partition function:
     Z = \sum_{(x,h)} e^{- E(x, h)}
 \end{equation}
 
-Training a RBM consist by implementing a gradient descent of the log-likelihood to increase the value of $\log(p(x))$ for $x$ in the dataset.
+Training a RBM consist of implementing a gradient descent of the log-likelihood to increase the value of $\log(p(x))$ for $x$ in the dataset.
 \begin{equation*}
     \frac{\partial \log(p(x))}{\partial w_{ij}}
 \end{equation*}
@@ -858,9 +952,11 @@ Training a RBM consist by implementing a gradient descent of the log-likelihood 
 
 \chapter{Related works}
 
-I will expose in this chapter the work that has already been done about music generation with deep neural networks.
+I will expose in this chapter the works that have already been done about music generation with deep neural networks.
 In a first time, I will expose the different objectives of some implementations.
-Then I will introduce 
+In a second time, I will introduce how the music is represented.
+I will then enumerate what architectures have already been used. 
+Finally, I will illustrate what are the generation processes used.
 
 % -------------------- Objectives  --------------------
 
@@ -868,32 +964,46 @@ Then I will introduce
 
 In this section, I will describe some examples of what it is possible to do with neural networks to generate music.
 
-As explained in the section \ref{sec:objectives}, the goal of this project is to create a single model able to do everything.
+As explained in the section \ref{sec:objectives}, my Dissertation's goal is to create a single model able to do everything.
 
 \subsection{Generator}
 
 First it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
 
-It is also possible to create several musical parts at the same time. Each of them can be either monophonic or polyphonic.
-The musical parts can be considered as different instruments or voices for a Chorale.
+Secondly, it is possible to create several musical parts at the same time. Each of them can be either monophonic or polyphonic.
+A musical part can be considered as an instrument or voice for a Chorale.
 The challenge is to create musical parts that work together.
-This is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
+
+Generation is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
 
 \subsection{Accompaniment}
 
-Given a melody, or some musical parts, the goal is to create new musical parts which can be combined with the input and be played together.
+Given a melody, or some musical parts, the goal is to create new musical parts which can be combined with the input and be played together \cite{hadjeres_deepbach:_2016, huang_bach_2019}.
 
 This is for example the goal of DeepBach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016}.
+
+Bach Doodle \cite{huang_bach_2019} is an online tool developed by Google.
+Users can create their own melody and have it harmonized by a machine learning a model in the style of Bach.
+The figure \ref{fig:bachdoodle} shows the view of this application.
+The black melody is the melody entered by the user (me) and Bach Doodle created the accompaniment (red, green and blue melodies).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/related_works/bachdooldle/bachdoodle.jpg}
+    \caption{Bach Doodle application}
+    Source: \href{https://www.google.com/doodles/celebrating-johann-sebastian-bach}{BachDoodle}
+    \label{fig:bachdoodle}
+\end{figure}
 
 % -------------------- Music Representation--------------------
 
 \section{Music Representation}
 
-In this section, I will present different types of inputs the recent works are using.
+In this section, I will present different types of inputs the related works use.
 
 \subsection{Audio Signal} 
 
-The first of data used to create music is the audio signal. Some works \cite{oord_wavenet:_2016, dieleman_challenge_2018, donahue_adversarial_2019, kalchbrenner_efficient_2018, mehri_samplernn_2017} have been done to generate some an music audio signal.
+The first data used to create music is the audio signal. Some works \cite{oord_wavenet:_2016, dieleman_challenge_2018, donahue_adversarial_2019, kalchbrenner_efficient_2018, mehri_samplernn_2017, lu_play_2018} have been done to generate music audio signal.
 This signal can be represented either by its waveform \cite{oord_wavenet:_2016}, its Fourier Transform, or its spectrogram (figures \ref{fig:waveform_example}, \ref{fig:spectrogram_example}).
 
 \begin{figure}[H]
@@ -913,17 +1023,19 @@ This signal can be represented either by its waveform \cite{oord_wavenet:_2016},
    \end{minipage}
 \end{figure}
 
-Using the audio signal allows the model to handle every aspect of the song at the same time, and every song in the same way.
-The biggest issue of this method is that the number of points in time is incredibly huge. The usual sampling frequency is $48kHz$. 
-Therefore, the challenge is to stay consistent through time.
+Using the audio signal allows the model to handle every aspects of the song at the same time (instrument, timber, emotion...), and every song in the same way.
+The biggest issue of this method is that the number of points need to create a waveform is incredibly huge.
+The usual sampling frequency is $48kHz$. 
+Therefore, the main difficulty is to stay consistent through time.
 
 \subsection{MIDI Signal}
 
-Most of the work done  on music generation is using the \textit{MIDI} representation (or any other translation of midi like pianoroll or text). \cite{chuan_modeling_nodate, hadjeres_deepbach:_2016, huang_counterpoint_2017, liang_automatic_2017, adiloglu_machine_2007, herremans_composing_2013, herremans_modeling_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}
+Most of the works done on music generation use the \textit{MIDI} representation (or any other translation of midi like pianoroll or text). \cite{chuan_modeling_nodate, hadjeres_deepbach:_2016, huang_counterpoint_2017, liang_automatic_2017, adiloglu_machine_2007, herremans_composing_2013, herremans_modeling_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018, colombo_learning_2019, brunner_symbolic_2018}
 
 \subsubsection{Pianoroll}
 
-The pianoroll representation can be considerate as an image so usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017, chuan_modeling_nodate, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
+The pianoroll representation can be considered as an image.
+Thus, usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017, chuan_modeling_nodate, boulanger-lewandowski_modeling_2012, lattner_imposing_2018, donahue_adversarial_2019}.
 The figure \ref{fig:pianoroll_to_array} shows a very naive example of how to convert a pianoroll view to an array.
 
 \begin{figure}[H]
@@ -941,11 +1053,11 @@ The figure \ref{fig:pianoroll_to_array} shows a very naive example of how to con
 
 \bigskip
 
-Chin-Hua Chuan et al. \cite{chuan_modeling_nodate} introduced another representation which is supposed to help the model to understand relations between notes.
-They use \textit{Tonnetz} matrix \cite{mason_essential_nodate} to represent polyphnic music.
+Chin-Hua Chuan et al. \cite{chuan_modeling_nodate} introduced another representation to help the model to understand relations between notes.
+They use \textit{Tonnetz} matrix \cite{mason_essential_nodate} to represent polyphonic music.
 As explained in their paper, \textit{"Tonnetz is a graphical representation used by music theorists and musicologists in order to study tonality and tonal spaces"}.
 
-Instead of encoding the notes in a one-dimensional vector (figure \ref{fig:tonnetz}), they encode them in a 2-dimensional vector where the relative positions between two notes is meaningful.
+Instead of encoding notes in a one-dimensional tensor (figure \ref{fig:tonnetz}), they encode them in a 2-dimensional tensor where the relative positions between two notes is meaningful.
 
 The figure \ref{fig:tonnetz} illustrates a common form of tonnetz.
 Each node in the tonnetz network represents one of the 12 pitch classes.
@@ -996,15 +1108,15 @@ Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbac
  \label{fig:pianoroll_to_text}
 \end{figure}
 
-The figure \ref{fig:pianoroll_to_text} shows as simple example of how it is possible to convert an pianoroll view to a text.
+The figure \ref{fig:pianoroll_to_text} shows a simple example of how it is possible to convert an pianoroll view to a text.
 However, using text to represent image usually force the framework to work only in a monophonic way.
-A common choice of the existing works that are working with is text is to embed the text into a fix-sized vector using a \texttt{word2vec} \cite{goldberg_word2vec_2014, karani_introduction_2018, rong_word2vec_2016, noauthor_beginners_nodate, mikolov_distributed_2013} model \cite{liang_automatic_2017, herremans_modeling_2017}.
+A common choice of the existing works that working with text is to embed the text into a fix-sized vector using a \texttt{word2vec} \cite{goldberg_word2vec_2014, karani_introduction_2018, rong_word2vec_2016, noauthor_beginners_nodate, mikolov_distributed_2013} model \cite{liang_automatic_2017, herremans_modeling_2017}.
 
 \bigskip
 
 Despite the text constraint, Feynman Liang and al. \cite{liang_automatic_2017} managed to encode polyphonic music in text and use it to correctly train their model: "BachBot".
 
-They quantizer time into sixteenth notes (\musEighth). Consecutive frames are separated by a unique delimiter ("\texttt{|||}").
+They quantize time into sixteenth notes (\musEighth). Consecutive frames are separated by a unique delimiter ("\texttt{|||}").
 Within each frame, they represent individual notes rather than entire chords.
 Each frame consists of four (Soprano, Alto, Tenor, and Bass) \texttt{<Pitch; Tie>} tuples where $\texttt{Pitch} \in \{0; 1; \dots ; 127\}$ represents the MIDI pitch of a note and $\texttt{Tie} \in \{\texttt{True}; \texttt{False}\}$ distinguishes whether a note is tied with a note at the same pitch from the
 previous frame or is articulated at the current timestep.
@@ -1056,17 +1168,6 @@ For instance, in the figure \ref{fig:pianoroll_to_chords}, the bass line can be 
 The chords are then writen and be considered as notes.
 
 
-% TODO: Speak about BachBot
-%       Survey descritpion 
-% Note that a somehow similar model has been used for polyphonic music generation in
-% the BachBot system [66] (analyzed in Section 7.3.1.3). In this model, for each time step, the
-% various notes are represented as a sequence and a special delimiter symbol (|||) indicates
-% the next time frame (with constant time step of an eighth note __(
-% ). Notes are ordered, in a
-% descending pitch (soprano voice being the first one). Each note is encoded as its MIDI pitch
-% value and a boolean indicating if it is tied to a note at the same pitch from previous frame.
-% An example is shown at Figure 4.8, encoding two successive chords (the first having the
-
 
 % TODO: Speak about Chords2Vec
 %       Survey descritpion 
@@ -1116,31 +1217,34 @@ For example, BachBot \cite{liang_automatic_2017} and other works \cite{chuan_mod
 
 For the same reason as not passing metadata, I don't normalize the data before training my models.
 
+% TODO say I put everything in C major or A minor
+
 \subsection{Tensor encoding}
 
 It is possible to extract two different methods on how to encode the tensor which will be given to the neural network
 
 The first method is the \textit{value encoding}.
-It is means that the values in the input and/or output tensor are actually meaning full.
+It means that the values in the input and/or output tensor are actually meaningful.
 For example, it can be an integer which is the pitch of a note.
 
 The second method is called \textit{item encoding}.
 Instead of having the number of the pitch in the tensor (let's say $60$), it will be a very sparse tensor with a bunch on $0$ and a $1$ at the position $60$ in the pitch dimension.
 This values stored in the tensors can be considered as \textit{activation} values.
-This is the retained method in this work.
+This is the retained method in my Dissertation.
 
 
 \section{Architectures}
 
 
-In this section, I will present different architectures that have already been used for music generation. It will expose the architecture of my project in the section \ref{sec:model_architecture}.
+In this section, I will present different architectures that have already been used for music generation. It will expose the architecture of my project in the section \ref{sec:rmvae}.
 
 
 \subsection{RBM}
 
 The RBM architecture is explained in the section \ref{sec:back:rbm}.
+
 Nicolas Boulanger-Lewandowski et al. \cite{boulanger-lewandowski_modeling_2012} use an RBM based model RTRBM \cite{sutskever_recurrent_nodate, mittelman_structured_nodate} and created their own architecture called RNN-RBM.
-They applied their model one different MIDI dataset to create polyphonic music.
+They applied their model on different MIDI dataset to create polyphonic music.
 
 Stefan Lattner et al. \cite{lattner_imposing_2018} use another RBM based model called C-RBM \cite{norouzi_convolutional_nodate, norouzi_stacks_nodate}.
 They apply this model on pianoroll images.
@@ -1153,17 +1257,20 @@ They also implement a different constraints like their self-similarity constrain
 The NADE architecture is explained in the section \ref{sec:back:nade}.
 
 And as an example, Cheng-Zhi Anna Huang et al. \cite{huang_counterpoint_2017} use an orderless NADE \cite{uria_deep_2014} to generate music. They introduce COCONET, a deep convolutional model to reconstruct partial scores.
-The process consists of a corruption process that masks out a subset $x_{\neg C}$ of variables, followed by a process that independently resamples variables $x_{i}$ (with $i \not \in C$) according to the distribution $p_{\theta} (x_i | x_C )$ emitted by the model with parameters $\theta$.
+It consists of a corruption process that masks out a subset $x_{\neg C}$ of variables, followed by a process that independently resamples variables $x_{i}$ (with $i \not \in C$) according to the distribution $p_{\theta} (x_i | x_C )$ emitted by the model with parameters $\theta$.
 
 
 The figure \ref{fig:coconet_process} illustrates how the process works.
 At each step, a random subset of notes is removed, and the model is asked to infer their values.
 New values are sampled from the probability distribution put out by the model, and the process is repeated.
 
+Google also Bach Doodle \cite{huang_bach_2019}, an online tool re-implementing COCONET in Tensorflow.js \cite{noauthor_tensorflowjs_nodate} which harmonizes a melody given by the user.
+
 
 \subsection{AE}
 
 The AutoEncoder architecture is explained in the section \ref{sec:back:ae}.
+
 This is the most common architecture used for music generation at the time I am writing this report.
 The AutoEncoder can be recurrent  \cite{liang_automatic_2017, chuan_modeling_nodate, hadjeres_deepbach:_2016, kalchbrenner_efficient_2018, mehri_samplernn_2017} as Feynman Liang et al.'s BachBot \cite{liang_automatic_2017} or not \cite{dieleman_challenge_2018}.
 
@@ -1183,15 +1290,19 @@ Sander Dieleman et al. \cite{dieleman_challenge_2018} use a VAE (or more precisl
 Since I created this new architecture, there is no existing work using this architecture.
 My project is, for now, the only work done using a Recurrent Multimodal Variational AutoEncoder to generate music.
 
-The RMVAE's architecture is explained in the section \ref{sec:model_architecture}
+The RMVAE's architecture is explained in the section \ref{sec:rmvae}
 
 \subsection{GAN}
 
-The Generative Adversial Network Architecture is explained in the section \ref{sec:back:gan}
+The Generative Adversarial Network Architecture is explained in the section \ref{sec:back:gan}
 
 For instance, the model WaveGan from Chris Donahue et al. \cite{donahue_adversarial_2019} use a GAN architecture to synthesize audio waveform in several domains including drums and piano.
 
+Gino Brunner et al. \cite{brunner_symbolic_2018} use CycleGAN \cite{zhu_unpaired_2018} to create a model able to apply a style transfer on musical pieces (between jazz, pop and classical style).
+
 \subsection{Reinforcement learning}
+
+% TODO : Speek about reinforcement learning
 
 \section{Generation Process}
 
@@ -1209,13 +1320,22 @@ Then, the process generation for a GAN is to give a random input from a standard
 
 \subsection{Input Manipulation}
 
+Generating music by manipulating the input is typically how style transfer algorithms work \cite{shetty_neural_2019, gatys_neural_2015, li_universal_2017}.
+The input is considered as a variable which is updated to minimize a loss function constructed from a content target and a style target.
+The content similarities between the input and the content target is reduced through the iterations.
+In the same way, the style similarities between the style target and the input will minimized.
+
+This process works well for images to create a new image combining content and style from 2 different images.
+People tried to apply the same methods on music \cite{kaliakatsos-papakostas_conceptual_2017, hung_musical_2019, brunner_symbolic_2018, lu_play_2018}, but as Shuqi et al. \cite{dai_music_2018} say, music is more complex and has several level of style (timber, performance and composition).
+Therefor, creating a music style transfer algorithm is more complicated than for images and the results are currently not as good.
+
 \subsection{Feed forward and RNN architecture}
 
-This is the easiest and most common generation process through all the work. \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017}
+This is the easiest and most common generation process through all the works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017}, and this is the one I chose for this project.
 And input is given to the model.
 The model returns an output.
 The figure \ref{fig:feed_forward_generation_process} illustrates this process.
-This output can be the next frame/beat/measure of the music.
+This output can be the next frame/beat/measure (in my case, a measure) of the music.
 
 I also chose this generation process for my project.
 In my case, the model returns the next measure of the music.
@@ -1238,7 +1358,7 @@ In my case, the model returns the next measure of the music.
 
 \subsubsection{DeepBach}
 
-DeepBach \cite{hadjeres_deepbach:_2016} uses a Markov Chain Monte Carlo algorithm to re-harmonize a song and transform it. 
+To give an illustration, DeepBach \cite{hadjeres_deepbach:_2016} uses a Markov Chain Monte Carlo algorithm to re-harmonize a song and transform it. 
 From the existing song, it re-predicting every notes one by one.
 The algorithm is describe in the figure 
 
@@ -1268,7 +1388,7 @@ The challenge is to use only one trained model to be able to
     \item Generate music with several musical parts (meaning several instruments)
     \item Create a accompaniment from a melody
     \item Create a melody from a accompaniment
-    \item Create a music part from other musical parts
+    \item Create a musical part from other musical parts
 \end{itemize}
 The created model can also handle missing data (for example a missing measure from a instrument).
 
@@ -1347,11 +1467,11 @@ When $note_{continue}$ is set to $1$, it means there is no new note to be played
 And when $note_{continue}$ is set to $0$, it means a new notes has to be played.
 
 \begin{equation}
-    note_{continue} = 1 \implies \forall note \in notes_{[0:128]}, note = 0
+    note_{continue} = 1 \implies \forall~ note \in notes_{[0:128]}, note = 0
 \end{equation}
 
 \begin{equation}
-    note_{continue} = 0 \implies \exists note \in notes_{[0:128]}, note = 1
+    note_{continue} = 0 \implies \exists!~ note \in notes_{[0:128]}, note = 1
 \end{equation}
 
 And since I consider in this part only monophonic music, there is only on note (included $note_{continue}$ per each time division)
@@ -1363,18 +1483,18 @@ And since I consider in this part only monophonic music, there is only on note (
 % -------------------- Architecture --------------------
 
 \section{RMVAE Architecture}
-\label{sec:model_architecture}
+\label{sec:rmvae}
 
-To do so, I have created a new architecture which is able to handle all the objectives defined in the section \ref{sec:objectives}.
+I have created a new architecture which is able to handle all the objectives defined in the section \ref{sec:objectives}.
 
-To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
+To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) (see section \ref{sec:back:mvae}) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM) (see section \ref{sec:back:mdmm}).
 
 \subsection{Global Architecture}
 
 I use the capability of the MVAE to reconstruct data and handle several modalities at the same time with the help of the product of expert operation.
 But because the MVAE doesn't handle time across the data, it had to be transformed.
-And that is basically what does th MDMM.
-However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder). This architecture is discribe in the figure \ref{fig:rmvae_architecture}.
+And that is basically what does the MDMM.
+However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder). This architecture is describe in the figure \ref{fig:rmvae_architecture}.
 
 
 % Good example how to use tikz:
@@ -1469,11 +1589,11 @@ The general architecture of the encoder is showed in the figure \ref{fig:rmvae_e
 \end{figure}
 
 The filter sizes of the convolutional layers are \texttt{(5, 5)}.
-I chose this dimension so the NN can process a third major interval and an entier beat with only one layer.
+I chose this dimension so the receptive field of the first layer is a third major interval and an entire beat.
 
 \subsection{PoE}
 
-For a given instrument $i$ and a given step $t$, the output of the encoder $\text{Enc}^i$ will then go through 2 different FC layers $\text{fc}^i_\mu$ and $\text{fc}^i_\sigma$ which will return the mean and variance of the encoded distribution (figure \ref{fig:rmvae_poe_fc}).
+For a given instrument $i$ and a given step $t$, the output of the encoder $\text{Enc}^i$ will then go through 2 different FC layers $\text{fc}^i_\mu$ and $\text{fc}^i_\sigma$ which will return the mean and variance of the encoded normal distribution (figure \ref{fig:rmvae_poe_fc}).
 
 \begin{figure}[h]
     \centering
@@ -1540,17 +1660,18 @@ This is shown in the figure \ref{fig:rmvae_lstm}.
 \end{figure}
 
 \subsubsection{RPoE}
+\label{sec:rpoe}
 
-To try to catch the time as good as possible, I implemented a new layer architecture. I call it Recurrent Product of Experts (RPoE).
+To try to catch the time dependency as good as possible, I implemented a new layer architecture. I call it Recurrent Product of Experts (RPoE).
 
 The result of the Product of Experts at the step $t$ is given as a modality for the Product of Experts at the step $t+1$.
 
-The architecture is showed in the figure \ref{fig:rpoe_architecture}.
+The architecture is displayed in the figure \ref{fig:rpoe_architecture}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/nn/architectures/rmvae/rpoe_architecture.jpg}
-    \caption{RPOE architecture}
+    \caption{RPoE architecture}
     \label{fig:rpoe_architecture}
 \end{figure}
 
@@ -1587,15 +1708,16 @@ The activation function for the \texttt{channel 2} is a \textit{ReLU} function.
 
 \subsubsection{Monophonic Music}
 
-For monophonic music (section \ref{sec:mono}), the activation function is s \textit{sigmoid} function for the \textit{additional note} (index 129: $note_{continue}$) because it is an activation note indicating if it wants to continue the previous note or play a new one. And for the other 128 notes, the activation function is a \textit{softmax} function since only one note can be played at the same time.
+For monophonic music (section \ref{sec:mono}), the activation function is s \textit{sigmoid} function for the \textit{additional note} (index 128: $note_{continue}$) because it is an activation note indicating if it wants to continue the previous note or play a new one. And for the other 128 notes, the activation function is a \textit{softmax} function since only one note can be played at the same time.
 
 At the beginning of my project, I was considering the $note_{continue}$ as a \textit{normal note} and simply apply a softmax across all the notes.
-But the result was disappointing: the highest frequency of $note_{continue}$ in the dataset was to high.
-The network wasn't generating anything because of the $note_{continue}$ had the highest probability and the network didn't want to generate any new note anymore.
+But the result was disappointing: the frequency of $note_{continue}$ in the dataset was to high.
+The network wasn't generating anything because the $note_{continue}$ had the highest probability.
 
 % -------------------- Loss Function --------------------
 
 \section{Loss Function}
+\label{sec:loss}
 
 For this project, I created new loss functions to help the network to understand how music works.
 As a musician, I asked myself how I would proceed if I was given the same task as the NN (generation of music, accompaniment...).
@@ -1609,10 +1731,10 @@ Every solo can be considered as a \textit{"ground truth"} if it sounds nice.
 And I wanted my model to be able to \textit{improvise}, generate new music.
 
 I got the idea of helping the model to do \textit{acceptable mistakes} and restraint it do \textit{unacceptable mistakes}.
-In other word, during the training part, it the model doesn't hit the note it should have hit, I don't want to \textit{punish} him to much with a high loss value if the note sounds actually nice with the music.
+In other word, during the training part, it the model doesn't hit the note it should have hit, I don't want to \textit{punish} it to much with a high loss value if the note sounds actually nice with the music.
 On the other side, I want to \textit{punish} it if the note it hits is completely wrong with a higher loss value.
 
-To summarize what I previously just said, during the training part, if a model hits a note which sounds nice, a reward is given by adding a negative number to the loss.
+To summarize what I previously just said, during the training part, if the model hits a note which sounds nice, a reward is given by adding a negative number to the loss.
 If the hit note doesn't sound nice, then a penalty is given by adding a positive number to the loss.
 The algorithm \ref{alg:loss} describe the process.
 
@@ -1754,87 +1876,84 @@ The figure \ref{fig:harmony_circle} shows the acceptable and non-acceptable musi
     \label{fig:harmony_circle}
 \end{figure}
 
-From this figure, I realized there are actually \textit{3 forbidden musical intervals}:
+From this figure, I realized there are actually 3 musical intervals to avoid:
 \begin{itemize}
     \item The \textit{semitone} interval
     \item The \textit{tone} interval
     \item The \textit{tritone} interval. Actually, this interval was named \textit{"Diabolus in musica"} ("Devil in the music") and was forbidden by the church.
 \end{itemize}
 
-To prevent the model to generate such intervals, I created a loss function which gives a penalties every time there is one of this intervals.
-To do so, I created a subfunction $\text{harmony}_n$ which penalize the presence of the $n^{th}$ interval (counted in semitone).
+To prevent the model to generate such intervals, I created a loss function which gives a penalty every time there is one of this intervals.
+To do so, I created a sub-function $\text{harmony}_n$ which penalizes the presence of the $n^{th}$ interval (counted in semitone).
 
 The operations of the cost function harmony and $\text{harmony}_n$ are showed in the figures \ref{fig:loss_harmony} and \ref{fig:loss_harmony_n}.
 The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}.
 
 
-\begin{figure}[h]
-\begin{center}
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
-    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
-    
-    \node[state](n0)[]{predict};
-    
-    \node[state, rectangle](h1)[below left of=n0, left=2.cm]{$\text{harmony}_1$};
-    \node[state, rectangle](h2)[below of=n0, below=1.cm]{$\text{harmony}_2$};
-    \node[state, rectangle](h6)[below right of=n0, right=2.cm]{$\text{harmony}_6$};
-    
-    \node[state, rectangle](s)[below of=h2, below=1.cm]{sum};
-    
-    \node[state](loss)[below of=s]{Loss};
-    
-    \path[]
-        (n0)    edge    node{}  (h1)
-                edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}   (h2)
-                edge    node{}  (h6)
-        (h1)    edge    node{}  (s)
-        (h2)    edge    node[anchor=center]{\texttt{(1,)}}  (s)
-        (h6)    edge    node{}  (s)
-        (s)     edge    node{\texttt{(1,)}} (loss);
-        
-    \end{tikzpicture}
-\end{center}
-\caption{Harmony Loss}
-\label{fig:loss_harmony}
+\begin{figure}[H]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+            
+            \node[state](n0)[]{predict};
+            \node[](nleft)[left of=n0, left=0.2cm]{};
+            \node[](nrigth)[right of=n0, right=0.2cm]{};
+            
+            
+            \node[state, rectangle](h1)[below of=nleft, below=0.2cm]{$\text{harmony}_1$};
+            \node[state, rectangle](h2)[below of=n0, below=0.2cm]{$\text{harmony}_2$};
+            \node[state, rectangle](h6)[below of=nrigth, below=0.2cm]{$\text{harmony}_6$};
+            
+            \node[state, rectangle](s)[below of=h2, below=0.2cm]{sum};
+            
+            \node[state](loss)[below of=s]{Loss};
+            
+            \path[]
+                (n0)    edge    node{}  (h1)
+                        edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}   (h2)
+                        edge    node{}  (h6)
+                (h1)    edge    node{}  (s)
+                (h2)    edge    node[anchor=center]{\texttt{(1,)}}  (s)
+                (h6)    edge    node{}  (s)
+                (s)     edge    node{\texttt{(1,)}} (loss);
+                
+            \end{tikzpicture}
+        \end{center}
+        \caption{Harmony Loss}
+        \label{fig:loss_harmony}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+            
+            \node[state](predict)[]{predict};
+            
+            \node[state, rectangle](n1)[below of=predict]{reduce sum};
+            \node[state, rectangle](n2)[below of=n1]{segment sum};
+            
+            \node[state, rectangle](r)[below right of=n2]{$\text{roll}_n$};
+            
+            \node[state, rectangle](s)[below left of=r]{scalar product};
+            
+            \node[state](loss)[below of=s]{Loss};
+            
+            
+            \path[]
+                (predict)   edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}    (n1)
+                (n1)    edge    node{\texttt{(128,)}}   (n2)
+                (n2)    edge    node[right]{\texttt{(12,)}}    (r)
+                        edge    node[left]{\texttt{(12,)}}  (s)
+                (r)     edge    node[right]{\texttt{(12,)}} (s)
+                (s)     edge    node{\texttt{(1,)}} (loss);
+                
+            \end{tikzpicture}
+        \end{center}
+        \caption{$\text{Harmony}_n$ Loss}
+        \label{fig:loss_harmony_n}
+    \end{minipage}
 \end{figure}
-
-\begin{figure}[h]
-\begin{center}
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
-    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
-    
-    \node[state](predict)[]{predict};
-    
-    \node[state, rectangle](n1)[below of=predict]{reduce sum};
-    \node[state, rectangle](n2)[below of=n1]{segment sum};
-    
-    \node[state, rectangle](r)[below right of=n2]{$\text{roll}_n$};
-    
-    \node[state, rectangle](s)[below left of=r]{scalar product};
-    
-    \node[state](loss)[below of=s]{Loss};
-    
-    
-    \path[]
-        (predict)   edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}    (n1)
-        (n1)    edge    node{\texttt{(128,)}}   (n2)
-        (n2)    edge    node[right]{\texttt{(12,)}}    (r)
-                edge    node[left]{\texttt{(12,)}}  (s)
-        (r)     edge    node[right]{\texttt{(12,)}} (s)
-        (s)     edge    node{\texttt{(1,)}} (loss);
-        
-    \end{tikzpicture}
-\end{center}
-\caption{$\text{Harmony}_n$ Loss}
-\label{fig:loss_harmony_n}
-\end{figure}
-
-
-
-
-
-
-
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
@@ -1846,7 +1965,10 @@ The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}
 % ----------------------------------------------------------------------------------------------------
 
 \chapter{Conclusion}
-Conclusion
+
+This dissertation project provides a new neural network architecture (RMVAE) and a new layer to handle time dependencies between data (RPOE).
+
+I have showed that the RMVAE architecture is able to learn musical rules from a pianoroll view and adding extra losses (Scale, Rhythm and Harmony losses) doesn't help the training.
 
 % ----------------------------------------------------------------------------------------------------
 % Future work
@@ -1858,6 +1980,12 @@ Find the scale with some already known scale template ?
 Try with different encoding : Text
 BachBot or DeepBach says the way you write music with text is important 
 Maybe convolution and image is not good enough
+
+I constructed my own pianoroll view.
+Maybe try to use Pypianoroll will give a better representation.
+
+
+I didn't want to change the dataset to C major so it can handle change of key. But seems too hard for the neural network
 \newpage
 
 % ####################################################################################################
@@ -1865,8 +1993,8 @@ Maybe convolution and image is not good enough
 % Bibliography
 % ####################################################################################################
 % ####################################################################################################
-\bibliographystyle{plain}
-\bibliography{biblio/Dissertation.bib}
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv, biblio/Dissertation.bib}
 % \printbibliography
 
 % ####################################################################################################
@@ -1877,7 +2005,8 @@ Maybe convolution and image is not good enough
 
 \newpage
 
-\chapter{Appendices}
+\chapter*{Appendices}
+\addcontentsline{toc}{chapter}{Appendices}      % To not display number of chapter in table of content
 \appendix
 
 \section{Interpolation project}
@@ -1931,7 +2060,7 @@ The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:rol
 \section{Coconet Process}
 \label{appendix:coconet_process}
 
-The figure \ref{fig:coconet_process} illustrate the coconet process.
+The figure \ref{fig:coconet_process} illustrates the coconet process.
 This process is explained in the section \ref{sec:rw:nade}.
 
 \begin{figure}[htbp]
@@ -1941,6 +2070,19 @@ This process is explained in the section \ref{sec:rw:nade}.
     Source: Cheng-Zhi Anna Huang et al.'s paper \cite{huang_counterpoint_2017}
     \label{fig:coconet_process}
 \end{figure}
+
+\section{Transformer architecture}
+
+The figure \ref{fig:arch:transformer} illustrates the transformer's architecture. This architecture is explained in the section \ref{sec:back:transformers}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/related_works/transformer/transformer_architecture.jpg}
+    \caption{Transformer architecture}
+    Source: Ashish Vaswani et al.'s paper \cite{vaswani_attention_2017-1}
+    \label{fig:arch:transformer}
+\end{figure}
+
 
 \end{document}
 
