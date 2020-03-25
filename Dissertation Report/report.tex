@@ -288,7 +288,22 @@ The results show that the extra losses are not helping the model which indicates
 % Introduction
 % ----------------------------------------------------------------------------------------------------
 \chapter{Introduction}
-My Introduction
+
+As a musician, I like to play music alone or within a band.
+I spend some time to create songs and arrange them. And finally, I enjoy jamming with band and improvise.
+
+On the deep learning part, music generation has recently considerably improved.
+Models like DeepBach \cite{hadjeres_deepbach:_2016}, BachBot \cite{liang_automatic_2017}, BachDoodle \cite{huang_bach_2019} can generate, harmonize music in Bach's style.
+Other non-musical model came up recently.
+New architectures are being created and are able to generalize data in a more meaningful way, be more consistent through time \cite{vaswani_attention_2017}, can handle more complex data with several modalities \cite{wu_multimodal_2018-1, tan_factorized_2019}.
+
+Therefor, I try in this work to combine combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
+My goal is to create a unique model able to execute all the task I could perform as a musician, create a song, harmonize a melody, jam with someone...
+Instead of letting the model learn everything from scratch from the data, I also want to give it prior knowledge about music.
+
+The choice I have made for this project was mostly relying on my musical instinct.
+I tried to stay as close as possible as my musical thoughts in the way I constructed a model, process the data et caetera.
+
 
 % ----------------------------------------------------------------------------------------------------
 % Background
@@ -1315,11 +1330,6 @@ They achieve this perfomance by using a Transformer with self attention (equatio
     \text{RelativeAttention} = \text{Softmax} (\frac{QK^T + S^{rel}}{\sqrt{D_h}})V
     \label{eq:relative-attention}
 \end{equation}
-
-
-\subsection{Reinforcement learning}
-
-% TODO : Speek about reinforcement learning
 
 \section{Generation Process}
 
