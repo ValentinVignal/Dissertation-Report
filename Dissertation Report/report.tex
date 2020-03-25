@@ -111,7 +111,7 @@
     \vspace{2.5cm}
     {\textbf{\Large 2020}}\\
     \vspace{2.5cm}
-    {\textbf{\large Advisor:}}\\
+    {\textbf{\large Advisor: Harold Soh}}\\
     {\textbf{\large Examiners: }}
 \end{center}
 \newpage
@@ -138,7 +138,8 @@
 \begin{center}
     \textbf{\Large DECLARATION}\\
     \vspace{2cm}
-    I hereby declare that this thesis is my original work and it has been written by me in its entirety. I have duly acknowledged all the sources of information which have been used in the thesis.\\
+    I hereby declare that this thesis is my original work and it has been written by me in its entirety.
+    I have duly acknowledged all the sources of information which have been used in the thesis.\\
     This thesis has also not been submitted for any degree in any university previously.\\
     \vspace{5cm}
     \begin{figure}[H]
@@ -163,11 +164,11 @@
     \textbf{\Large ACKNOWLEDGEMENTS}\\
 \end{center}
 
-I would like to express my special thanks or gratitude to my advisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
+I would like to express my special thanks and gratitude to my advisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
 
-Secondly I would also like to thanks all the member of the research team, and especially the PhD. students Abdul Fatir and Yaqi Xie who, despite their busy schedules, taught me, and help me in many scenarios.
+Secondly I would also like to thank all the members of the research team, and especially the PhD. students Abdul Fatir and Yaqi Xie who, despite their busy schedules, taught me, and help me in many scenarios.
 
-I also yould like to thanks the Doctor Dorien Herremans who gave me precious advises at the beginning of my project.
+I also would like to thank the Doctor Dorien Herremans who gave me precious advises at the beginning of my project.
 
 \newpage
 \tableofcontents
@@ -194,7 +195,7 @@ This paper introduces the work I have done for my dissertation.
 As a musician, I like to play music, improvise and create or arrange songs.
 The main goal of this dissertation is to create a neural network architecture able to handle all the tasks a musician or a composer can do.
 
-To do so, I created a new architecture that I call RMVAE (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see section \ref{sec:back:rnn}).
+To this purpose, I created a new architecture that I call RMVAE (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see section \ref{sec:back:rnn}).
 Only one trained model can be used to create a melody, several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
 
 As a musician I also tried to integrate prior musical knowledge to the model by creating 3 cost functions (section \ref{sec:loss}).
@@ -290,19 +291,19 @@ The results show that the extra losses are not helping the model which indicates
 \chapter{Introduction}
 
 As a musician, I like to play music alone or within a band.
-I spend some time to create songs and arrange them. And finally, I enjoy jamming with band and improvise.
+I spend some time to create songs and arrange them. And finally, I enjoy jamming with a band and improvise.
 
 On the deep learning part, music generation has recently considerably improved.
 Models like DeepBach \cite{hadjeres_deepbach:_2016}, BachBot \cite{liang_automatic_2017}, BachDoodle \cite{huang_bach_2019} can generate, harmonize music in Bach's style.
 Other non-musical model came up recently.
 New architectures are being created and are able to generalize data in a more meaningful way, be more consistent through time \cite{vaswani_attention_2017}, can handle more complex data with several modalities \cite{wu_multimodal_2018-1, tan_factorized_2019}.
 
-Therefor, I try in this work to combine combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
+Therefor, I try in this work to combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
 My goal is to create a unique model able to execute all the task I could perform as a musician, create a song, harmonize a melody, jam with someone...
 Instead of letting the model learn everything from scratch from the data, I also want to give it prior knowledge about music.
 
-The choice I have made for this project was mostly relying on my musical instinct.
-I tried to stay as close as possible as my musical thoughts in the way I constructed a model, process the data et caetera.
+The choices I have made for this project were mostly relying on my musical instinct.
+I tried to stay as close as possible to my musical thoughts in the way I constructed a model, process the data et-caetera.
 
 
 % ----------------------------------------------------------------------------------------------------
@@ -332,8 +333,8 @@ It is very useful for anyone to be able to write down their work to save it or s
 \end{figure}
 
 The vertical axis is the frequency axis an the horizontal axis corresponds to the time axis.
-In the figure \ref{fig:musical_stave_example}, it is written that the tempo is $100 BPM$, the scale is \textit{G major} (one \musSharp) and the measure are divided with 4 beats ($4/4$ inscription).
-As said previously, the vertical position of a note indicates its frequency :
+In the figure \ref{fig:musical_stave_example}, it is written that the tempo is $100 bpm$, the scale is \textit{G major} (one \musSharp) and the measure are divided with 4 beats ($4/4$ inscription).
+As said previously, the vertical position of a note indicates its frequency:
 
 \begin{figure}[H]
    \begin{minipage}{0.5\textwidth}
@@ -386,7 +387,7 @@ In this work, we won't consider shorter notes than Sixteenth notes because most 
 
 \textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
 It was first used to carry musical messages between electronic instruments, software and devices. These messages are events about note information (for example, pitch, velocity, panning...) an some other parameters (for example, vibrato, volume...). 
-The to most important messages I will consider are:
+The most important messages I will consider are:
 \begin{itemize}
     \item \textit{Note on} is indicating that a note has to be played. It contains the channel information (which can be considered as an instrument), the pitch information (what note should be played) and the velocity. We could right an event as follow :
     \begin{equation}
@@ -419,7 +420,7 @@ The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the fam
 
 \section{Music theory}
 
-In this section, I will describe and explain some rules from the music theory which are related to this work. The rules I am going to explain about are the most common ones and most of the songs tend to follow them.
+In this section, I will describe and explain some rules from music theory which are related to this work. The rules I am going to explain are the most common ones and most of the songs tend to follow them.
 
 \subsection{Scale and Rhythm}
 
@@ -466,7 +467,7 @@ A sound is a sum of harmonics:
 \end{equation}
 where $f$ is the fundamental frequency and $\phi$ the phase.
 
-Let's take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$.
+Let us take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$.
 Then the $2^{nd}$ harmonic is $A5$ $880Hz$.
 The consequence is , when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
 Let us take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$. It means it is possible to hear a $E5$ from a played $A4$.
@@ -505,7 +506,7 @@ A Minor chords ($A$ $Minor$ is $A$, $C$, $E$) will also sounds acceptable to the
 
 \subsubsection{Dissonance}
 
-When 2 frequencies are close to each other and added up, it is possible to observe a resonance phenomena:
+When 2 frequencies are close to each other and added up, it is possible to observe a resonance phenomena.
 
 \begin{figure}[H]
     \centering
@@ -514,7 +515,7 @@ When 2 frequencies are close to each other and added up, it is possible to obser
     \label{fig:resonance}
 \end{figure}
 The figure \ref{fig:resonance} shows the waveform generated by a $B4$ ($494Hz$) and a $C5$ ($523Hz$) (\textit{semitone} interval).
-This phenomena is explained by the trigonometric identity:
+This resonance is explained by the trigonometric identity:
 
 \begin{equation}
     \cos(f) + \cos(f + \delta f) = 2 \cos(\frac{2f + \delta f}{2}) \cos(\frac{\delta f}{2})
@@ -557,9 +558,9 @@ The harmony parts will usually avoid unpleasant interval and mostly try to creat
 Arranging a song is an entire musical field an a job.
 It is the art of giving an existing melody musical variety.
 To put it more simply, it is creating a accompaniment for an melody.
-I can includes chords, change the rhythm, add other musical parts.
+It can includes chords, change the rhythm, add other musical parts.
 
-To give an example, arranging a song could be create a piano/guitar/drums/bass parts from lyrics and a voice melody.
+To give an example, arranging a song could be create piano, guitar, drums and bass parts from voice melody with lyrics.
 
 
 % -------------------- Neural Network architecture --------------------
@@ -579,7 +580,7 @@ A CNN usually includes two types of layers :
 
 \subsubsection{Convolutional Layer}
 
-For a 2D convolution, the convolutional layer which takes as input a tensor of shape \texttt{(height, width, channels)}.
+For a 2D convolution, the convolutional layer takes as an input a tensor of shape \texttt{(height, width, channels)}.
 The \textit{filter} of the convolutional layer will have a shape \texttt{(h, w, channels)}.
 Then the layer will do a $2D$ convolutional operation between the filter and the input through the axes corresponding to the \texttt{height} and the \texttt{width}.
 
@@ -594,8 +595,8 @@ The equation \ref{eq:convo} shows the mathematical transformation for a 1D convo
 
 A pooling layer is used to reduce the size of a tensor. It extracts a value from a region of the tensor. Two common poolings are:
 \begin{itemize}
-    \item The \textit{Average pooling} which takes the average of the region
-    \item The \textit{Max pooling} which takes the maximum of the region
+    \item The \textit{Average pooling} takes the average of the region
+    \item The \textit{Max pooling} takes the maximum of the region
 \end{itemize}
 The figure \ref{fig:max_pooling} illustrates how the max pooling operation works.
 
@@ -634,10 +635,10 @@ A VAE \cite{doersch_tutorial_2016, noauthor_variational_nodate, noauthor_tutoria
 \begin{enumerate}
     \item The input goes first in the encoder which encodes it as a gaussian distribution over the latent space.
     \item A point is sample from this distribution.
-    \item This point is decoder by the decoder to reconstruct the input.
+    \item This point is decoded by the decoder to reconstruct the input.
 \end{enumerate}
 
-By encoding the normal distribution and not directly the latent space, it is possible to regularize the output of the encoder to avoid overfitting and ensure that the latent space as good properties that enable generative process.
+By encoding the normal distribution and not directly the latent space, it is possible to regularize the output of the encoder to avoid overfitting and ensure that the latent space has good properties that enable generative process.
 
 To regularize the output of the decoder, an extra term is added to the loss function : Kulback-Leibler Divergence (KLD) between the encoded distribution and the centred and reduced normal distribution :
 
@@ -650,16 +651,17 @@ To regularize the output of the decoder, an extra term is added to the loss func
 
 GAN \cite{noauthor_gan_2017, goodfellow_generative_2016, goodfellow_generative_2014} are composed of two models that are trained simultaneously:
 \begin{itemize}
-    \item The \textit{Generator} will learn how to create data that look real
+    \item The \textit{Generator} will learn how to create data that look real.
     \item The \textit{Discriminator} will learn how to differentiate real and generated data.
 \end{itemize}
 
-The discriminator is trained with real data and data generated by the generator. The goal of the discriminator is to classify the real data as \textit{"Real"} and the generated data as \textit{"Fake"}.
+The discriminator is trained with real data and data generated by the generator.
+The goal of the discriminator is to classify the real data as \textit{"Real"} and the generated data as \textit{"Fake"}.
 On the other side, the generator takes some noise as an input to generate a datum.
 Its goal is to make the discriminator classify its generated data as \textit{"Real"}.
 
 Through training, the generator will get better and create more consistent data so the discriminator classify them as Real.
-It will then for the the discriminator to get better and classify real and fake data more precisely.
+It will then force the discriminator to become better and classify real and fake data more precisely.
 Thus, the generator is forced to create data which look more real.
 And so on...
 
@@ -676,7 +678,7 @@ A RNN is a neural network where connections between nodes form a direct graph al
     \label{fig:rnn}
 \end{figure}
 
-The most used cells used are the LSTM cell and the GRU cell. The architectures are showed in the figures \ref{fig:lstm} and \ref{fig:gru}.
+The most used cells are the LSTM cell and the GRU cell. The architectures are showed in the figures \ref{fig:lstm} and \ref{fig:gru}.
 
 \begin{figure}[htbp]
    \begin{minipage}{0.5\textwidth}
@@ -699,7 +701,7 @@ The most used cells used are the LSTM cell and the GRU cell. The architectures a
 \subsection{Transformers}
 \label{sec:back:transformers}
 
-The Transformers \cite{vaswani_attention_2017, noauthor_transformer_nodate, giacaglia_transformers_2019, allard_what_2020, alammar_illustrated_nodate} have be introduced to the world by Ashish Vaswani et al. \cite{vaswani_attention_2017-1}.
+The Transformers \cite{vaswani_attention_2017, noauthor_transformer_nodate, giacaglia_transformers_2019, allard_what_2020, alammar_illustrated_nodate} have been introduced to the world by Ashish Vaswani et al. \cite{vaswani_attention_2017-1}.
 It is an attention mechanism illustrated in the figure \ref{fig:arch:transformer}.
 On this figure, the encoder is on the left and the decoder on the right.
 
@@ -796,7 +798,7 @@ The conditional independence assumptions in the generative model (figure \ref{fi
     \end{split}
 \end{equation}
 
-The PoE can be used , including a \textit{“prior expert”}, as the approximating distribution for the joint-posterior.
+In other words, we can use a product of experts (PoE), including a \textit{“prior expert”}, as the approximating distribution for the joint-posterior.
 
 \begin{figure}[h]
     \centering
@@ -820,12 +822,7 @@ The PoE can be used , including a \textit{“prior expert”}, as the approximat
     \label{fig:mvae_architecture}
 \end{figure}
 
-The figure \ref{fig:mvae_architecture} shows how the PoE can handle missing modalities by simply ignoring them.
-
-\subsection{Muldimodal Deep Markov Model}
-\label{sec:back:mdmm}
-
-% TODO: Explain MDMM
+The figure \ref{fig:mvae_architecture} and equation \ref{eq:poe} show how the PoE can handle missing modalities by simply ignoring them.
 
 \subsection{Neural Autoregressive Distribution Estimation}
 \label{sec:back:nade}
@@ -988,7 +985,7 @@ As explained in the section \ref{sec:objectives}, my Dissertation's goal is to c
 
 First it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
 
-Secondly, it is possible to create several musical parts at the same time. Each of them can be either monophonic or polyphonic.
+Secondly, it is possible to create several musical parts at the same time. Each one of them can be either monophonic or polyphonic.
 A musical part can be considered as an instrument or voice for a Chorale.
 The challenge is to create musical parts that work together.
 
@@ -1001,7 +998,7 @@ Given a melody, or some musical parts, the goal is to create new musical parts w
 This is for example the goal of DeepBach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016}.
 
 Bach Doodle \cite{huang_bach_2019} is an online tool developed by Google.
-Users can create their own melody and have it harmonized by a machine learning a model in the style of Bach.
+Users can create their own melody and have it harmonized by a model in the style of Bach.
 The figure \ref{fig:bachdoodle} shows the view of this application.
 The black melody is the melody entered by the user (me) and Bach Doodle created the accompaniment (red, green and blue melodies).
 
@@ -1042,7 +1039,7 @@ This signal can be represented either by its waveform \cite{oord_wavenet:_2016},
 \end{figure}
 
 Using the audio signal allows the model to handle every aspects of the song at the same time (instrument, timber, emotion...), and every song in the same way.
-The biggest issue of this method is that the number of points need to create a waveform is incredibly huge.
+The biggest issue of this method is that the number of points needed to create a waveform is incredibly huge.
 The usual sampling frequency is $48kHz$. 
 Therefore, the main difficulty is to stay consistent through time.
 
@@ -1127,7 +1124,7 @@ Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbac
 \end{figure}
 
 The figure \ref{fig:pianoroll_to_text} shows a simple example of how it is possible to convert an pianoroll view to a text.
-However, using text to represent image usually force the framework to work only in a monophonic way.
+However, using text to represent a pianoroll usually forces the framework to work only in a monophonic way.
 A common choice of the existing works that working with text is to embed the text into a fix-sized vector using a \texttt{word2vec} \cite{goldberg_word2vec_2014, karani_introduction_2018, rong_word2vec_2016, noauthor_beginners_nodate, mikolov_distributed_2013} model \cite{liang_automatic_2017, herremans_modeling_2017}.
 
 \bigskip
@@ -1231,7 +1228,7 @@ However, I not intentionally gives to the model the information about the beats 
 \bigskip
 
 Another way to help the model by giving it information without actually passing metadata is to normalize the data.
-For example, BachBot \cite{liang_automatic_2017} and other works \cite{chuan_modeling_nodate, boulanger-lewandowski_modeling_2012} transpose all their dataset in either C major or A major key.
+For example, BachBot \cite{liang_automatic_2017} and other works \cite{chuan_modeling_nodate, boulanger-lewandowski_modeling_2012} transpose all their dataset in either C major or A minor key.
 
 For the same reason as not passing metadata, I don't normalize the data before training my models.
 
@@ -1324,7 +1321,7 @@ The Transformer's architecture is explained in the section \ref{sec:back:transfo
 Some works have already been on music with Transformers as, for instance, Cheng-Zhi Anna Huang et al. \cite{huang_music_2018} and Kristy Choi et al. \cite{choi_encoding_2019}.
 
 Huang et al. introduce the Music Transformer, a model able to generate consistent samples longer than samples generated by a RNN architecture.
-They achieve this perfomance by using a Transformer with self attention (equation \ref{eq:relative-attention}).
+They achieve this perfomance by using a Transformer with relative attention (equation \ref{eq:relative-attention}).
 
 \begin{equation}
     \text{RelativeAttention} = \text{Softmax} (\frac{QK^T + S^{rel}}{\sqrt{D_h}})V
@@ -1350,7 +1347,7 @@ Then, the process generation for a GAN is to give a random input from a standard
 Generating music by manipulating the input is typically how style transfer algorithms work \cite{shetty_neural_2019, gatys_neural_2015, li_universal_2017}.
 The input is considered as a variable which is updated to minimize a loss function constructed from a content target and a style target.
 The content similarities between the input and the content target is reduced through the iterations.
-In the same way, the style similarities between the style target and the input will minimized.
+In the same way, the style similarities between the style target and the input will be minimized.
 
 This process works well for images to create a new image combining content and style from 2 different images.
 People tried to apply the same methods on music \cite{kaliakatsos-papakostas_conceptual_2017, hung_musical_2019, brunner_symbolic_2018, lu_play_2018}, but as Shuqi et al. \cite{dai_music_2018} say, music is more complex and has several level of style (timber, performance and composition).
@@ -1359,12 +1356,10 @@ Therefor, creating a music style transfer algorithm is more complicated than for
 \subsection{Feed forward and RNN architecture}
 
 This is the easiest and most common generation process through all the works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, wu_hierarchical_2018}, and this is the one I chose for this project.
-And input is given to the model.
-The model returns an output.
+An input is given to the model and the model returns an output.
 The figure \ref{fig:feed_forward_generation_process} illustrates this process.
 This output can be the next frame/beat/measure (in my case, a measure) of the music.
 
-I also chose this generation process for my project.
 In my case, the model returns the next measure of the music.
 
 \begin{figure}[h]
@@ -1386,8 +1381,8 @@ In my case, the model returns the next measure of the music.
 \subsubsection{DeepBach}
 
 To give an illustration, DeepBach \cite{hadjeres_deepbach:_2016} uses a Markov Chain Monte Carlo algorithm to re-harmonize a song and transform it. 
-From the existing song, it re-predicting every notes one by one.
-The algorithm is describe in the figure 
+From the existing song, it re-predicts every notes one by one.
+The algorithm is describe in the figure \ref{fig:relatedworks:deepbach_architecture}.
 
 \begin{figure}[htbp]
      \centering
@@ -1417,7 +1412,7 @@ The challenge is to use only one trained model to be able to
     \item Create a melody from a accompaniment
     \item Create a musical part from other musical parts
 \end{itemize}
-The created model can also handle missing data (for example a missing measure from a instrument).
+The created model can also handle missing data (for example a missing measure from an instrument).
 
 To summarize, the objective is to create a unique trained model which can generate or arrange a musical piece whatever is already present or missing.
 
@@ -1428,7 +1423,7 @@ This project works with MIDI data. These music representation is explained in th
 The shortest beat division is a quarter of a beat (sixteenth note: \musSixteenth) \\
 The considered music are binary and with 4 beats per measure. \\
 Because I think that a measure can be consider as an entire object (with its rhythm, its chords ...), I chose to divide music by measure. Thus, a time step for the neural network is the representation of an entire measure.
-The shape of shape of a tensor representing a measure will be \texttt{(16, 128, channels)}:
+The shape of a tensor representing a measure will be \texttt{(16, 128, channels)}:
 \begin{itemize}
     \item \texttt{16} is the number of sixteenth notes (\musSixteenth) is a measure.
     \item \texttt{128} is the number of different MIDI notes possible (from $0$ to $127$).
@@ -1475,7 +1470,7 @@ The table \ref{tab:duration} shows the correspondence between the value of the d
     \end{center}
 \end{table}
 
-If a note is note activated (activation channel $ = 0$), then the duration channel is set to $0$ too.
+If a note is not activated (activation channel $ = 0$), then the duration channel is set to $0$ too.
 
 \begin{equation}
     \texttt{channel}_{\texttt{activation}} = 0 \iff \texttt{channel}_{\texttt{duration}} = 0
@@ -1484,9 +1479,10 @@ If a note is note activated (activation channel $ = 0$), then the duration chann
 \subsection{Monophonic Music}
 \label{sec:mono}
 
-The goal was too reduce the memory space a simplify the model for monophonic music.
-Since monophonic music can means there is a maximum of one note played simultaneously at a time $t$, I chose to not consider the rests and consider that every notes last until an another note is played.\\
-Thus, I get read of duration channel and the number of \texttt{channels} $ = 1$.
+The goal was too reduce the memory space and simplify the model for monophonic music.
+Since monophonic music means there is a maximum of one note played simultaneously at one time $t$, I chose to not consider the rests and consider that every notes last until the next note is played.\\
+Thus, I deleted the duration channel.
+Now, the number of \texttt{channels} $ = 1$.
 
 An \textit{additional note} is inserted which is the $note_{continue}$.
 The tensor shape of a step is now \texttt{(16, 128 + 1, 1)}.
@@ -1514,7 +1510,7 @@ And since I consider in this part only monophonic music, there is only on note (
 
 I have created a new architecture which is able to handle all the objectives defined in the section \ref{sec:objectives}.
 
-To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) (see section \ref{sec:back:mvae}) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM) (see section \ref{sec:back:mdmm}).
+To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) (see section \ref{sec:back:mvae}) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
 
 \subsection{Global Architecture}
 
@@ -1633,7 +1629,7 @@ Then, for a given step $t$, all the distribution representation go through the P
 
 \subsection{Recurrent layers}
 
-I have now all the latent represenations for every steps : $\{z_1, ..., z_T\}$.
+I have now all the latent representations for every steps : $\{z_1, ..., z_T\}$.
 
 \subsubsection{LSTM cells}
 
@@ -1737,7 +1733,7 @@ The activation function for the \texttt{channel 2} is a \textit{ReLU} function.
 
 For monophonic music (section \ref{sec:mono}), the activation function is s \textit{sigmoid} function for the \textit{additional note} (index 128: $note_{continue}$) because it is an activation note indicating if it wants to continue the previous note or play a new one. And for the other 128 notes, the activation function is a \textit{softmax} function since only one note can be played at the same time.
 
-At the beginning of my project, I was considering the $note_{continue}$ as a \textit{normal note} and simply apply a softmax across all the notes.
+At the beginning of my project, I was considering the $note_{continue}$ as a \textit{normal note} and simply applying a softmax across all the notes.
 But the result was disappointing: the frequency of $note_{continue}$ in the dataset was to high.
 The network wasn't generating anything because the $note_{continue}$ had the highest probability.
 
@@ -1848,7 +1844,7 @@ Indeed, the rhythm is sometimes important and consistence is need through the mu
 Thus, to preserve it, every time the model plays a note that is not played at the same time as an instrument in the ground truth, it gets a penalty.
 Conversely, every time the model plays a note at the same time as another one in the ground truth, it gets a reward.
 
-The implementation showed in the figure \ref{fig:loss_rhythm} is very similar as the Scale implementation.
+The implementation showed in the figure \ref{fig:loss_rhythm} is very similar to the Scale implementation.
 
 
 \begin{figure}[h]
@@ -1993,6 +1989,8 @@ The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}
 
 \section{Activation}
 
+\section{RPoE}
+
 % ----------------------------------------------------------------------------------------------------
 % Conclusion
 % ----------------------------------------------------------------------------------------------------
@@ -2044,7 +2042,7 @@ I didn't want to change the dataset to C major so it can handle change of key. B
 
 \section{Interpolation project}
 
-At the start of my dissertation, I tried another project which haw to create music with a waveform representation.
+At the start of my dissertation, I tried another project which was to create music with a waveform representation.
 Subham S. Sahoo et al. \cite{sahoo_learning_2018} present their improved network for equation learning $\text{EQL}^\div$, that overcomes the limitation of the earlier works. In particular, their main contribution are:
 \begin{itemize}
     \item They propose a network architecture that can handle divisions as well as techniques to keep training stable
@@ -2052,8 +2050,8 @@ Subham S. Sahoo et al. \cite{sahoo_learning_2018} present their improved network
     \item They demonstrate how to reliably control a dynamical robotic system by learning its forward dynamics equations from very few random tryouts/tails.
 \end{itemize}
 
-More precisely, their model is a shallow network able to learn complex function containing multiplication, sinus and cosine functions, and it is able to extrapolate them.
-Those very usual operations processed by most of the VST to create musical sounds.
+More precisely, their model is a shallow network able to learn complex function containing multiplication, sine and cosine functions, and it is able to extrapolate them.
+Those are very usual operations processed by most of the VST to create musical sounds.
 
 Thereby, I tried to interpolate musical waveform with their architecture.
 My idea was to construct a transition between 2 parts (for example a verse and a chorus) or reconstruct some missing data from a song.
@@ -2062,7 +2060,7 @@ Unfortunately, the results were poor...
 Most of the time, the model was converging to the mean of the functions (which is 0 for musical waveform).
 
 I think their model is working well for their applications because they use it to extrapolate robotic dynamic equations which usually don't include many sine and cosine components.
-Contrariwise, a musical waveform contains  enormous number of sine and cosine components. 
+Contrariwise, a musical waveform contains an enormous number of sine and cosine components. 
 
 
 \section{Segment Sum}
@@ -2112,16 +2110,16 @@ The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:rol
 \section{BandPlayer}
 
 Train a model and generate music is nice.
-But as musician I wasn't fully satisfied with this application.
+But as musician, I wasn't fully satisfied with this application.
 To fulfil my need, I created a python script to be able to play with the trained model in real time.
 I call this application \texttt{BandPlayer} because the user can play with and jam with a virtual band.
 
 The application I have created
 \begin{itemize}
-    \item Allows the user to plays music with the instrument of his choice
+    \item Allows the user to play music with the instrument of his choice
     \item Can load a trained model
     \item Allows the user to choose what part he wants to play in the \textit{"band"}
-    \item Allows the user to choose what parts from the \textit{"band"} he wants to keep
+    \item Allows the user to choose what parts from the \textit{"band"} he wants to play with
     \item Feeds the model with the notes played 
     \item Play the generated notes by the model with the user
     \item Display the notes played by the model and the user in a pianoroll view
@@ -2160,19 +2158,19 @@ The figure \ref{fig:arch:transformer} illustrates the transformer's architecture
 \section{Hyper-Parameters tuning}
 
 Tuning hyper-parameters to train the best possible model is a difficult task in deep learning.
-The reason is because every number or setting can be considered as a hyper-parameter and, most of time, there is no proof and rule to guide use to choose the best value they should have.
-The only help the researcher can have is his intuition and his understanding on how an specific parameter will influence a specific process.
+The reason is because every number or setting can be considered as a hyper-parameter and, most of time, there is no proof or rules to guide us to choose the best value a parameter should have.
+The only help the researcher can have is his intuition and his understanding on how a specific parameter will influence a specific process.
 
 A common doing is to implement a grid-search algorithm.
 For each hyper-parameters, a set of possible value is specified and the algorithm is simply to train the model with all the possible combinations of parameters.
 However, the number of iteration grow exponentially with the number of hyper-parameters.
 
-It has been showed that a random-search algorithm is in average faster and better than a grid search,
+It has been showed that a random-search algorithm is in average faster and better than a grid search.
 
 Another possibility is to implement a Bayesian optimization \cite{frazier_tutorial_2018, adams_tutorial_nodate}.
 It is a sequential design strategy for global optimization of black-box functions that doesn't require derivatives.
 It uses GP to learn a unknown function.
-Since the number of hyper-parameters in my very high, (at some point, I was trying to tune over 20 parameters), I implemented a script to do a Bayesian search over them.
+Since the number of hyper-parameters in my project is very high, (at some point, I was trying to tune over 20 parameters), I implemented a script to do a Bayesian search over them.
 To do so I used the library scikit-optimize \cite{noauthor_scikit-optimize_nodate}.
 The main advantages of a Bayesian optimization over a grid or a random search are:
 \begin{itemize}
