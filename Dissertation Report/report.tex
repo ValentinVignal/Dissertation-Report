@@ -111,8 +111,11 @@
     \vspace{2.5cm}
     {\textbf{\Large 2020}}\\
     \vspace{2.5cm}
-    {\textbf{\large Advisor: Harold Soh}}\\
-    {\textbf{\large Examiners: }}
+    {\textbf{\large Supervisor:}}\\
+    Assistant Professor Harold Soh\\
+    {\textbf{\large Examiners:}}\\
+    Assistant Professor Gim Hee Lee\\
+    Assistant Professor Jun Han
 \end{center}
 \newpage
 
@@ -164,7 +167,7 @@
     \textbf{\Large ACKNOWLEDGEMENTS}\\
 \end{center}
 
-I would like to express my special thanks and gratitude to my advisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
+I would like to express my special thanks and gratitude to my supervisor Harold Soh who gave me the opportunity to work on this project combining Artificial Intelligence and Music.
 
 Secondly I would also like to thank all the members of the research team, and especially the PhD. students Abdul Fatir and Yaqi Xie who, despite their busy schedules, taught me, and help me in many scenarios.
 
@@ -244,6 +247,7 @@ The results show that the extra losses are not helping the model which indicates
         AMAE & ArgMax AutoEncoder \\
         C-RBM & Convolutional Restricted Boltzmann Machine \\
         CNN & Convolutional Neural Network \\
+        EDM & Electronic Dance Music \\
         EQL & EQuation Learner \\
         FC & Fully Connected \\
         GAN & Generative Adversarial Network \\
@@ -385,7 +389,7 @@ In this work, we won't consider shorter notes than Sixteenth notes because most 
 
 % To read a midi file, the computer has a collection of sound for every instruments, notes, velocity et caetera, and plays these sounds depending of the instructions read in the file.
 
-\textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
+The \textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
 It was first used to carry musical messages between electronic instruments, software and devices. These messages are events about note information (for example, pitch, velocity, panning...) an some other parameters (for example, vibrato, volume...). 
 The most important messages I will consider are:
 \begin{itemize}
@@ -427,7 +431,7 @@ In this section, I will describe and explain some rules from music theory which 
 \subsubsection{Scale}
 
 A \textit{scale} is a set of notes. Because the human ear is now used to it, the notes of a scale will sound nice when they are played together. In traditional Western music, it generally consists of 7 notes. They are several types of scales.
-The most common is the \textit{Major scale} or the \textit{Natural Minor Scale}. For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
+The most common is the \textit{Major Scale} or the \textit{Natural Minor Scale}. For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
 
 Another type of scales often used by the musicians to creates their \textit{solos} are the \textit{Pentatonic} scales.
 
@@ -467,8 +471,8 @@ A sound is a sum of harmonics:
 \end{equation}
 where $f$ is the fundamental frequency and $\phi$ the phase.
 
-Let us take an example with the $A4$ note which has a its fundamental frequency equals to $440 Hz$.
-Then the $2^{nd}$ harmonic is $A5$ $880Hz$.
+Let us take an example with the $A4$ note which has its fundamental frequency equals to $440 Hz$.
+The $2^{nd}$ harmonic is $A5$ $880Hz$.
 The consequence is , when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
 Let us take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$. It means it is possible to hear a $E5$ from a played $A4$.
 The table \ref{tab:A4_harmonics} is referencing the firsts harmonics of the $A4$ note.
@@ -571,7 +575,7 @@ In this section, I will briefly describe some neural network architectures.
 
 \subsection{Convolutional neural network}
 
-The convolutional networks are often used on images because they can preserve the spatial information.
+Convolutional networks are often used on images because they can preserve the spatial information.
 A CNN usually includes two types of layers :
 \begin{itemize}
     \item A convolutional layer
@@ -660,7 +664,7 @@ The goal of the discriminator is to classify the real data as \textit{"Real"} an
 On the other side, the generator takes some noise as an input to generate a datum.
 Its goal is to make the discriminator classify its generated data as \textit{"Real"}.
 
-Through training, the generator will get better and create more consistent data so the discriminator classify them as Real.
+Through training, the generator will get better and create more consistent data so the discriminator classify them as \textit{"Real"}.
 It will then force the discriminator to become better and classify real and fake data more precisely.
 Thus, the generator is forced to create data which look more real.
 And so on...
@@ -683,14 +687,14 @@ The most used cells are the LSTM cell and the GRU cell. The architectures are sh
 \begin{figure}[htbp]
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=.95\linewidth]{images/nn/layers/lstm.jpg}
+     \includegraphics[width=.98\linewidth]{images/nn/layers/lstm.jpg}
      \caption{LSTM cell}
      Source: \href{https://commons.wikimedia.org/wiki/File:Long_Short-Term_Memory.svg}{Wikipedia}
      \label{fig:lstm}
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=.95\linewidth]{images/nn/layers/gru.jpg}
+     \includegraphics[width=.98\linewidth]{images/nn/layers/gru.jpg}
      \caption{GRU cell}
      Source: \href{https://en.wikipedia.org/wiki/Recurrent_neural_network#/media/File:Gated_Recurrent_Unit.svg}{Wikipedia}
      \label{fig:gru}
@@ -1279,7 +1283,7 @@ The figure \ref{fig:coconet_process} illustrates how the process works.
 At each step, a random subset of notes is removed, and the model is asked to infer their values.
 New values are sampled from the probability distribution put out by the model, and the process is repeated.
 
-Google also Bach Doodle \cite{huang_bach_2019}, an online tool re-implementing COCONET in Tensorflow.js \cite{noauthor_tensorflowjs_nodate} which harmonizes a melody given by the user.
+Google also created Bach Doodle \cite{huang_bach_2019}, an online tool re-implementing COCONET in Tensorflow.js \cite{noauthor_tensorflowjs_nodate} which harmonizes a melody given by the user.
 
 
 \subsection{AE}
@@ -1302,7 +1306,7 @@ Sander Dieleman et al. \cite{dieleman_challenge_2018} use a VAE (or more precisl
 
 \subsection{RMVAE}
 
-Since I created this new architecture, there is no existing work using this architecture.
+Since I created this new architecture, there is no existing work using this one.
 My project is, for now, the only work done using a Recurrent Multimodal Variational AutoEncoder to generate music.
 
 The RMVAE's architecture is explained in the section \ref{sec:rmvae}
@@ -1336,7 +1340,7 @@ In this section, I will enumerate different techniques to generate music from di
 
 The sampling process can either be done with a VAE, or an GAN architecture \cite{donahue_adversarial_2019}.
 
-A VAE keeps its latent space distribution as the standard normal distribution $\mathcal{N}(0, 1)$.
+A VAE keeps its latent space distribution as close as the standard normal distribution $\mathcal{N}(0, 1)$.
 Thus, by giving a random vector sampled from a standard normal distribution $\mathcal{N}(0, 1)$, the decoder will construct an output similar to the dataset the model trained on.
 
 The generator of a GAN has been trained to generated consistent data from noise.
@@ -1404,8 +1408,8 @@ The algorithm is describe in the figure \ref{fig:relatedworks:deepbach_architect
 \section{Objectives}
 \label{sec:objectives}
 
-As a musician, I wanted to create an model architecture who could copy the way I think about music.
-The challenge is to use only one trained model to be able to 
+As a musician, I wanted to create a model architecture who could copy the way I think about music.
+The challenge is to use only one trained model to be able to:
 \begin{itemize}
     \item Generate music with several musical parts (meaning several instruments)
     \item Create a accompaniment from a melody
@@ -1517,7 +1521,9 @@ To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and t
 I use the capability of the MVAE to reconstruct data and handle several modalities at the same time with the help of the product of expert operation.
 But because the MVAE doesn't handle time across the data, it had to be transformed.
 And that is basically what does the MDMM.
-However, the training process of a MDMM is quite complicated and slow. Because of this reason, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder). This architecture is describe in the figure \ref{fig:rmvae_architecture}.
+However, the training process of a MDMM is quite complicated and slow.
+Because of this, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder).
+This architecture is describe in the figure \ref{fig:rmvae_architecture}.
 
 
 % Good example how to use tikz:
@@ -1748,18 +1754,18 @@ This is how I got the idea to create those new loss functions.
 
 In a song, when a musician is playing, it is not possible for him play every one of the 12 notes whenever he wants.
 A music usually follows a pattern, a chord progression, and he has to follows it.
-From the chords played, the scale, some notes will sounds better to the human ears than other.
+From the chords played, the scale, some notes sounds better to the human ears than other.
 But there is no \textit{"ground truth"} for a solo part for example.
 Every solo can be considered as a \textit{"ground truth"} if it sounds nice.
 And I wanted my model to be able to \textit{improvise}, generate new music.
 
-I got the idea of helping the model to do \textit{acceptable mistakes} and restraint it do \textit{unacceptable mistakes}.
+I got the idea of helping the model to do \textit{acceptable mistakes} and restraint it do to \textit{unacceptable mistakes}.
 In other word, during the training part, it the model doesn't hit the note it should have hit, I don't want to \textit{punish} it to much with a high loss value if the note sounds actually nice with the music.
 On the other side, I want to \textit{punish} it if the note it hits is completely wrong with a higher loss value.
 
 To summarize what I previously just said, during the training part, if the model hits a note which sounds nice, a reward is given by adding a negative number to the loss.
 If the hit note doesn't sound nice, then a penalty is given by adding a positive number to the loss.
-The algorithm \ref{alg:loss} describe the process.
+The algorithm \ref{alg:loss} describes the process.
 
 \begin{algorithm}
     \begin{algorithmic}[1]
@@ -1890,7 +1896,7 @@ On the other side, some notes won't be elegant when played together because of t
 This is something every composer has in mind when he creates a second musical part which will harmonize the first one.
 He will keep the second voice in the scale and he will keep an acceptable musical interval between the notes of the 2 melodic parts.
 
-The figure \ref{fig:harmony_circle} shows the acceptable and non-acceptable musical intervals for the note $A$.
+The figure \ref{fig:harmony_circle} shows the \textit{acceptable} and \textit{non-acceptable} musical intervals for the note $A$.
 
 \begin{figure}[ht]
     \centering
@@ -2109,7 +2115,7 @@ The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:rol
 
 \section{BandPlayer}
 
-Train a model and generate music is nice.
+Training a model and generating music is interesting.
 But as musician, I wasn't fully satisfied with this application.
 To fulfil my need, I created a python script to be able to play with the trained model in real time.
 I call this application \texttt{BandPlayer} because the user can play with and jam with a virtual band.
@@ -2126,7 +2132,7 @@ The application I have created
 \end{itemize}
 
 Calling the model to make the notes prediction while the user is playing is computationally feasible because my model is working on an entire measure at one time.
-Therefor the model is called only one time per measure which is not to frequente to allow the application to be real time.
+Therefor the model is called only one time per measure which is not to frequent to allow the application to be real time.
 
 
 \section{Coconet Process}
@@ -2170,11 +2176,11 @@ It has been showed that a random-search algorithm is in average faster and bette
 Another possibility is to implement a Bayesian optimization \cite{frazier_tutorial_2018, adams_tutorial_nodate}.
 It is a sequential design strategy for global optimization of black-box functions that doesn't require derivatives.
 It uses GP to learn a unknown function.
-Since the number of hyper-parameters in my project is very high, (at some point, I was trying to tune over 20 parameters), I implemented a script to do a Bayesian search over them.
+Since the number of hyper-parameters in my project is very high, (at some point, I was trying to tune over 20 parameters), I implemented a script to do a Bayesian Search over them.
 To do so I used the library scikit-optimize \cite{noauthor_scikit-optimize_nodate}.
-The main advantages of a Bayesian optimization over a grid or a random search are:
+The main advantages of a Bayesian Search over a Grid or a Random Search are:
 \begin{itemize}
-    \item It requires less iterations
+    \item It requires less iterations.
     \item The domain of search for a specific parameter value is not discrete but continuous.
 \end{itemize}
 
