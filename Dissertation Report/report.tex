@@ -1598,6 +1598,7 @@ This architecture is describe in the figure \ref{fig:rmvae_architecture}.
 \end{figure}
 
 \subsection{Encoder}
+\label{sec:encoder}
 
 Each instruments (each modalities) has its own encoder.
 As explained in the section \ref{sec:data_represetation}, the input tensor for one instrument has the following shape: \texttt{(nb\_steps, 16, 128, channels)}.
@@ -1706,6 +1707,7 @@ The architecture is displayed in the figure \ref{fig:rpoe_architecture}.
 
 
 \subsection{Decoder}
+\label{sec:decoder}
 
 Each instruments (each modalities) has its own decoder.
 The decoder $\text{Dec}^i$ associated to the instrument $i$ will, for a given step $t$, reconstruct back the output with the same shape as the input (\texttt{(16, 128, channels)}).
@@ -1736,6 +1738,7 @@ For polyphonic music (section \ref{sec:poly}), the activation function is a \tex
 The activation function for the \texttt{channel 2} is a \textit{ReLU} function.
 
 \subsubsection{Monophonic Music}
+\label{sec:last-layer-mono}
 
 For monophonic music (section \ref{sec:mono}), the activation function is s \textit{sigmoid} function for the \textit{additional note} (index 128: $note_{continue}$) because it is an activation note indicating if it wants to continue the previous note or play a new one. And for the other 128 notes, the activation function is a \textit{softmax} function since only one note can be played at the same time.
 
@@ -1791,6 +1794,7 @@ The difficulty is to create the function \texttt{soundsGood} from the algorithm 
 The following sections describe the idea I have had to know whether a note sounds nice or not.
 
 \subsection{Scale}
+\label{sec:scale}
 
 I call this loss function \textit{Scale} because the idea is to reconstruct the \textit{local scale}.
 This loss function takes as inputs all the instruments output:
@@ -1844,6 +1848,7 @@ The details of the segment sum operation are explained in the appendix \ref{appe
 \end{figure}
 
 \subsection{Rhythm}
+\label{sec:rhythm}
 
 The idea behind the Rhythm loss is that we want to preserve the rhythm of the music.
 Indeed, the rhythm is sometimes important and consistence is need through the musical piece.
@@ -1889,6 +1894,7 @@ The implementation showed in the figure \ref{fig:loss_rhythm} is very similar to
 \end{figure}
 
 \subsection{Harmony}
+\label{sec:harmony}
 
 I explained in the section \ref{sec:harmonics} that some notes will sound smooth together because of their common harmonics.
 On the other side, some notes won't be elegant when played together because of the resonance problem between some of their harmonics.
@@ -1917,7 +1923,6 @@ To do so, I created a sub-function $\text{harmony}_n$ which penalizes the presen
 
 The operations of the cost function harmony and $\text{harmony}_n$ are showed in the figures \ref{fig:loss_harmony} and \ref{fig:loss_harmony_n}.
 The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}.
-
 
 \begin{figure}[H]
     \begin{minipage}{0.5\textwidth}
@@ -1985,17 +1990,168 @@ The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}
 \end{figure}
 
 % ----------------------------------------------------------------------------------------------------
+% Results
+% ----------------------------------------------------------------------------------------------------
+\chapter{Results}
+
+In this chapter I will share the results I got.
+
+\section{CNN Encoder and Decoder}
+
+For a CNN encoder and decoder, the results weren't matching my expectation.
+To illustrate it with an image, the figure \ref{fig:rmvae-generated} shows a generated sample by a RMVAE.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/generated_cnn.jpg}
+    \caption{Generated pianoroll by the RMVAE}
+    The grey part is the seed given to the model and the black part is the generated part
+    \label{fig:rmvae-generated}
+\end{figure}
+
+As we can see on the figure \ref{fig:rmvae-generated}, the global shape of the the generated part is very different from the seed part.
+The main reason is a lack of rhythm and variation.
+Most of the generated notes are quarter notes (\musQuarter), and the model generates always the same notes.
+
+However, even though the generated sample have huge lack of rhythm and variation, it is not wrong.
+It is one tune, consistent with the seed, and the four voices work well together.
+
+\subsection{Activation function of the $\text{note}_{\text{continue}}$ for monophonic music}
+
+As explained in the section \ref{sec:last-layer-mono}, for monophonic music, I consider an extra note ($note_{continue}$) which indicates that the previous note is sustained.
+The shape for a tensor describing a measure is \texttt{(16, 128 + 1)}.
+
+At the beginning, I considered the $note_{continue}$ as a \textit{normal} note, and apply a softmax activation through the \texttt{128 + 1} notes for each of the 16 frames.
+Unfortunately, it resulted with a too high probability for the $note_{continue}$ and the model wasn't generated anything.
+The figure \ref{fig:rmvae-generated-silence} shows a generated sample.
+As explained, the generated part (grey part) contains only few notes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/cnn_generation_silcence.jpg}
+    \caption{Generated pianoroll by the RMVAE with a softmax activation}
+    The grey part is the seed given to the model and the black part is the generated part
+    \label{fig:rmvae-generated-silence}
+\end{figure}
+
+To counter this silence problem I changed the activation function of the notes:
+\begin{itemize}
+    \item The $note_{continue}$ activation is a sigmoid activation.
+    If the value is $\geq 0.5$, then no new note is played and the previous note is sustained.
+    If the value is $< 0.5$, then a new note is played
+    \item The \texttt{128} remaining notes are still going through a softmax activation to chose what is the note to be played (if $note_{continue} <0.5$).
+\end{itemize}
+
+By doing so, I helped the model to generate new notes and get results like the figure \ref{fig:rmvae-generated}.
+However, the lake of rhythm is obvious and all the notes have length of one beat (\musQuarter).
+
+
+\section{LSTM Encoder and Decoder}
+
+I don't know because the training is still not finished
+
+% ----------------------------------------------------------------------------------------------------
 % Experiments
 % ----------------------------------------------------------------------------------------------------
+
 \chapter{Experiments}
+
+In this chapter I expose the experiments I have conduct for this project.
+Evaluate a generated musical piece is a complex task.
+Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
+Most of the paper working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
+They create a poll and let the people decide what sample they prefer between several of them.
+
+By lack of time and result, I haven't been able to create an online poll to evaluate the musical samples I generated.
 
 \section{Transpose the data}
 
+To help the model and get sharper distributions, I created a script to transpose all the music in C major or A minor scale.
+As I suspected, it didn't help the model much.
+\begin{itemize}
+    \item The losses stayed the same.
+    \item The accuracy didn't increase.
+    \item The generation is as poor as before.
+\end{itemize}
+Therefor, the model is able to internally transpose the input to analyse it.
+This capacity might come from the convolutional layers, able to detect features without considering its position in the input.
+The figures \ref{fig:loss-comparison-transposed} and \ref{fig:acc-comparison-transposed} show how close are the loss and the accuracy between 2 models.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/transpose/loss-comparison-transpose.png}
+    \caption{Loss comparison between transposed and non-transposed data}
+    \label{fig:loss-comparison-transposed}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/transpose/acc-comparison-transpose.png}
+    \caption{Accuracy comparison between transposed and non-transposed data}
+    \label{fig:acc-comparison-transposed}
+\end{figure}
+
+The first one has been trained on non-transposed songs and the second one has been trained on transposed songs.
+
 \section{Custom losses}
 
-\section{Activation}
+\subsection{Scale and Rhythm}
+
+The figures \ref{fig:loss-comparison-scale-rhythm} and \ref{fig:acc-comparison-scale-rhythm} show the loss and the accuracy of an output through the training of two models.
+The first one doesn't use the custom loss functions \textit{Scale} (section and \ref{sec:scale}) and \textit{Rhythm} (section \ref{sec:rhythm}), but the second one uses them.
+As we can see, there is no difference between the 2 graphs.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/scale_rhythm/loss-comparison-scale-rhythm.jpg}
+    \caption{Loss comparison between models with and without Scale and Rhythm loss}
+    \label{fig:loss-comparison-scale-rhythm}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/scale_rhythm/acc-comparison-scale-rhythm.jpg}
+    \caption{Accuracy comparison between models with and without Scale and Rhythm loss}
+    \label{fig:acc-comparison-scale-rhythm}
+\end{figure}
+
+\subsection{Harmony}
+
+The figures \ref{fig:loss-comparison-harmony} and \ref{fig:acc-comparison-harmony} show the loss and accuracy of an output through the training of two models.
+The first one doesn't use the \textit{Harmony} function (section \ref{sec:harmony}), but the second one uses it.
+As we can see, there is no difference between the 2 graphs
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/harmony/loss-comparison-harmony.jpg}
+    \caption{Loss comparison between models with and without Harmony loss}
+    \label{fig:loss-comparison-harmony}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/harmony/acc-comparison-harmony.jpg}
+    \caption{Accuracy comparison between models with and without Harmony loss}
+    \label{fig:acc-comparison-harmony}
+\end{figure}
 
 \section{RPoE}
+
+It appeared that the RPoE layer (section \ref{sec:rpoe}) doesn't add anything meaningful to the model.
+As we can see in the figures \ref{fig:loss-comparison-rpoe} and \ref{fig:acc-comparison-rpoe}, the loss values and accuracy values between a model using a RPoE layer and a model not using it are not different.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/rpoe/loss-comparison-rpoe.jpg}
+    \caption{Loss comparison between models with and without RPoE layer}
+    \label{fig:loss-comparison-rpoe}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/rpoe/acc-comparison-rpoe.jpg}
+    \caption{Accuracy comparison between models with and without RPoE layer}
+    \label{fig:acc-comparison-rpoe}
+\end{figure}
 
 % ----------------------------------------------------------------------------------------------------
 % Conclusion
@@ -2184,7 +2340,186 @@ The main advantages of a Bayesian Search over a Grid or a Random Search are:
     \item The domain of search for a specific parameter value is not discrete but continuous.
 \end{itemize}
 
+\section{LSTM Encoder Decoder}
 
+The initial encoder and decoder use convolutional (or transposed convolutional) layers and fully connected layers (section \ref{sec:encoder} and \ref{sec:decoder}).
+To try to obtain better results, I tried another architecture of decoder and encoder using bidirectional LSTM layers and fully connected layers.
+The figure \ref{fig:lstm-encoder} illustrates the architecture of the encoder and the figure \ref{fig:lstm-decoder} the decoder's one.
+
+
+\begin{minipage}{0.5 \textwidth}
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+        
+        \node[state](measure)[]{measure};
+        \node[state, rectangle](split)[below of=measure]{split};
+        \node[](framedots)[below of=split]{$\dots$};
+        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
+        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
+        
+        \node[state, rectangle](fc0)[below of=frame0]{$\text{FC}_{\text{frame}}^i$};
+        \node[](fcdots)[below of =framedots]{$\dots$};
+        \node[state, rectangle](fc15)[below of=frame15]{$\text{FC}_{\text{frame}}^i$};
+        
+        \node[state, rectangle](lstm0)[below of=fc0]{LSTM};
+        \node[](lstmdots)[below of=fcdots]{$\dots$};
+        \node[state, rectangle](lstm15)[below of=fc15]{LSTM};
+        
+        \node[state, rectangle](fc)[below of=lstmdots]{$\text{FC}_{measure}^i$};
+        
+        \node[state](output)[below of=fc]{output};
+        
+        
+        \path[]
+            (measure)   edge    [anchor=center]node{\texttt{(16, 128)}}  (split)
+            (split) edge    [anchor=east]node{\texttt{(128,)}}  (frame0)
+                    edge    [anchor=west]node{\texttt{(128,)}}  (frame15)
+            (frame0)    edge    node{}  (fc0)
+            (frame15)   edge    node{}  (fc15)
+            (fc0)   edge    node{}  (lstm0)
+            (fc15)  edge    node{}  (lstm15)
+            (lstm0) edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (lstm0)
+                        edge    node{}  (lstm15)
+            (lstm15)    edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (fc)
+            (fc)    edge    node{}  (output);
+                    
+        \end{tikzpicture}
+    \caption{Measure Encoder using bidirectional LSTM}
+    Encoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
+    \label{fig:lstm-encoder}
+    \end{center}
+\end{figure}
+\end{minipage} \hfill
+\begin{minipage}{0.5 \textwidth}
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+        
+        \node[state](measure)[]{measure};
+        \node[state, rectangle](concat)[above of=measure]{concat};
+        \node[](framedots)[above of=concat]{$\dots$};
+        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
+        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
+        
+        \node[state, rectangle](fc0)[above of=frame0]{$\text{FC}_{\text{frame}}^i$};
+        \node[](fcdots)[above of =framedots]{$\dots$};
+        \node[state, rectangle](fc15)[above of=frame15]{$\text{FC}_{\text{frame}}^i$};
+        
+        \node[state, rectangle](lstm0)[above of=fc0]{LSTM};
+        \node[](lstmdots)[above of=fcdots]{$\dots$};
+        \node[state, rectangle](lstm15)[above of=fc15]{LSTM};
+        
+        \node[state, rectangle](fc)[above of=lstmdots]{$\text{FC}_{measure}^i$};
+        
+        \node[state](input)[above of=fc]{input};
+        
+        
+        \path[]
+            (input) edge    node{}  (fc)
+            (fc)    edge    node{}  (lstm0)
+                    edge    node{}  (lstm15)
+            (lstm0) edge    node{}  (fc0)
+                    edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (lstm0)
+                        edge    node{}  (lstm15)
+            (lstm15)    edge    node{}  (fc15)
+                        edge    node{}  (lstmdots)
+            (fc0)   edge    node{}  (frame0)
+            (fc15)  edge    node{}  (frame15)
+            (frame0)    edge    node[anchor=east]{\texttt{(128,)}}  (concat)
+            (frame15)   edge    node[anchor=west]{\texttt{(128,)}}  (concat)
+            (concat)    edge    node[anchor=center]{\texttt{(16, 128)}}  (measure);
+                    
+        \end{tikzpicture}
+    \caption{Measure Decoder using bidirectional LSTM}
+    Decoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
+    \label{fig:lstm-decoder}
+    \end{center}
+\end{figure}
+\end{minipage}
+
+Unfortunately, the results weren't much different from the CNN encoder and decoder.
+
+\section{Network details}
+
+The table \ref{tab:network-hp} is listing the principal value of the hyper-parameters used.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c}
+        Hyper Parameter & Value \\
+        \hline
+        optimizer &  Adam optimizer \cite{brownlee_gentle_2017, bushaev_adam_2018, kingma_adam_2017} \\
+        learning rate & $10^{-3}$ \\
+        fully connected layer dropout & $2 \times 10^{-1}$ \\
+        convolutional layer dropout & $10^{-2}$ \\
+        lstm dropout & $10^{-1}$ \\
+        decay & $10^{-1}$ \\
+        $\lambda_{\text{scale}}$ & $10^{-1}$ \\
+        $\lambda_{\text{rhythm}}$ & $10^{-2}$ \\
+        $\lambda_{\text{semitone}}$ & $10^{-2}$ \\
+        $\lambda_{\text{tone}}$ & $10^{-2}$ \\
+        $\lambda_{\text{tritone}}$ & $10^{-2}$ \\
+    \end{tabular}
+    \caption{Neural Network Hyper-Parameters}
+    \label{tab:network-hp}
+\end{table}
+
+Through all the manual training I manually launched, the Grid Search and Bayesian Search algorithm I ran, I have continuously been updated the value of these hyper-parameters.
+
+
+\section{Training details}
+
+\subsection{Noise}
+
+During the training, I insert some noise in the input data.
+For monophonic music, an activation value will be changed (from 0 to 1 or from 1 to 0) with a probability $p$.
+I usually have put $p \in [10^{-4}, 10^{-3}]$.
+The chosen range of $p$ seems low but a higher noise can sometimes alter the input too much, even for a human ear.
+
+For example, let's assume a noise with $p = 10^{-2}$.
+A shape of a tensor representing a measure is \texttt{(16, 128)}.
+For every frame (shape of \texttt{(128,)}), the expectation of altered note is $1.28$.
+It is an added or deleted note for every frame (Sixteenth \musSixteenth) which completely deform the music.
+
+
+\subsection{KLD Annealing}
+
+It is usually difficult to train a VAE because of the KLD which adds a big constraint on the latent space.
+To help the model to converge, I implemented a \textit{KLD annealing} \cite{huang_improving_2018}.
+
+\begin{equation}
+    loss = loss_{output} + \beta \mathbb{D}_{KL}
+\end{equation}
+
+I linearly increases $\beta$ from 0 to 1 through the epochs from $\text{epoch}_{\text{kld start}}$ to $\text{epoch}_{\text{kld stop}}$.
+Before $\text{epoch}_{\text{kld start}}$ $\beta = 0$, and after $\text{epoch}_{\text{kld stop}}$, $\beta = 1$.
+
+The equation \ref{eq:kld-annealing} and the figure \ref{fig:beta-annealing} show the evolution of $\beta$ through the training.
+
+\begin{equation}
+    \beta (\text{epoch}) =
+    \begin{cases}
+        0 & \text{if } \frac{\text{epoch}}{\text{epoch}_{\text{total}}} \leq \text{epoch}_{\text{kld start}} \\
+        
+        \frac{(\text{epoch} / \text{epoch}_{\text{total}}) - \text{epoch}_{\text{kld start}}}{\text{epoch}_{\text{kld stop}} - \text{epoch}_{\text{kld start}}} & \text{if } \text{epoch}_{\text{kld start}} \leq \frac{\text{epoch}}{\text{epoch}_{\text{total}}} \leq \text{epoch}_{\text{kld stop}} \\
+        
+        1 & \text{if } \frac{\text{epoch}}{\text{epoch}_{\text{total}}} \geq \text{epoch}_{\text{kld stop}} \\
+    \end{cases}
+    \label{eq:kld-annealing}
+\end{equation}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8 \textwidth]{images/nn/training/beta-annealing.jpg}
+    \caption{$\beta$ value through training for KLD annealing}
+    \label{fig:beta-annealing}
+\end{figure}
 
 
 
