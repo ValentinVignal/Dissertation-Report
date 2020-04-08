@@ -196,7 +196,7 @@ I also would like to thank the Doctor Dorien Herremans who gave me precious advi
 
 This paper introduces the work I have done for my dissertation.
 As a musician, I like to play music, improvise and create or arrange songs.
-The main goal of this dissertation is to create a neural network architecture able to handle all the tasks a musician or a composer can do.
+The main goal of this dissertation is to create a neural network architecture able to handle several tasks a musician or a composer can do.
 
 To this purpose, I created a new architecture that I call RMVAE (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see section \ref{sec:back:rnn}).
 Only one trained model can be used to create a melody, several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
@@ -248,6 +248,7 @@ The results show that the extra losses are not helping the model which indicates
         C-RBM & Convolutional Restricted Boltzmann Machine \\
         CNN & Convolutional Neural Network \\
         EDM & Electronic Dance Music \\
+        ELBO & Evidence Lower BOund \\
         EQL & EQuation Learner \\
         FC & Fully Connected \\
         GAN & Generative Adversarial Network \\
@@ -302,26 +303,41 @@ Models like DeepBach \cite{hadjeres_deepbach:_2016}, BachBot \cite{liang_automat
 Other non-musical model came up recently.
 New architectures are being created and are able to generalize data in a more meaningful way, be more consistent through time \cite{vaswani_attention_2017}, can handle more complex data with several modalities \cite{wu_multimodal_2018-1, tan_factorized_2019}.
 
-Therefor, I try in this work to combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
-My goal is to create a unique model able to execute all the task I could perform as a musician, create a song, harmonize a melody, jam with someone...
+Therefore, I try in this work to combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
+My goal is to create a unique model able to execute as many tasks as I could perform as a musician, create a song, harmonize a melody, jam with someone... I 
 Instead of letting the model learn everything from scratch from the data, I also want to give it prior knowledge about music.
 
+Thus, the first objective of my dissertation is to create a unique trained model able to generate a melody, generate several musical parts, create an accompaniment from a melody, create a melody from an accompaniment.
+The second objective is to insert some prior knowledge about music to the model.
+
 The choices I have made for this project were mostly relying on my musical instinct.
-I tried to stay as close as possible to my musical thoughts in the way I constructed a model, process the data et-caetera.
+I tried to stay as close as possible to my musical thoughts in the way I constructed a model, process the data and so on.
+
+The chapter \ref{chap:background} will explain some background knowledge to the reader.
+It will a musical part and a deep learning part.
+The chapter \ref{chap:related-works} will summarize what has already been done about music generation in deep learning.
+The chapter \ref{chap:contribution} will present what are my contributions and what novel ideas I had for my Dissertation.
+Finally the chapters \ref{chap:results} and \ref{chap:experiments} will enumerate the results I got and what experiments I managed to conduct.
 
 
 % ----------------------------------------------------------------------------------------------------
 % Background
 % ----------------------------------------------------------------------------------------------------
 \chapter{Background}
+\label{chap:background}
 
 In this chapter, I will introduce some background knowledge that might be useful to the reader. Since this project is about music generation, I will explain and illustrate some basic concepts about music.
 
 I will consider the Western music using equal temperament and don't consider the inharmonicity of stringed instruments. These are common assumptions in all the existing works about music generation.
 
+The section \ref{sec:back:musical-representation} will explain how music is represented by musician and computers and how it is possible to use those representations to create tensors.
+The sections \ref{sec:back:music-theory} and \ref{sec:back:music-arrangement} will introduce the reader to basic musical rules, phenomena and definitions.
+Finally, the section \ref{sec:back:nn-architectures} will enumerate several neural network architectures which are useful to understand this Dissertation.
+
 % -------------------- Music Representation --------------------
 
 \section{Music representation}
+\label{sec:back:musical-representation}
 
 In this section I will explain how musicians represent the music on paper, and from it, how it is possible to represent the music in a abstract way in a computer without encoding any waveforms or actual \textit{sounds}.
 
@@ -423,6 +439,7 @@ The figure \ref{fig:pianoroll_flstudio} shows a view of the pianoroll in the fam
 % -------------------- Music Theory --------------------
 
 \section{Music theory}
+\label{sec:back:music-theory}
 
 In this section, I will describe and explain some rules from music theory which are related to this work. The rules I am going to explain are the most common ones and most of the songs tend to follow them.
 
@@ -558,6 +575,7 @@ The harmony parts will usually avoid unpleasant interval and mostly try to creat
 % -------------------- Music arrangement  --------------------
 
 \section{Music arrangement}
+\label{sec:back:music-arrangement}
 
 Arranging a song is an entire musical field an a job.
 It is the art of giving an existing melody musical variety.
@@ -570,6 +588,7 @@ To give an example, arranging a song could be create piano, guitar, drums and ba
 % -------------------- Neural Network architecture --------------------
 
 \section{Neural Network architectures}
+\label{sec:back:nn-architectures}
 
 In this section, I will briefly describe some neural network architectures.
 
@@ -606,9 +625,8 @@ The figure \ref{fig:max_pooling} illustrates how the max pooling operation works
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75 \textwidth]{images/nn/layers/max_pooling.png}
+    \includegraphics[width=0.75 \textwidth]{images/nn/layers/max_pooling.jpg}
     \caption{Max pooling operation}
-    Source: \href{https://en.wikipedia.org/wiki/File:Max_pooling.png}{Wikipedia}
     \label{fig:max_pooling}
 \end{figure}
 
@@ -626,18 +644,65 @@ The figure \ref{fig:autoencoder} summarizes this architecture.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75 \textwidth]{images/nn/architectures/autoencoder.png}
+    \includegraphics[width=0.9 \textwidth]{images/nn/architectures/autoencoder.jpg}
     \caption{AutoEncoder}
     Source: \href{https://commons.wikimedia.org/wiki/File:Autoencoder_structure.png}{Wikipedia}
+    % TODO: don’t cite wikipedia. Find an actual source.
     \label{fig:autoencoder}
 \end{figure}
 
 \subsection{Variational AutoEncoder}
 \label{sec:back:vae}
 
-A VAE \cite{doersch_tutorial_2016, noauthor_variational_nodate, noauthor_tutorial_nodate, akrami_robust_2019, liu_towards_2020} is an autoencoder. The steps are the following:
+% TODO: you need a better summary of the VAE here. It can’t just be the steps. What is the key theoretical idea behind the vae? i.e., forming the generative model. 
+
+The VAE \cite{doersch_tutorial_2016, noauthor_variational_nodate, noauthor_tutorial_nodate, akrami_robust_2019, liu_towards_2020} comes from the Bayesian Theorem (equation \ref{eq:bayesian-theorem}).
+
+\begin{equation}
+    p(x|z) = \frac{p(z|x) p(x)}{p(z)}
+    \label{eq:bayesian-theorem}
+\end{equation}
+
+It is a latent variable generative model of the form $p_{\theta}(x, z) = p(z)p_{\theta}(x|z)$ where $p(z)$ is the prior.
+$z$ is usually a standard Gaussian distribution: $z \sim \mathcal{N} (0, I)$.
+The decoder $p_{\theta}(x|z)$ consists of a neural network, with the parameters $\theta$ composed with a simple likelihood (for example, a Bernoulli or Gaussian distribution).
+The objective of training is to maximize the marginal likelihood of the data (called the \textit{"evidence"}) (equation \ref{eq:vae:argmax}).
+\begin{equation}
+    \text{argmax}_{\theta} (\log(p_{\theta} (x)))
+    \label{eq:vae:argmax}
+\end{equation}
+However, since it is intractable (equation \ref{eq:vae:intractable}), the evidence lower bound is instead optimized. The ELBO is defined via an inference network $q_{\phi}(z|x)$, with parameters $\phi$ which serves as a intractable importance distribution (equation \ref{eq:vae:elbo}).
+\begin{equation}
+    \log (p_{\theta} (X)) - \log \left( \int_{Z} p_{\theta} (X|Z) p(Z) dZ\right)
+    \label{eq:vae:intractable}
+\end{equation}
+\begin{equation}
+    \text{ELBO}(x) = \mathbb{E}_{q_{\phi}(z|x)} \left[ \log (p_{\theta}(x|z)) \right] - \mathbb{D}_{KL} \left( q_{\phi}(z|x), p(z) \right)
+    \label{eq:vae:elbo}
+\end{equation}
+Where $\mathbb{D}_{KL}(p, q)$ is the Killback-Leibler divergence between distributions $p$ and $q$.
+The ELBO is usually optimize via stochastic gradient descent, using reparameterization trick to estimate the gradient \cite{kingma_auto-encoding_2014}.
+
+The figure \ref{fig:vae:reparameterization-trick} shows the reparameterization trick.
+A training-time VAE implemented as a feedforward neural network, where $P(X|z)$ is Gaussian.
+Left is without the reparameterization trick, and right is with it
+Red shows sampling operations that are non-differentiable.
+Blue shows loss layers.
+The feedforward behavior of these networks is identical, but the backpropagation can be applied only to the right network
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/architectures/reparameterization-trick.jpg}
+    \caption{Reparameterization trick for VAE}
+    Source: Tutorial on Variational Autoencoders \cite{doersch_tutorial_2016}
+    \label{fig:vae:reparameterization-trick}
+\end{figure}
+
+\subsubsection{Summary and vulgarization}
+
+A VAE  is an autoencoder. The steps are the following:
 \begin{enumerate}
-    \item The input goes first in the encoder which encodes it as a gaussian distribution over the latent space.
+    \item The input goes first in the encoder which encodes it as a Gaussian distribution over the latent space.
     \item A point is sample from this distribution.
     \item This point is decoded by the decoder to reconstruct the input.
 \end{enumerate}
@@ -653,7 +718,107 @@ To regularize the output of the decoder, an extra term is added to the loss func
 \subsection{Generative Adversarial Network}
 \label{sec:back:gan}
 
-GAN \cite{noauthor_gan_2017, goodfellow_generative_2016, goodfellow_generative_2014} are composed of two models that are trained simultaneously:
+% TODO: Likewise, you need a better description of the GAN. 
+
+The basic idea of GANs \cite{noauthor_gan_2017, goodfellow_generative_2016, goodfellow_generative_2014, goodfellow_nips_2017} is to set up a game between two players.
+One of them is called the \textit{generator} and creates samples that are intended to come from the same distribution as the training data.
+The other player is the \textit{discriminator} and examines samples to determine whether they are real or fake.
+The discriminator learns using traditional supervised learning techniques, dividing inputs into two classes (real or fake).
+The generator is trained to fool the discriminator.
+
+GANs are a structured probabilistic model containing latent variables $z$ and observed variables $x$ (figure \ref{fig:gan-latent-space}).
+
+\begin{figure}[htbp]
+\begin{center}
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+    \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    
+    \node[state](z){$z$};
+    \node[state, fill=lightgray](x)[below of=z]{$x$};
+    
+    \path
+        (z) edge    node{}    (x);
+    \end{tikzpicture}
+\caption{The graphical model structure of GANs}
+\label{fig:gan-latent-space}
+\end{center}
+\end{figure}
+
+The two players in the game are represented by two functions, each of which is differentiable both with respect to its inputs and with respect to its parameters.
+The discriminator is a function $D$ that takes $x$ as input and uses $\theta^{(D)}$ as parameters.
+The generator is defined by a function $G$ that takes $z$ as input and uses $\theta^{(G)}$ as parameters.
+
+Both players have cost functions that are defined in terms of both players’ parameters.
+The discriminator wishes to minimize $J^{(D)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(D)}$.
+The generator wishes to minimize $J^{(G)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(G)}$.
+Because each player’s cost depends on the other player’s parameters, but each player cannot control the other player’s parameter, this scenario can be describe as a game.
+The solution to a game is a Nash equilibrium.
+In this context, a Nash equilibrium is a tuple $(\theta^{(D)}, \theta^{(G)})$ that is a local minimum of $J^{(D)}$ with respect to $\theta^{(D)}$ and a local minimum of $J^{(G)}$ with respect to $\theta^{(G)}$.
+
+The generator is simply a differentiable function $G$ represented by a deep neural network.
+When $z$ is sampled from some simple prior distribution, $G(z)$ yields a sample of $x$ drawn from $p_{model}$.
+
+The figure \ref{fig:gan-framework} illustrates the framework of GANs.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/architectures/gan-framework.jpg}
+    \caption{GAN framework}
+    \label{fig:gan-framework}
+    Source: Ian Goodfellow's paper \cite{goodfellow_nips_2017}
+\end{figure}
+
+The cost function used for the discriminator is showed in the equation \ref{eq:gan:cost-d}.
+\begin{equation}
+    J^{(D)}(\theta^{(D)}, \theta^{(G)}) = -\frac{1}{2}\mathbb{E}_{x \sim p_{data}} (\log (D(x))) - \frac{1}{2} \mathbb{E}_{z} ( \log (1 -D(G(z)))
+    \label{eq:gan:cost-d}
+\end{equation}
+
+There are several possibilities for the cost function of the generator.
+
+The first one is the \textbf{Minimax} cost function where $J^{(G)} = - J^{(D)}$.
+This a \textit{zero-sum game}.
+Zero-sum games are also called \textbf{minimax} games because of the form of the solution (equation \ref{eq:gan:minimax}).
+\begin{equation}
+    \theta^{(G)*} = \text{argmin}_{\theta^{(G)}} \left[ \text{argmax}_{\theta^{(D)}} \left[ J^{(G)} \left( \theta^{(D)}, \theta^{(G)} \right) \right] \right]
+    \label{eq:gan:minimax}
+\end{equation}
+
+The second one is the \textbf{Heuristic, non-saturating game}.
+The minimax cost function doesn't perform well in practice.
+When the discriminator successfully rejects the generator samples with high confidence, the generator's gradient vanishes.
+The generator's cost becomes the equation \ref{eq:gan:heuristic}
+\begin{equation}
+    J^{(G)} = = - \frac{1}{2} \mathbb{E} (\log(D(G(z))))
+    \label{eq:gan:heuristic}
+\end{equation}
+The motivation of this cost function is to ensure that each player has a strong gradient it is \textit{"losing"} the game.
+
+The third one is the \textbf{Maximum likelihood game}.
+This version maximizes the likelihood learning with GANs, which means minimizin the KLD between the data and the model.
+Goodfellow \cite{goodfellow_generative_2014} showed that using the equation \ref{eq:gan:likelihood} where $\sigma$ is the logistic function, is equivalent to minimize the KLD between the data and the model.
+\begin{equation}
+    G^{(G)} = - \frac{1}{2} \mathbb{E}_{z} \left[ \exp \left( \sigma^{-1} (D(G(z))) \right) \right]
+    \label{eq:gan:likelihood}
+\end{equation}
+
+The choice of the divergence will influence the results of the training.
+The KLD is not symmetric.
+Minimizing $\mathbb{D}_{KL}(p_{data}, p_{model})$ is different from minimizing $\mathbb{D}_{KL}(p_{model}, p_{data})$.
+The figure \ref{fig:gan:directions-kld} shows the differences between the two directions of the KLD.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/graphs/reverse-kl.jpg}
+    \caption{Differences between the two direction of the KLD}
+    Source: Ian Goodfellow's paper \cite{goodfellow_nips_2017}
+    \label{fig:gan:directions-kld}
+\end{figure}
+Minimizing the reverse KL might be expected to yield better samples because the model would prefer to generate samples that come only from modes in the training distribution.
+It would ignore some modes, rather than including all modes but generating some samples that do not belong from any training set mode.
+
+\subsubsection{Summary and vulgarization}
+
+GANs are composed of two models that are trained simultaneously:
 \begin{itemize}
     \item The \textit{Generator} will learn how to create data that look real.
     \item The \textit{Discriminator} will learn how to differentiate real and generated data.
@@ -672,40 +837,31 @@ And so on...
 \subsection{Recurrent Neural Networks}
 \label{sec:back:rnn}
 
-A RNN is a neural network where connections between nodes form a direct graph along a temporal sequence. The general architecture is showed in the figure \ref{fig:rnn}.
+A RNN \cite{chen_gentle_2018} is a neural network where connections between nodes form a direct graph along a temporal sequence. The general architecture is showed in the figure \ref{fig:rnn}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75 \textwidth]{images/nn/architectures/rnn.jpg}
+    \includegraphics[width=0.9\textwidth]{images/nn/architectures/rnn.jpg}
     \caption{Recurrent Neural Network}
-    Source: \href{https://fr.wikipedia.org/wiki/Fichier:Recurrent_neural_network_unfold.svg}{Wikipedia}
+    Source: Gang Chen's paper \cite{chen_gentle_2018}
     \label{fig:rnn}
 \end{figure}
 
-The most used cells are the LSTM cell and the GRU cell. The architectures are showed in the figures \ref{fig:lstm} and \ref{fig:gru}.
+The most used cells are the LSTM cell and the GRU cell. The architectures are showed in the figures \ref{fig:lstm-gru}.
 
 \begin{figure}[htbp]
-   \begin{minipage}{0.5\textwidth}
-     \centering
-     \includegraphics[width=.98\linewidth]{images/nn/layers/lstm.jpg}
-     \caption{LSTM cell}
-     Source: \href{https://commons.wikimedia.org/wiki/File:Long_Short-Term_Memory.svg}{Wikipedia}
-     \label{fig:lstm}
-   \end{minipage}\hfill
-   \begin{minipage}{0.5\textwidth}
-     \centering
-     \includegraphics[width=.98\linewidth]{images/nn/layers/gru.jpg}
-     \caption{GRU cell}
-     Source: \href{https://en.wikipedia.org/wiki/Recurrent_neural_network#/media/File:Gated_Recurrent_Unit.svg}{Wikipedia}
-     \label{fig:gru}
-   \end{minipage}
+    \centering
+    \includegraphics[width=\textwidth]{images/nn/layers/lstm-gru.jpg}
+    \caption{LSTM and GRU cell}
+    Source: Michael Nguyen's tutorial \cite{nguyen_illustrated_2019}
+    \label{fig:lstm-gru}
 \end{figure}
 
 
 \subsection{Transformers}
 \label{sec:back:transformers}
 
-The Transformers \cite{vaswani_attention_2017, noauthor_transformer_nodate, giacaglia_transformers_2019, allard_what_2020, alammar_illustrated_nodate} have been introduced to the world by Ashish Vaswani et al. \cite{vaswani_attention_2017-1}.
+Transformers \cite{vaswani_attention_2017, noauthor_transformer_nodate, giacaglia_transformers_2019, allard_what_2020, alammar_illustrated_nodate} have been introduced to the world by Ashish Vaswani et al. \cite{vaswani_attention_2017-1}.
 It is an attention mechanism illustrated in the figure \ref{fig:arch:transformer}.
 On this figure, the encoder is on the left and the decoder on the right.
 
@@ -756,12 +912,12 @@ The output is computed as a weighted sum of the values, where the weight assigne
 The advantage of the transformer is that it is able to learn long-range dependencies.
 This is a challenge in many sequences tasks.
 However, a transformer doesn't take into account the position of the input from a sequence. 
-Therefor, a positional encoding must be added.
+Therefore, a positional encoding must be added.
 
 \subsection{Multimodel Variational AutoEncoder}
 \label{sec:back:mvae}
 
-The MVAE has been introducted by Mike Wu et al. \cite{wu_multimodal_2018}.
+The MVAE has been introduced by Mike Wu et al. \cite{wu_multimodal_2018}.
 The figure \ref{fig:mvae_graph} represent the graphical model of the MVAE.
 The gray circles represent the observed variables.
 The MVAE uses a \textit{Product of Experts} (PoE) inference network and a sub-sampled training paradigm to solve the multi-modal inference problem.
@@ -964,26 +1120,30 @@ Training a RBM consist of implementing a gradient descent of the log-likelihood 
 % Related work
 % ----------------------------------------------------------------------------------------------------
 
-% Level 1: Representation
-% Level 2: objective
-% Level 3: architecture
-% Level 4: strategie
-
 \chapter{Related works}
+\label{chap:related-works}
 
 I will expose in this chapter the works that have already been done about music generation with deep neural networks.
-In a first time, I will expose the different objectives of some implementations.
-In a second time, I will introduce how the music is represented.
-I will then enumerate what architectures have already been used. 
-Finally, I will illustrate what are the generation processes used.
+In the section \ref{sec:related-works:objectives}, I will expose the different objectives of some implementations.
+In the sections \ref{sec:related-works:music-representation} and \ref{sec:related-works:encoding}, I will introduce how the music is represented.
+I will then enumerate in the section \ref{sec:related-works:architectures} what architectures have already been used. 
+Finally, in the section \ref{sec:related-works:generation-process}, I will illustrate what are the generation processes used.
 
 % -------------------- Objectives  --------------------
 
 \section{Objectives}        % Change the name
+\label{sec:related-works:objectives}
 
 In this section, I will describe some examples of what it is possible to do with neural networks to generate music.
 
-As explained in the section \ref{sec:objectives}, my Dissertation's goal is to create a single model able to do everything.
+As explained in the section \ref{sec:objectives}, my Dissertation's goal is to create a single model able to do as many task as possible a musician or a composer could do.
+For instance:
+\begin{itemize}
+    \item Generate music with several part (for instance several instruments)
+    \item Create a accompaniment from a melody
+    \item Create a melody from an accompaniment
+    \item Create a musical part from other musical parts
+\end{itemize}
 
 \subsection{Generator}
 
@@ -1017,6 +1177,7 @@ The black melody is the melody entered by the user (me) and Bach Doodle created 
 % -------------------- Music Representation--------------------
 
 \section{Music Representation}
+\label{sec:related-works:music-representation}
 
 In this section, I will present different types of inputs the related works use.
 
@@ -1035,9 +1196,9 @@ This signal can be represented either by its waveform \cite{oord_wavenet:_2016},
    \end{minipage}\hfill
    \begin{minipage}{0.5\textwidth}
      \centering
-     \includegraphics[width=\linewidth, height=4cm]{images/music/spectrogram/spectrogram.jpg}
+     \includegraphics[width=\linewidth, height=4cm]{images/music/spectrogram/izotope-spectrogram.png}
      \caption{Example of audio spectrogram}
-     Source: \href{https://commons.wikimedia.org/wiki/File:Spectrogram_of_Bach\%27s_Chorales_for_Organ.jpg}{Wikipedia}
+     Source: iZotope's tutorial \cite{noauthor_understanding_nodate} %\href{https://commons.wikimedia.org/wiki/File:Spectrogram_of_Bach\%27s_Chorales_for_Organ.jpg}{Wikipedia}
      \label{fig:spectrogram_example}
    \end{minipage}
 \end{figure}
@@ -1184,25 +1345,12 @@ As the same way as Jazz music, it is possible to simplify the description of a m
 \end{figure}
 
 For instance, in the figure \ref{fig:pianoroll_to_chords}, the bass line can be simplified by considering the chords.
-The chords are then writen and be considered as notes.
-
-
-
-% TODO: Speak about Chords2Vec
-%       Survey descritpion 
-% Note that a somehow similar model has been used for polyphonic music generation in
-% the BachBot system [66] (analyzed in Section 7.3.1.3). In this model, for each time step, the
-% various notes are represented as a sequence and a special delimiter symbol (|||) indicates
-% the next time frame (with constant time step of an eighth note (<croche symbol>). Notes are ordered, in a
-% descending pitch (soprano voice being the first one). Each note is encoded as its MIDI pitch
-% value and a boolean indicating if it is tied to a note at the same pitch from previous frame.
-% An example is shown at Figure 4.8, encoding two successive chords (the first having the
-% duration of a quarter note) and the second one possessing a fermata (noted as (.)).
-
+The chords are then written and be considered as notes.
 
 % -------------------- Encoding --------------------
 
 \section{Encoding}
+\label{sec:related-works:encoding}
 
 \subsection{Features}
 
@@ -1227,16 +1375,15 @@ Deep Bach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016} co
 \end{figure}
 
 In this project I chose to not include any metadata in the model because of the difficulty to find or reconstruct them for the available dataset.
-However, I not intentionally gives to the model the information about the beats number and subdivisions by considering the entire measure as one input.
+However, I gives to the model the information about the beats number and subdivisions by considering the entire measure as one input.
 
 \bigskip
 
 Another way to help the model by giving it information without actually passing metadata is to normalize the data.
 For example, BachBot \cite{liang_automatic_2017} and other works \cite{chuan_modeling_nodate, boulanger-lewandowski_modeling_2012} transpose all their dataset in either C major or A minor key.
 
-For the same reason as not passing metadata, I don't normalize the data before training my models.
-
-% TODO say I put everything in C major or A minor
+For the same reason as not passing metadata, I didn't normalize the data before training my models.
+However, because I was having poor results, I decided afterward to transpose all the song in either the C major scale or the A minor scale.
 
 \subsection{Tensor encoding}
 
@@ -1253,6 +1400,7 @@ This is the retained method in my Dissertation.
 
 
 \section{Architectures}
+\label{sec:related-works:architectures}
 
 
 In this section, I will present different architectures that have already been used for music generation. It will expose the architecture of my project in the section \ref{sec:rmvae}.
@@ -1306,6 +1454,8 @@ Sander Dieleman et al. \cite{dieleman_challenge_2018} use a VAE (or more precisl
 
 \subsection{RMVAE}
 
+% TODO: Put this right at the end of this chapter. "Thesis Contributions and Relation to Prior Work" 
+
 Since I created this new architecture, there is no existing work using this one.
 My project is, for now, the only work done using a Recurrent Multimodal Variational AutoEncoder to generate music.
 
@@ -1333,6 +1483,7 @@ They achieve this perfomance by using a Transformer with relative attention (equ
 \end{equation}
 
 \section{Generation Process}
+\label{sec:related-works:generation-process}
 
 In this section, I will enumerate different techniques to generate music from different model architectures.
 
@@ -1400,8 +1551,14 @@ The algorithm is describe in the figure \ref{fig:relatedworks:deepbach_architect
 % Contribution
 % ----------------------------------------------------------------------------------------------------
 \newpage
-\chapter{Contribution}
+\chapter{Contribution: Multi-Modal Music Generation}
 \label{chap:contribution}
+
+I will explain in this chapter what have been my original works for my Dissertation.
+In the section \ref{sec:objectives}, I will explain what I have been aiming to do.
+In the section \ref{sec:data_represetation}, I will explain how I decided to represent the music and how I decided to work with it.
+In the section \ref{sec:rmvae}, I will describe my novel architecture (RMVAE) that I have created for my Dissertation.
+And finally, in the section \ref{sec:loss}, I'll illustrate how I gave some prior knowledge to the network with custom loss functions.
 
 % -------------------- Objectives --------------------
 
@@ -1993,6 +2150,7 @@ The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}
 % Results
 % ----------------------------------------------------------------------------------------------------
 \chapter{Results}
+\label{chap:results}
 
 In this chapter I will share the results I got.
 
@@ -2055,9 +2213,22 @@ I don't know because the training is still not finished
 % ----------------------------------------------------------------------------------------------------
 
 \chapter{Experiments}
+\label{chap:experiments}
+
+% TODO:
+% This chapter needs  a lot of work. Perhaps you can give a sample of the generated music or provide it during the presentation. 
+
+% Try to first do like the others and provide some qualitative assessments. Do you have friends that you can have listen and give some input? 
+
+% Quantitatively: I suggest you show things like accuracy at predicting the next note on existing music samples. 
+
+% Or test generalizability somehow. 
+
+% You need to test each of the tasks you specified in the Chapter 4 
+
 
 In this chapter I expose the experiments I have conduct for this project.
-Evaluate a generated musical piece is a complex task.
+Evaluating a generated musical piece is a complex task.
 Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
 Most of the paper working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
 They create a poll and let the people decide what sample they prefer between several of them.
@@ -2447,6 +2618,10 @@ Unfortunately, the results weren't much different from the CNN encoder and decod
 
 \section{Network details}
 
+To create and train my models I used the python frameworks Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate}.
+
+\subsection{Hyper Parameters}
+
 The table \ref{tab:network-hp} is listing the principal value of the hyper-parameters used.
 
 \begin{table}[]
@@ -2456,9 +2631,9 @@ The table \ref{tab:network-hp} is listing the principal value of the hyper-param
         \hline
         optimizer &  Adam optimizer \cite{brownlee_gentle_2017, bushaev_adam_2018, kingma_adam_2017} \\
         learning rate & $10^{-3}$ \\
-        fully connected layer dropout & $2 \times 10^{-1}$ \\
-        convolutional layer dropout & $10^{-2}$ \\
-        lstm dropout & $10^{-1}$ \\
+        fully connected layer dropout & $2 \times 10^{-2}$ \\
+        convolutional layer dropout & $10^{-3}$ \\
+        lstm dropout & $10^{-2}$ \\
         decay & $10^{-1}$ \\
         $\lambda_{\text{scale}}$ & $10^{-1}$ \\
         $\lambda_{\text{rhythm}}$ & $10^{-2}$ \\
@@ -2471,6 +2646,12 @@ The table \ref{tab:network-hp} is listing the principal value of the hyper-param
 \end{table}
 
 Through all the manual training I manually launched, the Grid Search and Bayesian Search algorithm I ran, I have continuously been updated the value of these hyper-parameters.
+
+\subsection{Masking}
+
+To handle missing data, modalities (instruments), the model takes as input a mask.
+The shape of a mask is \texttt{(nb\_instruments, nb\_measures)} and composed of 0 and 1.
+If there is a 0 at the position $(i, m)$ of the mask, it means that the measure $m$ of the instrument $i$ is missing.
 
 
 \section{Training details}
@@ -2520,6 +2701,12 @@ The equation \ref{eq:kld-annealing} and the figure \ref{fig:beta-annealing} show
     \caption{$\beta$ value through training for KLD annealing}
     \label{fig:beta-annealing}
 \end{figure}
+
+\section{Implementation details}
+
+My project is coded in Python language.
+I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}. 
+
 
 
 
