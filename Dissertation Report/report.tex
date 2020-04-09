@@ -199,18 +199,37 @@ I also would like to thank the Doctor Dorien Herremans who gave me precious advi
 
 This paper introduces the work I have done for my dissertation.
 As a musician, I like to play music, improvise and create or arrange songs.
-The main goal of this dissertation is to create a neural network architecture able to handle several tasks a musician or a composer can do.
 
-To this purpose, I created a new architecture that I call RMVAE (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see section \ref{sec:back:rnn}).
+However, most of the related works about music generation with a deep neural network aim to perform one and only one task.
+The main goal of this Dissertation is to create a neural network architecture able to handle several tasks a musician or a composer can do with only one trained model.
+These tasks are, generate one or several musical parts, generating a accompaniment from a melody, generate a melody from a accompaniment, generate one or several musical parts from another or other musical parts.
+
+To this purpose, I created a new architecture that I call \textbf{RMVAE} (Recurrent Multimodal Variational AutoEncoder) (section \ref{sec:rmvae}) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells (see sections \ref{sec:back:rnn} and \ref{sec:back:mvae}).
 Only one trained model can be used to create a melody, several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
 
-As a musician I also tried to integrate prior musical knowledge to the model by creating 3 cost functions (section \ref{sec:loss}).
+As a Musician, I have some knowledge about musical rules and tendencies.
+Therefore, I tried to incorporate some prior knowledge to the neural network with some additional custom loss functions (section \ref{sec:loss}).
+I came up with 3 different functions that I name \textit{Scale}, \textit{Rhythm} and \textit{Harmony}.
+These loss functions are respectively described and explained in the sections \ref{sec:scale}, \ref{sec:rhythm} and \ref{sec:harmony}.
 
 For this project, I used the MIDI dataset which is Bach's Chorales dataset from the music21 corpus \cite{noauthor_music21corpuschorales_nodate} and used their framework \cite{noauthor_music21_nodate} to open and create MIDI files.
 The deep learning framework I used it Tensorflow/Keras \cite{noauthor_tensorflow_nodate, noauthor_keras_nodate}.
 I made my python code for this dissertation available online: \url{https://github.com/ValentinVignal/midiGenerator}.
 
-The results show that the extra losses are not helping the model which indicates that the neural network is able to understand those musical rules and tendencies by its own.
+I construct the \textbf{RMVAE} so it is easy to implement a script to handle different tasks.
+The tasks I have implemented are, generate several musical part, generate a musical part from other musical parts, and re-write a song by replacing one by one all the musical parts.
+These tasks are described in the section \ref{sec:tasks}.
+Other tasks can easily be derived from the one I have already implemented.
+
+Unfortunately, the generated samples from the \textbf{RMVAE} don't match my expectation.
+The model is consistent through its generation, but the quality of the created sample is poor.
+The generated notes are mostly Quarter notes (\musQuarter).
+The model has the tendency to generated only 3 different notes per voice and repeat a simple sequence.
+
+I conduct some experiments (chapter \ref{chap:experiments}) and created some google forms (appendix \ref{appendix:google-forms}), to evaluate whether the additional loss functions actually help the model or not.
+Much to my disappointment, the results of these experiences and polls weren't in favour of my customs functions.
+Indeed, the results with a custom loss function are either equivalent or worse than without.
+
 
 % ####################################################################################################
 % ####################################################################################################
@@ -309,19 +328,21 @@ Other non-musical model came up recently.
 New architectures are being created and are able to generalize data in a more meaningful way, be more consistent through time \cite{vaswani_attention_2017}, can handle more complex data with several modalities \cite{wu_multimodal_2018-1, tan_factorized_2019}.
 
 Therefore, I try in this work to combine my understanding of music, the knowledge so far on music generation and the capability to handle complex data with several modalities.
-My goal is to create a unique model able to execute as many tasks as I could perform as a musician, create a song, harmonize a melody, jam with someone... I 
+My goal is to create a unique model able to execute as many tasks as I could perform as a musician, create a song, harmonize a melody, arrange a music or jam with someone...
+
+While I was spending my time learning about music, training my musical skills or playing with other people, I have learnt, understood and integrated some musical concepts.
 Instead of letting the model learn everything from scratch from the data, I also want to give it prior knowledge about music.
 
-Thus, the first objective of my dissertation is to create a unique trained model able to generate a melody, generate several musical parts, create an accompaniment from a melody, create a melody from an accompaniment.
+Thus, the first objective of my dissertation is to create a unique trained model able to generate a melody, generate several musical parts, create an accompaniment from a melody, create a melody from an accompaniment...
 The second objective is to insert some prior knowledge about music to the model.
 
 The choices I have made for this project were mostly relying on my musical instinct.
 I tried to stay as close as possible to my musical thoughts in the way I constructed a model, process the data and so on.
 
-The chapter \ref{chap:background} will explain some background knowledge to the reader.
-It will a musical part and a deep learning part.
-The chapter \ref{chap:related-works} will summarize what has already been done about music generation in deep learning.
+The chapter \ref{chap:background} will explain some background knowledge about music and deep learning architectures to the reader.
+The chapter \ref{chap:related-works} will summarize what has already been done about music generation in deep learning, including how the data are represented, what are the objective of these different works, what architecture they chose, and what is the generation process used.
 The chapter \ref{chap:contribution} will present what are my contributions and what novel ideas I had for my Dissertation.
+This will include the architecture I created (RMVAE) and how I created 3 additional loss functions to give some prior knowledge to the model.
 Finally the chapters \ref{chap:results} and \ref{chap:experiments} will enumerate the results I got and what experiments I managed to conduct.
 
 
@@ -748,12 +769,12 @@ The two players in the game are represented by two functions, each of which is d
 The discriminator is a function $D$ that takes $x$ as input and uses $\theta^{(D)}$ as parameters.
 The generator is defined by a function $G$ that takes $z$ as input and uses $\theta^{(G)}$ as parameters.
 
-Both players have cost functions that are defined in terms of both players’ parameters.
-The discriminator wishes to minimize $J^{(D)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(D)}$.
-The generator wishes to minimize $J^{(G)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(G)}$.
-Because each player’s cost depends on the other player’s parameters, but each player cannot control the other player’s parameter, this scenario can be describe as a game.
-The solution to a game is a Nash equilibrium.
-In this context, a Nash equilibrium is a tuple $(\theta^{(D)}, \theta^{(G)})$ that is a local minimum of $J^{(D)}$ with respect to $\theta^{(D)}$ and a local minimum of $J^{(G)}$ with respect to $\theta^{(G)}$.
+Both players have cost functions which depend on the parameters of both players.
+The discriminator tries to minimize $J^{(D)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(D)}$.
+The generator tries to minimize $J^{(G)} (\theta^{(D)}, \theta^{(G)})$ by controlling $\theta^{(G)}$.
+Because each player’s cost depends on the other player’s parameters, but each player cannot modify the other player’s parameter, this scenario can be describe as a game.
+The solution to a game is a called a Nash equilibrium.
+For us, a Nash equilibrium is a tuple $(\theta^{(D)}, \theta^{(G)})$ that is a local minimum of $J^{(D)}$ with respect to $\theta^{(D)}$ and a local minimum of $J^{(G)}$ with respect to $\theta^{(G)}$.
 
 The generator is simply a differentiable function $G$ represented by a deep neural network.
 When $z$ is sampled from some simple prior distribution, $G(z)$ yields a sample of $x$ drawn from $p_{model}$.
@@ -780,7 +801,7 @@ The cost function used for the discriminator is showed in the equation \ref{eq:g
 
 There are several possibilities for the cost function of the generator.
 
-\paragraph{Minimax}
+\paragraph{Minimax}:
 
 The first one is the \textbf{Minimax} cost function where $J^{(G)} = - J^{(D)}$.
 This a \textit{zero-sum game}.
@@ -790,11 +811,11 @@ Zero-sum games are also called \textbf{minimax} games because of the form of the
     \label{eq:gan:minimax}
 \end{equation}
 
-\paragraph{Heuristic, non-saturating game}
+\paragraph{Heuristic, non-saturating game}:
 
 The second one is the \textbf{Heuristic, non-saturating game}.
 The minimax cost function doesn't perform well in practice.
-When the discriminator successfully rejects the generator samples with high confidence, the generator's gradient vanishes.
+When the discriminator performs too well and successfully rejects the samples from the generator with high confidence, the gradient of the generator starts to vanish.
 The generator's cost becomes the equation \ref{eq:gan:heuristic}
 \begin{equation}
     J^{(G)} = = - \frac{1}{2} \mathbb{E} (\log(D(G(z))))
@@ -802,11 +823,11 @@ The generator's cost becomes the equation \ref{eq:gan:heuristic}
 \end{equation}
 The motivation of this cost function is to ensure that each player has a strong gradient it is \textit{"losing"} the game.
 
-\paragraph{Maximum likelihood game}
+\paragraph{Maximum likelihood game}:
 
 The third one is the \textbf{Maximum likelihood game}.
-This version maximizes the likelihood learning with GANs, which means minimizin the KLD between the data and the model.
-Goodfellow \cite{goodfellow_generative_2014} showed that using the equation \ref{eq:gan:likelihood} where $\sigma$ is the logistic function, is equivalent to minimize the KLD between the data and the model.
+This version maximizes the likelihood learning with GANs, which means minimizing the KLD between the data and the model.
+In its paper \cite{goodfellow_generative_2014}, Goodfellow showed that using the equation \ref{eq:gan:likelihood} where $\sigma$ is the logistic function, is equivalent to minimize the KLD between the data and the model.
 \begin{equation}
     G^{(G)} = - \frac{1}{2} \mathbb{E}_{z} \left[ \exp \left( \sigma^{-1} (D(G(z))) \right) \right]
     \label{eq:gan:likelihood}
@@ -970,7 +991,7 @@ The conditional independence assumptions in the generative model (figure \ref{fi
     \end{split}
 \end{equation}
 
-In other words, we can use a product of experts (PoE), including a \textit{“prior expert”}, as the approximating distribution for the joint-posterior.
+Therefor, a product of experts (PoE), including a \textit{“prior expert”}, can be used to approximate the distribution for the joint-posterior.
 
 \begin{figure}[h]
     \centering
@@ -2611,7 +2632,7 @@ By lack of time and result, I haven't been able to create an many polls to evalu
 The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
 
 Conducting several of experiments was very laborious and slow.
-I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate} and faced a lot of memory leak issues.
+I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate} and faced a lot of memory leak issues \cite{noauthor_memory_nodate-1, noauthor_memory_nodate-2}.
 Because of that I had to launch every training manually.
 Moreover, training a model is very long, for example, the average time to train a model for 50 epochs was about 1 day and a half.
 Also, I was sharing the GPUs with limited memory provided by NUS with other student, so I couldn't use all the space to train all my different models at the same times.
@@ -2739,9 +2760,9 @@ The figure \ref{fig:pie:size} display the result of the preference of the person
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        14.7/Small,
-        52.9/Medium,
-        32.4/Big
+        17.5/Small,
+        51.25/Medium,
+        31.25/Big
         }
     \end{tikzpicture}
     \caption{Google form result on model size}
@@ -2750,7 +2771,7 @@ The figure \ref{fig:pie:size} display the result of the preference of the person
     \end{center}
 \end{figure}
 
-17 persons answered the google form, and surprisingly, the results follow the metrics even though the generated samples are pretty similar.
+20 persons answered the google form, and surprisingly, the results follow the metrics even though the generated samples are pretty similar.
 This confirms that the metrics used are actually meaningful and not just numbers.
 
 \section{Custom losses}
@@ -2873,8 +2894,8 @@ The figure \ref{fig:pie:harmony} display the result of the preference of the per
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        14.8/With Harmony loss,
-        85.2/Without Harmony loss
+        23.8/With Harmony loss,
+        76.2/Without Harmony loss
         }
     \end{tikzpicture}
     \caption{Google form result on Harmony loss}
@@ -2883,7 +2904,8 @@ The figure \ref{fig:pie:harmony} display the result of the preference of the per
     \end{center}
 \end{figure}
 
-7 persons answered the google form, and surprisingly, unfortunately, the people have preferred the model which doesn't use the harmony loss.
+11 persons answered the google form.
+Unfortunately, the people have preferred the model which doesn't use the harmony loss.
 It is quite disappointing and I was hoping the harmony loss would have helped the model.
 
 
@@ -3041,7 +3063,7 @@ The application I have created
 \end{itemize}
 
 Calling the model to make the notes prediction while the user is playing is computationally feasible because my model is working on an entire measure at one time.
-Therefor the model is called only one time per measure which is not to frequent to allow the application to be real time.
+Therefore, the model is called only one time per measure which is not to frequent to allow the application to be real time.
 
 
 \section{Coconet Process}
@@ -3095,11 +3117,16 @@ The main advantages of a Bayesian Search over a Grid or a Random Search are:
 \end{itemize}
 
 
-\section{Network details}
+\section{Implementation details}
+
+My project is coded in Python language.
+I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}.
+
+\subsection{Network details}
 
 To create and train my models I used the python frameworks Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate}.
 
-\subsection{Hyper Parameters}
+\subsubsection{Hyper Parameters}
 
 The table \ref{tab:network-hp} is listing the principal value of the hyper-parameters used.
 
@@ -3126,16 +3153,16 @@ The table \ref{tab:network-hp} is listing the principal value of the hyper-param
 
 Through all the manual training I manually launched, the Grid Search and Bayesian Search algorithm I ran, I have continuously been updated the value of these hyper-parameters.
 
-\subsection{Masking}
+\subsubsection{Masking}
 
 To handle missing data, modalities (instruments), the model takes as input a mask.
 The shape of a mask is \texttt{(nb\_instruments, nb\_measures)} and composed of 0 and 1.
 If there is a 0 at the position $(i, m)$ of the mask, it means that the measure $m$ of the instrument $i$ is missing.
 
 
-\section{Training details}
+\subsection{Training details}
 
-\subsection{Noise}
+\subsubsection{Noise}
 
 During the training, I insert some noise in the input data.
 For monophonic music, an activation value will be changed (from 0 to 1 or from 1 to 0) with a probability $p$.
@@ -3147,8 +3174,16 @@ A shape of a tensor representing a measure is \texttt{(16, 128)}.
 For every frame (shape of \texttt{(128,)}), the expectation of altered note is $1.28$.
 It is an added or deleted note for every frame (Sixteenth \musSixteenth) which completely deform the music.
 
+\subsubsection{Tensor size}
 
-\subsection{KLD Annealing}
+For simplicity, I have written in all my dissertation that the shape of a tensor representing a measure was \texttt{(16, 128, channels)}.
+However, because I have been sharing a GPU from NUS with other students, I tried to reduce the size of my models.
+To do so, decided to reduce the pitch dimension (\texttt{(128,)}).
+Instead of considering all the possible MIDI notes, I consider the minimum range or notes which contains all the notes actually present in the dataset.
+This allowed me to reduced the size from \texttt{128} to \texttt{58} (the range of the MIDI notes was $[\texttt{10}, \texttt{68})$).
+
+
+\subsubsection{KLD Annealing}
 \label{appendix:kld-annealing}
 
 It is usually difficult to train a VAE because of the KLD which adds a big constraint on the latent space.
@@ -3182,10 +3217,6 @@ The equation \ref{eq:kld-annealing} and the figure \ref{fig:beta-annealing} show
     \label{fig:beta-annealing}
 \end{figure}
 
-\section{Implementation details}
-
-My project is coded in Python language.
-I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}.
 
 \section{Google Forms}
 \label{appendix:google-forms}
