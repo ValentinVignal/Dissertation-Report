@@ -2,7 +2,7 @@
 \usepackage[top=1in,bottom=1in,left=1.5in,right=1.5in]{geometry}
  \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings, setspace}
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ, algorithm, stmaryrd,tabu,bbm,titlesec,booktabs,array,lscape,float,longtable, tikz, subcaption, algpseudocode, listings, setspace, pgf-pie}
 \usetikzlibrary{automata,arrows,positioning,calc}
 \usepackage[nottoc]{tocbibind}
 \usepackage[english]{babel}
@@ -2732,6 +2732,27 @@ The generated part is looping over the same notes.
 
 % TODO: Put results of the google forms for size
 
+I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSdBn0DZZe-8YPvLYl-vovapk1iMnteeLzGfFJ7R00D3eA-Ydw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
+The figure \ref{fig:pie:size} display the result of the preference of the persons who took the poll.
+
+\begin{figure}
+    \begin{center}
+    \begin{tikzpicture}
+        \pie[rotate=180]{
+        14.7/Small,
+        52.9/Medium,
+        32.4/Big
+        }
+    \end{tikzpicture}
+    \caption{Google form result on model size}
+    The preferred model by the people
+    \label{fig:pie:size}
+    \end{center}
+\end{figure}
+
+17 persons answered the google form, and surprisingly, the results follow the metrics even though the generated samples are pretty similar.
+This confirms that the metrics used are actually meaningful and not just numbers.
+
 \section{Custom losses}
 
 \subsection{Scale and Rhythm}
@@ -2755,24 +2776,115 @@ As we can see, there is no difference between the 2 graphs.
 \end{figure}
 
 \subsection{Harmony}
+\label{sec:exp:harmony}
 
-The figures \ref{fig:loss-comparison-harmony} and \ref{fig:acc-comparison-harmony} show the loss and accuracy of an output through the training of two models.
-The first one doesn't use the \textit{Harmony} function (section \ref{sec:harmony}), but the second one uses it.
-As we can see, there is no difference between the 2 graphs
+The following figures display the difference of some metrics through the training of two models.
+The first one uses the custom loss \textit{Harmony}, and the second one doesn't use it.
+\begin{itemize}
+    \item \ref{fig:acc-output-comparison-harmony} shows the accuracy of an output
+    \item \ref{fig:loss-output-comparison-harmony} shows the loss of an output
+    \item \ref{fig:loss-comparison-harmony} shows the global loss
+    \item \ref{fig:harmony-comparison-harmony} shows the harmony loss value
+    \item \ref{fig:kld-comparison-harmony} shows the KLD value
+\end{itemize}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{images/experiences/harmony/loss-comparison-harmony.jpg}
-    \caption{Loss comparison between models with and without Harmony loss}
-    \label{fig:loss-comparison-harmony}
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/acc-output-comparison-harmony.jpg}
+            \caption{Accuracy value for one output comparison with and without harmony loss}
+            \label{fig:acc-output-comparison-harmony}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-output-comparison-harmony.jpg}
+            \caption{Loss value for one output comparison with and without harmony loss}
+            \label{fig:loss-output-comparison-harmony}
+        \end{center}
+    \end{minipage}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{images/experiences/harmony/acc-comparison-harmony.jpg}
-    \caption{Accuracy comparison between models with and without Harmony loss}
-    \label{fig:acc-comparison-harmony}
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-comparison-harmony.jpg}
+            \caption{Global loss value comparison with and without harmony loss}
+            \label{fig:loss-comparison-harmony}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/harmony-comparison-harmony.jpg}
+            \caption{Harmony loss value comparison with and without harmony loss}
+            \label{fig:harmony-comparison-harmony}
+        \end{center}
+    \end{minipage}
 \end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/experiences/harmony-rnn/kld-comparison-harmony.jpg}
+    \caption{KLD value comparison with and without harmony loss}
+    \label{fig:kld-comparison-harmony}
+\end{figure}
+
+As we can see in the figure \ref{fig:acc-output-comparison-harmony}, there is no difference between the two models, the accuracy of an output is basically the same.
+The same ascertainment can be done with the loss of an output (figure \ref{fig:loss-output-comparison-harmony}).
+The value is pretty similar.
+
+However, the value of the loss function (figure \ref{fig:loss-comparison-harmony}) of the model which uses the Harmony loss is higher.
+It can been explain because the second model doesn't use the harmony loss (see figure \ref{fig:harmony-comparison-harmony}), therefore the harmony loss value is not added to the global loss.
+
+Because of time issues, I couldn't train the model using the Harmony loss too long.
+So I trained the first model for 20 epochs and the second one for 50 epochs.
+This is why the KLD value \ref{fig:kld-comparison-harmony} between the models is different.
+Therefore $\beta$ annealing (appendix \ref{appendix:kld-annealing}) follows a different evolution.
+What we can notice, it that the final value of the KLD is basically the same for the validation set and the training set.
+
+
+
+The figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without} show respectively 2 generated samples from the model using the Harmony loss and the model which doesn't use it.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/with-harmony.jpg}
+    \caption{Generated sample with a model trained using the Harmony Loss}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_with_harmony.mid}{Link})
+    \label{fig:exp:harmony:with}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/without-harmony.jpg}
+    \caption{Generated sample with a model trained using the Harmony Loss}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_without_harmony.mid}{Link})
+    \label{fig:exp:harmony:without}
+\end{figure}
+
+From this samples, it is not obvious to determine whether the loss is helping the model or not.
+Maybe the generated samples from the model using the Harmony loss are \textit{"Smoother"} that the other one, but this is very subtle.
+
+% TODO: Put results of the google forms for harmony
+
+I created a \href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
+The figure \ref{fig:pie:harmony} display the result of the preference of the persons who took the poll.
+
+\begin{figure}
+    \begin{center}
+    \begin{tikzpicture}
+        \pie[rotate=180]{
+        14.8/With Harmony loss,
+        85.2/Without Harmony loss
+        }
+    \end{tikzpicture}
+    \caption{Google form result on Harmony loss}
+    The preferred model by the people
+    \label{fig:pie:harmony}
+    \end{center}
+\end{figure}
+
+7 persons answered the google form, and surprisingly, unfortunately, the people have preferred the model which doesn't use the harmony loss.
+It is quite disappointing and I was hoping the harmony loss would have helped the model.
 
 
 \section{RPoE}
@@ -3037,6 +3149,7 @@ It is an added or deleted note for every frame (Sixteenth \musSixteenth) which c
 
 
 \subsection{KLD Annealing}
+\label{appendix:kld-annealing}
 
 It is usually difficult to train a VAE because of the KLD which adds a big constraint on the latent space.
 To help the model to converge, I implemented a \textit{KLD annealing} \cite{huang_improving_2018}.
@@ -3075,14 +3188,15 @@ My project is coded in Python language.
 I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}.
 
 \section{Google Forms}
-\ref{appendix:google-forms}
+\label{appendix:google-forms}
 
 % TODO: Finish the poll
 
 For this Dissertation I created some google form to determine what model was better than the other.
 Here are the link of all the google forms I have created:
 \begin{itemize}
-    \item For the size of the model (section \ref{sec:exp:size}):  \href{https://forms.gle/BdEcYZgYWXPigSdA6}{Google Form Links}
+    \item For the size of the model (section \ref{sec:exp:size}):  \href{https://forms.gle/BdEcYZgYWXPigSdA6}{Google Form link}
+    \item For the harmony loss (section \ref{sec:exp:harmony}): \href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google From link}
 \end{itemize}
 
 
