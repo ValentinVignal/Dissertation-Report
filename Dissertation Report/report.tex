@@ -38,6 +38,9 @@
     } % before-code
 \titlespacing{\chapter}{0cm}{0cm}{1cm}
 
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{4}
+
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
@@ -253,11 +256,13 @@ The results show that the extra losses are not helping the model which indicates
         FC & Fully Connected \\
         GAN & Generative Adversarial Network \\
         GP & Gaussian Process \\
+        GPU & Graphic Processing Unit \\
         GRU & Gated Recurrent Unit \\
         KLD & Kullback-Leibler Divergence \\
         LSTM & Long Short-Term Memory \\
         MCMC & Markov Chain Monte Carlo \\
         MDMM & Multimodal Deep Markov Model \\
+        MiB & MebiByte \\
         MIDI & Musical Instrument Digital Interface \\
         ML & Machine Learning \\
         MVAE & Multimodal Variational AutoEncoder \\
@@ -698,7 +703,7 @@ The feedforward behavior of these networks is identical, but the backpropagation
     \label{fig:vae:reparameterization-trick}
 \end{figure}
 
-\subsubsection{Summary and vulgarization}
+\subsubsection{Summary and vulgarization of VAE}
 
 A VAE  is an autoencoder. The steps are the following:
 \begin{enumerate}
@@ -768,13 +773,19 @@ The figure \ref{fig:gan-framework} illustrates the framework of GANs.
     Source: Ian Goodfellow's paper \cite{goodfellow_nips_2017}
 \end{figure}
 
+\subsubsection{Discriminator cost function}
+
 The cost function used for the discriminator is showed in the equation \ref{eq:gan:cost-d}.
 \begin{equation}
     J^{(D)}(\theta^{(D)}, \theta^{(G)}) = -\frac{1}{2}\mathbb{E}_{x \sim p_{data}} (\log (D(x))) - \frac{1}{2} \mathbb{E}_{z} ( \log (1 -D(G(z)))
     \label{eq:gan:cost-d}
 \end{equation}
 
+\subsubsection{Generator cost functions}
+
 There are several possibilities for the cost function of the generator.
+
+\paragraph{Minimax}
 
 The first one is the \textbf{Minimax} cost function where $J^{(G)} = - J^{(D)}$.
 This a \textit{zero-sum game}.
@@ -783,6 +794,8 @@ Zero-sum games are also called \textbf{minimax} games because of the form of the
     \theta^{(G)*} = \text{argmin}_{\theta^{(G)}} \left[ \text{argmax}_{\theta^{(D)}} \left[ J^{(G)} \left( \theta^{(D)}, \theta^{(G)} \right) \right] \right]
     \label{eq:gan:minimax}
 \end{equation}
+
+\paragraph{Heuristic, non-saturating game}
 
 The second one is the \textbf{Heuristic, non-saturating game}.
 The minimax cost function doesn't perform well in practice.
@@ -794,6 +807,8 @@ The generator's cost becomes the equation \ref{eq:gan:heuristic}
 \end{equation}
 The motivation of this cost function is to ensure that each player has a strong gradient it is \textit{"losing"} the game.
 
+\paragraph{Maximum likelihood game}
+
 The third one is the \textbf{Maximum likelihood game}.
 This version maximizes the likelihood learning with GANs, which means minimizin the KLD between the data and the model.
 Goodfellow \cite{goodfellow_generative_2014} showed that using the equation \ref{eq:gan:likelihood} where $\sigma$ is the logistic function, is equivalent to minimize the KLD between the data and the model.
@@ -801,6 +816,8 @@ Goodfellow \cite{goodfellow_generative_2014} showed that using the equation \ref
     G^{(G)} = - \frac{1}{2} \mathbb{E}_{z} \left[ \exp \left( \sigma^{-1} (D(G(z))) \right) \right]
     \label{eq:gan:likelihood}
 \end{equation}
+
+\subsubsection{Divergence choice}
 
 The choice of the divergence will influence the results of the training.
 The KLD is not symmetric.
@@ -816,7 +833,7 @@ The figure \ref{fig:gan:directions-kld} shows the differences between the two di
 Minimizing the reverse KL might be expected to yield better samples because the model would prefer to generate samples that come only from modes in the training distribution.
 It would ignore some modes, rather than including all modes but generating some samples that do not belong from any training set mode.
 
-\subsubsection{Summary and vulgarization}
+\subsubsection{Summary and vulgarization of GANs}
 
 GANs are composed of two models that are trained simultaneously:
 \begin{itemize}
@@ -1759,6 +1776,14 @@ This architecture is describe in the figure \ref{fig:rmvae_architecture}.
 
 Each instruments (each modalities) has its own encoder.
 As explained in the section \ref{sec:data_represetation}, the input tensor for one instrument has the following shape: \texttt{(nb\_steps, 16, 128, channels)}.
+
+I tried 2 different architectures of encoders and decoder.
+The first architecture (section \ref{sec:encoder:cnn}) considers a measure as an image and apply image operations on it with convolution layers.
+The second architecture (section \ref{sec:encoder:rnn}) considers a measure as a time series of notes and use an RNN architecture to encode it.
+
+\subsubsection{Convolutional encoder}
+\label{sec:encoder:cnn}
+
 For a given instrument $i$, and a given step $t$, the tensor (with a shape of \texttt{(16, 128, channels)}) can be considered as a pianoroll image, hence usual imaging operations can be applied.
 
 The encoder $\text{Enc}^i$ process each steps of a the instrument $i$. And encoder is composed of:
@@ -1777,6 +1802,61 @@ The general architecture of the encoder is showed in the figure \ref{fig:rmvae_e
 
 The filter sizes of the convolutional layers are \texttt{(5, 5)}.
 I chose this dimension so the receptive field of the first layer is a third major interval and an entire beat.
+
+\subsubsection{Recurrent encoder}
+\label{sec:encoder:rnn}
+
+For a given instrument $i$, and a given measure $m$, the tensor has a shape of \texttt{(16, 128, channels)}.
+The first dimensions ( \texttt{(16,)} ) correspond of a sixteenth note (\musSixteenth) in time.
+Therefore, I created an encoder using bidirectional LSTM cells.
+This architecture is shown in the figure \ref{fig:lstm-encoder}.
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+        
+        \node[state](measure)[]{measure};
+        \node[state, rectangle](split)[below of=measure]{split};
+        \node[](framedots)[below of=split]{$\dots$};
+        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
+        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
+        
+        \node[state, rectangle](fc0)[below of=frame0]{$\text{FC}_{\text{frame}}^i$};
+        \node[](fcdots)[below of =framedots]{$\dots$};
+        \node[state, rectangle](fc15)[below of=frame15]{$\text{FC}_{\text{frame}}^i$};
+        
+        \node[state, rectangle](lstm0)[below of=fc0]{LSTM};
+        \node[](lstmdots)[below of=fcdots]{$\dots$};
+        \node[state, rectangle](lstm15)[below of=fc15]{LSTM};
+        
+        \node[state, rectangle](fc)[below of=lstmdots]{$\text{FC}_{measure}^i$};
+        
+        \node[state](output)[below of=fc]{output};
+        
+        
+        \path[]
+            (measure)   edge    [anchor=center]node{\texttt{(16, 128)}}  (split)
+            (split) edge    [anchor=east]node{\texttt{(128,)}}  (frame0)
+                    edge    [anchor=west]node{\texttt{(128,)}}  (frame15)
+            (frame0)    edge    node{}  (fc0)
+            (frame15)   edge    node{}  (fc15)
+            (fc0)   edge    node{}  (lstm0)
+            (fc15)  edge    node{}  (lstm15)
+            (lstm0) edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (lstm0)
+                        edge    node{}  (lstm15)
+            (lstm15)    edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (fc)
+            (fc)    edge    node{}  (output);
+                    
+        \end{tikzpicture}
+    \caption{Measure Encoder using bidirectional LSTM}
+    Encoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
+    \label{fig:lstm-encoder}
+    \end{center}
+\end{figure}
+
 
 \subsection{PoE}
 
@@ -1869,6 +1949,9 @@ The architecture is displayed in the figure \ref{fig:rpoe_architecture}.
 Each instruments (each modalities) has its own decoder.
 The decoder $\text{Dec}^i$ associated to the instrument $i$ will, for a given step $t$, reconstruct back the output with the same shape as the input (\texttt{(16, 128, channels)}).
 
+\subsubsection{Convolutional decoder}
+\label{sec:decoder:cnn}
+
 A decoder is composed of:
 \begin{enumerate}
     \item Fully Connected layers
@@ -1884,6 +1967,62 @@ The decoder global architecture is showed in the figure \ref{fig:rmvae_decoder}.
     \caption{RMVAE decoder architecture}
     \label{fig:rmvae_decoder}
 \end{figure}
+
+This decoder was associated with the convolutional encoder form the section \ref{sec:encoder:cnn}.
+
+\subsubsection{Recurrent decoder}
+\label{sec:decoder:rnn}
+
+To decode the latent space encoded with the recurrent encoder (from the section \ref{sec:encoder:rnn}), I use a recurrent architecture composed with bidirectional LSTM cells.
+This architecture is illustrated in the figure \ref{fig:lstm-decoder}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+        
+        \node[state](measure)[]{measure};
+        \node[state, rectangle](concat)[above of=measure]{concat};
+        \node[](framedots)[above of=concat]{$\dots$};
+        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
+        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
+        
+        \node[state, rectangle](fc0)[above of=frame0]{$\text{FC}_{\text{frame}}^i$};
+        \node[](fcdots)[above of =framedots]{$\dots$};
+        \node[state, rectangle](fc15)[above of=frame15]{$\text{FC}_{\text{frame}}^i$};
+        
+        \node[state, rectangle](lstm0)[above of=fc0]{LSTM};
+        \node[](lstmdots)[above of=fcdots]{$\dots$};
+        \node[state, rectangle](lstm15)[above of=fc15]{LSTM};
+        
+        \node[state, rectangle](fc)[above of=lstmdots]{$\text{FC}_{measure}^i$};
+        
+        \node[state](input)[above of=fc]{input};
+        
+        
+        \path[]
+            (input) edge    node{}  (fc)
+            (fc)    edge    node{}  (lstm0)
+                    edge    node{}  (lstm15)
+            (lstm0) edge    node{}  (fc0)
+                    edge    node{}  (lstmdots)
+            (lstmdots)  edge    node{}  (lstm0)
+                        edge    node{}  (lstm15)
+            (lstm15)    edge    node{}  (fc15)
+                        edge    node{}  (lstmdots)
+            (fc0)   edge    node{}  (frame0)
+            (fc15)  edge    node{}  (frame15)
+            (frame0)    edge    node[anchor=east]{\texttt{(128,)}}  (concat)
+            (frame15)   edge    node[anchor=west]{\texttt{(128,)}}  (concat)
+            (concat)    edge    node[anchor=center]{\texttt{(16, 128)}}  (measure);
+                    
+        \end{tikzpicture}
+    \caption{Measure Decoder using bidirectional LSTM}
+    Decoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
+    \label{fig:lstm-decoder}
+    \end{center}
+\end{figure}
+
 
 \subsection{Last layer}
 
@@ -2153,8 +2292,12 @@ The $\text{roll}_n$ operation is explained in the appendix \ref{appendix:roll_n}
 \label{chap:results}
 
 In this chapter I will share the results I got.
+In the section \ref{sec:results:cnn}, I will expose the results I obtained with a convolutional encoder and decoder architecture.
+In the section \ref{sec:results:rnn}, I will share the results I obtained with a recurrent encoder and decoder architecture.
+To be fair, the results are quite poor and disapointing.
 
-\section{CNN Encoder and Decoder}
+\section{Generated Samples}
+\label{sec:results:samples}
 
 For a CNN encoder and decoder, the results weren't matching my expectation.
 To illustrate it with an image, the figure \ref{fig:rmvae-generated} shows a generated sample by a RMVAE.
@@ -2174,7 +2317,7 @@ Most of the generated notes are quarter notes (\musQuarter), and the model gener
 However, even though the generated sample have huge lack of rhythm and variation, it is not wrong.
 It is one tune, consistent with the seed, and the four voices work well together.
 
-\subsection{Activation function of the $\text{note}_{\text{continue}}$ for monophonic music}
+\section{Activation function of the $\text{note}_{\text{continue}}$ for monophonic music}
 
 As explained in the section \ref{sec:last-layer-mono}, for monophonic music, I consider an extra note ($note_{continue}$) which indicates that the previous note is sustained.
 The shape for a tensor describing a measure is \texttt{(16, 128 + 1)}.
@@ -2204,9 +2347,216 @@ By doing so, I helped the model to generate new notes and get results like the f
 However, the lake of rhythm is obvious and all the notes have length of one beat (\musQuarter).
 
 
-\section{LSTM Encoder and Decoder}
+\subsection{LSTM Encoder and Decoder}
 
-I don't know because the training is still not finished
+With the recurrent architecture (explained in sections \ref{sec:encoder:rnn} and \ref{sec:decoder:rnn}), I obtained the same behavior as with convolutional architecture (sections \ref{sec:encoder:cnn} and \ref{sec:decoder:cnn}).
+
+The figures \ref{fig:pianoroll:rrmvae:no-binary} and \ref{fig:pianoroll:rrmvae:with-binary} illustrate it.
+We can see on the pianoroll views that the generation is more consistent when the activation function on the note $note_{continue}$ is the sigmoid function.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-no-binary.jpg}
+    \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax activation}
+    The grey part is the seed given to the model and the black part is the generated part
+    \label{fig:pianoroll:rrmvae:no-binary}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-with-binary.jpg}
+    \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax and sigmoid activation}
+    The grey part is the seed given to the model and the black part is the generated part
+    \label{fig:pianoroll:rrmvae:with-binary}
+\end{figure}
+
+However, the issues stay the same.
+There is absolutely no rhythm, all the notes are quarter notes (\musQuarter) and there is no variation.
+For instance, in the figure \ref{fig:pianoroll:rrmvae:with-binary}, the first voice (the pink one at the top) is only playing 3 different notes.
+
+\section{Tasks}
+\label{sec:tasks}
+
+I created several scripts to use a single trained model for several tasks.
+Those tasks are:
+\begin{itemize}
+    \item Generate (section \ref{sec:tasks:generate})
+    \item Fill (section \ref{sec:tasks:fill})
+    \item Redo (section \ref{sec:tasks:redo})
+\end{itemize}
+
+
+\subsection{Generate}
+\label{sec:tasks:generate}
+
+This is the simplest task I have created for the model.
+The figure \ref{fig:tasks:generate} is the result of it.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate/generate.jpg}
+    \caption{Task \textit{Generate}}
+    \label{fig:tasks:generate}
+\end{figure}
+
+The model is given a seed (grey part of the figure \ref{fig:tasks:generate}).
+From this seed it generates the next measure.
+It will then consider the seed and the previously generated measure to generate the next one.
+And so one...
+
+The algorithm \ref{alg:tasks:generate} describes this task.
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{$seed$ (list of measures), $n$ (number of generated measures)} 
+        \Ensure{$generation$ (list of measures)}
+        \Statex
+        \Function{generate}{$seed$, $n$}
+            \State $seed\_length \gets len(seed)$
+            \State $generation \gets seed$
+            \For{$k \gets 1$ to $n$}
+                \State $input \gets generation[-seed\_length:]$
+                \State $output \gets model.predict(input)$
+                \State $generation.append(output)$
+            \EndFor
+            \State \Return {$generation$}
+        \EndFunction
+        \end{algorithmic}
+    \caption{Generate function}
+    \label{alg:tasks:generate}
+\end{algorithm}
+
+The RMVAE takes a mask as an input with a shape of \texttt{(nb\_instruments, nb\_measure)}.
+Therefore, to ignore one or several instrument(s), the only thing to do is to put $0$ at the positions $mask[i, :]$ for every instruments $i$ we want to ignore.
+
+However, as you can see in the figures \ref{fig:tasks:generate}, the generated sample is poor in variation and complexity.
+
+\subsection{Fill}
+\label{sec:tasks:fill}
+
+The \textit{Fill} task creates a musical part (an instrument voice) from the others.
+As an example, the figures \ref{fig:tasks:fill:truth} and \ref{fig:tasks:fill:0} illustrate this task.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/fill/task-fill-truth.jpg}
+    \caption{Song given to the model for the \textit{Fill} task}
+    \label{fig:tasks:fill:truth}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/fill/task-fill-0.jpg}
+    \caption{Output of the model for the \textit{Fill} task of the first voice}
+    \label{fig:tasks:fill:0}
+\end{figure}
+
+I gave to the model the figure \ref{fig:tasks:fill:truth} and apply the fill algorithm on the voice $0$ (the one at the top, yellow in the figure \ref{fig:tasks:fill:truth} and pink in the figure \ref{fig:tasks:fill:0}).
+To do so, the model delete the voice to fill and use the remaining ones as a seed to generate the next measure of the missing voice.
+This is described in the algorithm \ref{alg:tasks:fill}.
+
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{$song$ (list of measures), $instrument$ (instrument to replace)} 
+        \Ensure{$filled$ (list of measures)}
+        \Statex
+        \Function{Fill}{$song$, $instrument$}
+            \State $song.deleteInstrument(instrument)$
+            \State $filled \gets song$
+            \For{$k \gets 0$ to $len(song) - seedLength - 1$}
+                \State $input \gets song[k:k + seedLength]$
+                \State $output \gets model.predict(input)$
+                \State $filled[k + seedLength, instrument] \gets outputs[instrument]$
+            \EndFor
+            \State \Return {$filled$}
+        \EndFunction
+        \end{algorithmic}
+    \caption{Fill function}
+    \label{alg:tasks:fill}
+\end{algorithm}
+
+As you can see in the figure \ref{fig:tasks:fill:0}, the filled voice has a big lack of complexity.
+Most of the notes are quarter notes (\musQuarter) and $E$.
+However, this note doesn't sound bad with the song and at the end, the model plays other notes than $E$ which also aren't completely wrong.
+
+\subsection{Redo}
+\label{sec:tasks:redo}
+
+The \textit{Redo} task is used to recreate a song.
+The model will replace one by one all the different voices from a given song.
+To do so, it will iterate the \textit{Fill} task over all the voices.
+The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \ref{fig:tasks:redo:0}, \ref{fig:tasks:redo:1}, \ref{fig:tasks:redo:2}, \ref{fig:tasks:redo:3} illustrate this task.
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{$song$ (list of measures)} 
+        \Ensure{$redone$ (list of measures)}
+        \Statex
+        \Function{Redo}{$song$}
+            \State $redone \gets song$
+            \For{$k \gets 0$ to $nb\_instruments - 1$}
+                \State $redone \gets Fill(redone, k)$
+            \EndFor
+            \State \Return {$redone$}
+        \EndFunction
+        \end{algorithmic}
+    \caption{Redo function}
+    \label{alg:tasks:redo}
+\end{algorithm}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-truth.jpg}
+    \caption{Song given to the model for the \textit{Redo} task}
+    \label{fig:tasks:redo:truth}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-0.jpg}
+    \caption{Iteration 1 of the \textit{Redo} task}
+    \label{fig:tasks:redo:0}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-1.jpg}
+    \caption{Iteration 2 of the \textit{Redo} task}
+    \label{fig:tasks:redo:1}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-2.jpg}
+    \caption{Iteration 3 of the \textit{Redo} task}
+    \label{fig:tasks:redo:2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-3.jpg}
+    \caption{Iteration 4 of the \textit{Redo} task}
+    \label{fig:tasks:redo:3}
+\end{figure}
+
+The song from the figure \ref{fig:tasks:redo:truth} as been given to the model.
+It has 4 voices (4 different instruments).
+Here are the for steps:
+\begin{enumerate}
+    \item (figure \ref{fig:tasks:redo:0}) The model apply the \textit{Fill} task on the voice 3 (from the top)
+    \item (figure \ref{fig:tasks:redo:1}) The model apply the \textit{Fill} task on the voice 4 (from the top)
+    \item (figure \ref{fig:tasks:redo:2}) The model apply the \textit{Fill} task on the voice 1 (from the top)
+    \item (figure \ref{fig:tasks:redo:3}) The model apply the \textit{Fill} task on the voice 2 (from the top)
+\end{enumerate}
+
+As you can see, the song loses a lot in complexity.
+The notes are mostly quarter notes (\musQuarter).
+Each voices mostly stays on few notes.
+This is very repetitive.
+
+However, the generated sample doesn't contain much tension and is not dissonant.
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
@@ -2263,6 +2613,92 @@ The figures \ref{fig:loss-comparison-transposed} and \ref{fig:acc-comparison-tra
 
 The first one has been trained on non-transposed songs and the second one has been trained on transposed songs.
 
+\section{Model size}
+
+I tried to modify the model size to check if a bigger or smaller model could converge better.
+I tried several combinations with some Grid-Search algorithm, Bayesian-Search algorithm (see appendix \ref{appendix:hp-tuning}) and by manual tries.
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/loss-comparison-size.jpg}
+            \caption{Global loss between for size of models}
+            \label{fig:loss-comparison-size}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/kld-comparison-size.jpg}
+            \caption{KLD value for different size of models}
+            \label{fig:kld-comparison-size}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/loss-output-comparison-size.jpg}
+            \caption{Loss of one voice for different size of models}
+            \label{fig:loss-output-comparison-size}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/acc-output-comparison-size.jpg}
+            \caption{Loss of one voice for different size of models}
+            \label{fig:acc-output-comparison-size}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+The figures \ref{fig:loss-comparison-size}, \ref{fig:kld-comparison-size}, \ref{fig:loss-output-comparison-size} and \ref{fig:acc-output-comparison-size} shows respectively the value of the Global loss, the KLD, the loss of one output, the accuracy of one output through 50 epochs of training for different size of models.
+There are 3 size of models:
+\begin{itemize}
+    \item \textit{Small}: with a size of about $3000Mib$ on GPU
+    \item \textit{Medium}: with a size of about $8500Mib$ on GPU
+    \item \textit{Large}: with a size of about $10500Mib$ on GPU
+\end{itemize}
+
+I couldn't test with bigger model because of the GPU size limitation.
+
+From these different figures, we can see there is no concrete difference between the 3 models on the training data.
+The values of the global loss, the accuracy and the loss for one output are basically the same.
+However, the KLD value is slightly better when the model is bigger.
+
+For the validation data, the medium model seems to perform better for every metrics.
+However.
+
+However despite the difference of value between the different metrics, the generation is not very different, the notes are mostly quarter notes (\musQuarter) and there is no variation is the generated music.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-small.jpg}
+    \caption{Pianoroll generated by the small model}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/small.mid}{Link}
+    \label{fig:exp:size:generation-small}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-medium.jpg}
+    \caption{Pianoroll generated by the medium model}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/medium.mid}{Link}
+    \label{fig:exp:size:generation-medium}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-large.jpg}
+    \caption{Pianoroll generated by the large model}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/large.mid}{Link}
+    \label{fig:exp:size:generation-large}
+\end{figure}
+
+As shown in the figures \ref{fig:exp:size:generation-small}, \ref{fig:exp:size:generation-medium}, \ref{fig:exp:size:generation-large}, the generation is quite similar through all the models.
+The generated part is looping over the same notes.
+
+
 \section{Custom losses}
 
 \subsection{Scale and Rhythm}
@@ -2304,6 +2740,7 @@ As we can see, there is no difference between the 2 graphs
     \caption{Accuracy comparison between models with and without Harmony loss}
     \label{fig:acc-comparison-harmony}
 \end{figure}
+
 
 \section{RPoE}
 
@@ -2489,6 +2926,7 @@ The figure \ref{fig:arch:transformer} illustrates the transformer's architecture
 \end{figure}
 
 \section{Hyper-Parameters tuning}
+\label{appendix:hp-tuning}
 
 Tuning hyper-parameters to train the best possible model is a difficult task in deep learning.
 The reason is because every number or setting can be considered as a hyper-parameter and, most of time, there is no proof or rules to guide us to choose the best value a parameter should have.
@@ -2511,110 +2949,6 @@ The main advantages of a Bayesian Search over a Grid or a Random Search are:
     \item The domain of search for a specific parameter value is not discrete but continuous.
 \end{itemize}
 
-\section{LSTM Encoder Decoder}
-
-The initial encoder and decoder use convolutional (or transposed convolutional) layers and fully connected layers (section \ref{sec:encoder} and \ref{sec:decoder}).
-To try to obtain better results, I tried another architecture of decoder and encoder using bidirectional LSTM layers and fully connected layers.
-The figure \ref{fig:lstm-encoder} illustrates the architecture of the encoder and the figure \ref{fig:lstm-decoder} the decoder's one.
-
-
-\begin{minipage}{0.5 \textwidth}
-\begin{figure}[H]
-    \begin{center}
-        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
-        
-        \node[state](measure)[]{measure};
-        \node[state, rectangle](split)[below of=measure]{split};
-        \node[](framedots)[below of=split]{$\dots$};
-        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
-        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
-        
-        \node[state, rectangle](fc0)[below of=frame0]{$\text{FC}_{\text{frame}}^i$};
-        \node[](fcdots)[below of =framedots]{$\dots$};
-        \node[state, rectangle](fc15)[below of=frame15]{$\text{FC}_{\text{frame}}^i$};
-        
-        \node[state, rectangle](lstm0)[below of=fc0]{LSTM};
-        \node[](lstmdots)[below of=fcdots]{$\dots$};
-        \node[state, rectangle](lstm15)[below of=fc15]{LSTM};
-        
-        \node[state, rectangle](fc)[below of=lstmdots]{$\text{FC}_{measure}^i$};
-        
-        \node[state](output)[below of=fc]{output};
-        
-        
-        \path[]
-            (measure)   edge    [anchor=center]node{\texttt{(16, 128)}}  (split)
-            (split) edge    [anchor=east]node{\texttt{(128,)}}  (frame0)
-                    edge    [anchor=west]node{\texttt{(128,)}}  (frame15)
-            (frame0)    edge    node{}  (fc0)
-            (frame15)   edge    node{}  (fc15)
-            (fc0)   edge    node{}  (lstm0)
-            (fc15)  edge    node{}  (lstm15)
-            (lstm0) edge    node{}  (lstmdots)
-            (lstmdots)  edge    node{}  (lstm0)
-                        edge    node{}  (lstm15)
-            (lstm15)    edge    node{}  (lstmdots)
-            (lstmdots)  edge    node{}  (fc)
-            (fc)    edge    node{}  (output);
-                    
-        \end{tikzpicture}
-    \caption{Measure Encoder using bidirectional LSTM}
-    Encoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
-    \label{fig:lstm-encoder}
-    \end{center}
-\end{figure}
-\end{minipage} \hfill
-\begin{minipage}{0.5 \textwidth}
-\begin{figure}[H]
-    \begin{center}
-        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
-        
-        \node[state](measure)[]{measure};
-        \node[state, rectangle](concat)[above of=measure]{concat};
-        \node[](framedots)[above of=concat]{$\dots$};
-        \node[state](frame0)[left of=framedots]{$\text{frame}_0$};
-        \node[state](frame15)[right of=framedots]{$\text{frame}_{15}$};
-        
-        \node[state, rectangle](fc0)[above of=frame0]{$\text{FC}_{\text{frame}}^i$};
-        \node[](fcdots)[above of =framedots]{$\dots$};
-        \node[state, rectangle](fc15)[above of=frame15]{$\text{FC}_{\text{frame}}^i$};
-        
-        \node[state, rectangle](lstm0)[above of=fc0]{LSTM};
-        \node[](lstmdots)[above of=fcdots]{$\dots$};
-        \node[state, rectangle](lstm15)[above of=fc15]{LSTM};
-        
-        \node[state, rectangle](fc)[above of=lstmdots]{$\text{FC}_{measure}^i$};
-        
-        \node[state](input)[above of=fc]{input};
-        
-        
-        \path[]
-            (input) edge    node{}  (fc)
-            (fc)    edge    node{}  (lstm0)
-                    edge    node{}  (lstm15)
-            (lstm0) edge    node{}  (fc0)
-                    edge    node{}  (lstmdots)
-            (lstmdots)  edge    node{}  (lstm0)
-                        edge    node{}  (lstm15)
-            (lstm15)    edge    node{}  (fc15)
-                        edge    node{}  (lstmdots)
-            (fc0)   edge    node{}  (frame0)
-            (fc15)  edge    node{}  (frame15)
-            (frame0)    edge    node[anchor=east]{\texttt{(128,)}}  (concat)
-            (frame15)   edge    node[anchor=west]{\texttt{(128,)}}  (concat)
-            (concat)    edge    node[anchor=center]{\texttt{(16, 128)}}  (measure);
-                    
-        \end{tikzpicture}
-    \caption{Measure Decoder using bidirectional LSTM}
-    Decoder for a measure of an instrument $i$. A measure has a shape of \texttt{(16, 128)} and a frame as a shape of \texttt{(128,)}.
-    \label{fig:lstm-decoder}
-    \end{center}
-\end{figure}
-\end{minipage}
-
-Unfortunately, the results weren't much different from the CNN encoder and decoder.
 
 \section{Network details}
 
