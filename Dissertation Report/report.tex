@@ -1306,6 +1306,7 @@ They include is this extended matrix the pitch (octave number) which was missing
 \end{figure}
 
 \subsubsection{Text}
+\label{sec:rw:midi:text}
 
 Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbach:_2016}
 
@@ -2934,26 +2935,54 @@ As we can see in the figures \ref{fig:loss-comparison-rpoe} and \ref{fig:acc-com
 
 \chapter{Conclusion}
 
-This dissertation project provides a new neural network architecture (RMVAE) and a new layer to handle time dependencies between data (RPOE).
+The objective of my dissertation was to create a unique model to perform several tasks a musician could do as create a song, arrange one, create an accompaniment from a melody or create a melody from an accompaniment... 
+However, the current works done about music generation using deep learning solution mostly focus on one objective.
 
-I have showed that the RMVAE architecture is able to learn musical rules from a pianoroll view and adding extra losses (Scale, Rhythm and Harmony losses) doesn't help the training.
+In this work, I have created a new architecture called \textbf{RMVAE} (Recurrent Multimodal Variational AutoEncoder).
+This architecture allows me to train only one model to perform several music generation tasks as
+\begin{itemize}
+    \item Generating one or several musical parts
+    \item Creating one or several musical part(s) from one or several musical part(s).
+    Each of them could me an accompaniment or a melody part
+    \item Redoing a song by iteratively change a musical part after another
+\end{itemize}
+Moreover, the agile architecture and implementation of the \textbf{RMVAE} easily allows us to implement another task as reconstructing a missing measure, only consider some specific parts to generate others...
+I created a new neural network layer called RPoE (Recurrent Product of Expert).
+And finally, I came up with 3 additional loss functions to give prior knowledge to the model.
+These loss functions are based on my understanding of music and on some physical phenomena as the musical harmonics and the resonance phenomena.
+
+However, even though the \textbf{RMVAE} is general and can perform many tasks, the results are far from the expectations.
+While DeepBach \cite{hadjeres_deepbach:_2016} or BachBot \cite{liang_automatic_2017} generate realistic Bach's style music, my model gets stuck and usually generate the same sequence over and over.
+The looping sequence is usually composed of Quarter notes only (\musQuarter) and each musical parts only use around 3 or 4 different notes.
+
+I have conducted some experiences and create some polls on the population to evaluate the contribution from the custom losses.
+Unfortunately, the results showed that a model using a custom loss were equivalent or worse than a model that doesn't use it.
 
 % ----------------------------------------------------------------------------------------------------
 % Future work
 % ----------------------------------------------------------------------------------------------------
 
 \section*{Future work}
-Find the scale with some already known scale template ?
 
-Try with different encoding : Text
-BachBot or DeepBach says the way you write music with text is important 
-Maybe convolution and image is not good enough
+I believe that this approach can lead to a well trained model able to generalize music and handle most of the tasks someone could ask to a neural network.
 
-I constructed my own pianoroll view.
-Maybe try to use Pypianoroll will give a better representation.
+It looks like the text encoding (section \ref{sec:rw:midi:text}) is the one which performs the best for Bach's style music generation \cite{hadjeres_deepbach:_2016, liang_automatic_2017}.
+This is something I can't explain because letters and words structure is, in my opinion, not linked to musical notes structure.
+Even though I don't understand why, this would be a possible solution to improve the model's performance.
+
+The \textit{Scale} and \textit{Rhythm} loss functions could be ameliorated.
+A scale template could be created to fit the local scale.
+This template could contain some weights for the importance of the notes.
+A \textit{strong} weight would give a \textit{strong} reward to the generated notes.
+Those weights would be decreasing following the harmonics order (Tonic, Fifth, Major Third...) or the Third cycle (Tonic, Major Third, Fifth...) to fit music and chords theory.
+This would encourage the model to generate notes that are not already in the target tensor but will (hopefully) still be musically correct.
+
+If a dataset contains some additional information about music (like chords, local scale...), it would allow us integrate a deeper prior knowledge to the neural network.
+
+The slowness of deep learning training, the leak memory issues, and the limited resources have been the biggest constraint of my Dissertation.
+A deep and large investigation about all the different hyper-parameters used in my project, using for instance a Grid-Search or a Bayesian-Search algorithm, would dramatically help to trained a powerful \textbf{RMVAE}.
 
 
-I didn't want to change the dataset to C major so it can handle change of key. But seems too hard for the neural network
 \newpage
 
 % ####################################################################################################
