@@ -652,14 +652,11 @@ The figure \ref{fig:autoencoder} summarizes this architecture.
     \includegraphics[width=0.9 \textwidth]{images/nn/architectures/autoencoder.jpg}
     \caption{AutoEncoder}
     Source: \href{https://commons.wikimedia.org/wiki/File:Autoencoder_structure.png}{Wikipedia}
-    % TODO: don’t cite wikipedia. Find an actual source.
     \label{fig:autoencoder}
 \end{figure}
 
 \subsection{Variational AutoEncoder}
 \label{sec:back:vae}
-
-% TODO: you need a better summary of the VAE here. It can’t just be the steps. What is the key theoretical idea behind the vae? i.e., forming the generative model. 
 
 The VAE \cite{doersch_tutorial_2016, noauthor_variational_nodate, noauthor_tutorial_nodate, akrami_robust_2019, liu_towards_2020} comes from the Bayesian Theorem (equation \ref{eq:bayesian-theorem}).
 
@@ -722,8 +719,6 @@ To regularize the output of the decoder, an extra term is added to the loss func
 
 \subsection{Generative Adversarial Network}
 \label{sec:back:gan}
-
-% TODO: Likewise, you need a better description of the GAN. 
 
 The basic idea of GANs \cite{noauthor_gan_2017, goodfellow_generative_2016, goodfellow_generative_2014, goodfellow_nips_2017} is to set up a game between two players.
 One of them is called the \textit{generator} and creates samples that are intended to come from the same distribution as the training data.
@@ -1230,6 +1225,7 @@ Therefore, the main difficulty is to stay consistent through time.
 Most of the works done on music generation use the \textit{MIDI} representation (or any other translation of midi like pianoroll or text). \cite{chuan_modeling_nodate, hadjeres_deepbach:_2016, huang_counterpoint_2017, liang_automatic_2017, adiloglu_machine_2007, herremans_composing_2013, herremans_modeling_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018, colombo_learning_2019, brunner_symbolic_2018, wu_hierarchical_2018}
 
 \subsubsection{Pianoroll}
+\label{sec:rw:pianoroll}
 
 The pianoroll representation can be considered as an image.
 Thus, usual deep learning methods on images can  be applied \cite{huang_counterpoint_2017, chuan_modeling_nodate, boulanger-lewandowski_modeling_2012, lattner_imposing_2018, donahue_adversarial_2019}.
@@ -1469,14 +1465,6 @@ The Variational AutoEncoder architecture is explained in the section \ref{sec:ba
 Sander Dieleman et al. \cite{dieleman_challenge_2018} use a VAE (or more precisly a VQ-VAE \cite{van_den_oord_neural_2017}  or a AMAE \cite{dieleman_challenge_2018}) to encode audio waveform and reconstruct it with a stylistic consistency accross tens of seconds.
 
 
-\subsection{RMVAE}
-
-% TODO: Put this right at the end of this chapter. "Thesis Contributions and Relation to Prior Work" 
-
-Since I created this new architecture, there is no existing work using this one.
-My project is, for now, the only work done using a Recurrent Multimodal Variational AutoEncoder to generate music.
-
-The RMVAE's architecture is explained in the section \ref{sec:rmvae}
 
 \subsection{GAN}
 
@@ -1526,6 +1514,7 @@ People tried to apply the same methods on music \cite{kaliakatsos-papakostas_con
 Therefor, creating a music style transfer algorithm is more complicated than for images and the results are currently not as good.
 
 \subsection{Feed forward and RNN architecture}
+\label{sec:rw:feed-forward}
 
 This is the easiest and most common generation process through all the works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, wu_hierarchical_2018}, and this is the one I chose for this project.
 An input is given to the model and the model returns an output.
@@ -1563,6 +1552,30 @@ The algorithm is describe in the figure \ref{fig:relatedworks:deepbach_architect
      Source: DeepBach paper \cite{hadjeres_deepbach:_2016}
      \label{fig:relatedworks:deepbach_architecture}
 \end{figure}
+
+\section{Thesis Contributions and Relation to Prior Work}
+
+As explained in the introduction, I aim to create only one model which can handle several tasks as:
+\begin{itemize}
+    \item Generate music with several musical parts (meaning several instruments)
+    \item Create a accompaniment from a melody
+    \item Create a melody from a accompaniment
+    \item Create a musical part from other musical parts
+\end{itemize}
+
+Unfortunately, the related works don't have a such objective and the used neural architectures couldn't fit my needs.
+That is why I created a new architecture called Recurrent Multimodal Variational AutoEncoder.
+This architecture is explained in the section \ref{sec:rmvae}.
+
+Because of the difficulty of obtaining clean data and of extracting meta data from a musical score, I decided to not work on that part and mostly focus my effort on the deep learning part.
+However, the results I obtained didn't satisfied my.
+That is why I decided to transpose all the songs from my datasets in the $C$ major key or the $A$ minor key.
+
+I decided to use the pianoroll representation (section \ref{sec:rw:pianoroll}) because this is how I (as a pianist) personally visualize the music).
+And I chose to consider the measure as an entire object (and not a frame) because this is how I conceptualize music.
+
+Finally, all along my project, I had the hope to be able to play and jam with a trained model, that is why I chose to my generation process to be feed-forward (section \ref{sec:rw:feed-forward}).
+This is the simpliest way to consider the notes I play and build a real time application.
 
 % ----------------------------------------------------------------------------------------------------
 % Contribution
@@ -1877,7 +1890,7 @@ I have now all the latent representations for every steps : $\{z_1, ..., z_T\}$.
 
 \subsubsection{LSTM cells}
 
-To learn, how this latent space evolves through time, RMVAE uses recurrent layers with LSTM cells (figures \ref{fig:rnn} , \ref{fig:lstm}).
+To learn, how this latent space evolves through time, RMVAE uses recurrent layers with LSTM cells (figures \ref{fig:rnn} , \ref{fig:lstm-gru}).
 This is shown in the figure \ref{fig:rmvae_lstm}.
 
 
@@ -2306,7 +2319,7 @@ To illustrate it with an image, the figure \ref{fig:rmvae-generated} shows a gen
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/generated_cnn.jpg}
     \caption{Generated pianoroll by the RMVAE}
-    The grey part is the seed given to the model and the black part is the generated part
+    The grey part is the seed given to the model and the black part is the generated part   (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated_pianoroll.mid}{Link})
     \label{fig:rmvae-generated}
 \end{figure}
 
@@ -2329,9 +2342,10 @@ As explained, the generated part (grey part) contains only few notes.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/cnn_generation_silcence.jpg}
+    \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/cnn_generation_silence.jpg}
     \caption{Generated pianoroll by the RMVAE with a softmax activation}
     The grey part is the seed given to the model and the black part is the generated part
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated_silence.mid}{Link})
     \label{fig:rmvae-generated-silence}
 \end{figure}
 
@@ -2359,6 +2373,7 @@ We can see on the pianoroll views that the generation is more consistent when th
     \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-no-binary.jpg}
     \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax activation}
     The grey part is the seed given to the model and the black part is the generated part
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/lstm_encoder_decoder.mid}{Link})
     \label{fig:pianoroll:rrmvae:no-binary}
 \end{figure}
 
@@ -2367,6 +2382,7 @@ We can see on the pianoroll views that the generation is more consistent when th
     \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-with-binary.jpg}
     \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax and sigmoid activation}
     The grey part is the seed given to the model and the black part is the generated part
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/rrmvae-with-binary.mid}{Link})
     \label{fig:pianoroll:rrmvae:with-binary}
 \end{figure}
 
@@ -2396,6 +2412,7 @@ The figure \ref{fig:tasks:generate} is the result of it.
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate/generate.jpg}
     \caption{Task \textit{Generate}}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/generate.mid}{Link})
     \label{fig:tasks:generate}
 \end{figure}
 
@@ -2441,6 +2458,7 @@ As an example, the figures \ref{fig:tasks:fill:truth} and \ref{fig:tasks:fill:0}
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/fill/task-fill-truth.jpg}
     \caption{Song given to the model for the \textit{Fill} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/fill_truth.mid}{Link})
     \label{fig:tasks:fill:truth}
 \end{figure}
 
@@ -2448,6 +2466,7 @@ As an example, the figures \ref{fig:tasks:fill:truth} and \ref{fig:tasks:fill:0}
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/fill/task-fill-0.jpg}
     \caption{Output of the model for the \textit{Fill} task of the first voice}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/fill_1.mid}{Link})
     \label{fig:tasks:fill:0}
 \end{figure}
 
@@ -2510,6 +2529,7 @@ The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-truth.jpg}
     \caption{Song given to the model for the \textit{Redo} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/redo_truth.mid}{Link})
     \label{fig:tasks:redo:truth}
 \end{figure}
 
@@ -2517,6 +2537,7 @@ The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-0.jpg}
     \caption{Iteration 1 of the \textit{Redo} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/redo_0_(inst_2).mid}{Link})
     \label{fig:tasks:redo:0}
 \end{figure}
 
@@ -2524,6 +2545,7 @@ The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-1.jpg}
     \caption{Iteration 2 of the \textit{Redo} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/redo_1_(inst_3).mid}{Link})
     \label{fig:tasks:redo:1}
 \end{figure}
 
@@ -2531,6 +2553,7 @@ The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-2.jpg}
     \caption{Iteration 3 of the \textit{Redo} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/redo_2_(inst_0).mid}{Link})
     \label{fig:tasks:redo:2}
 \end{figure}
 
@@ -2538,6 +2561,7 @@ The algorithm \ref{alg:tasks:redo} and the figures \ref{fig:tasks:redo:truth}, \
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/redo/task-redo-3.jpg}
     \caption{Iteration 4 of the \textit{Redo} task}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/redo_3_(inst_1).mid}{Link})
     \label{fig:tasks:redo:3}
 \end{figure}
 
@@ -2583,7 +2607,14 @@ Despite the existence of the some musical rules, judging and evaluating a musica
 Most of the paper working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
 They create a poll and let the people decide what sample they prefer between several of them.
 
-By lack of time and result, I haven't been able to create an online poll to evaluate the musical samples I generated.
+By lack of time and result, I haven't been able to create an many polls to evaluate the musical samples I generated.
+The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
+
+Conducting several of experiments was very laborious and slow.
+I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate} and faced a lot of memory leak issues.
+Because of that I had to launch every training manually.
+Moreover, training a model is very long, for example, the average time to train a model for 50 epochs was about 1 day and a half.
+Also, I was sharing the GPUs with limited memory provided by NUS with other student, so I couldn't use all the space to train all my different models at the same times.
 
 \section{Transpose the data}
 
@@ -2614,6 +2645,7 @@ The figures \ref{fig:loss-comparison-transposed} and \ref{fig:acc-comparison-tra
 The first one has been trained on non-transposed songs and the second one has been trained on transposed songs.
 
 \section{Model size}
+\label{sec:exp:size}
 
 I tried to modify the model size to check if a bigger or smaller model could converge better.
 I tried several combinations with some Grid-Search algorithm, Bayesian-Search algorithm (see appendix \ref{appendix:hp-tuning}) and by manual tries.
@@ -2698,6 +2730,7 @@ However despite the difference of value between the different metrics, the gener
 As shown in the figures \ref{fig:exp:size:generation-small}, \ref{fig:exp:size:generation-medium}, \ref{fig:exp:size:generation-large}, the generation is quite similar through all the models.
 The generated part is looping over the same notes.
 
+% TODO: Put results of the google forms for size
 
 \section{Custom losses}
 
@@ -3039,7 +3072,18 @@ The equation \ref{eq:kld-annealing} and the figure \ref{fig:beta-annealing} show
 \section{Implementation details}
 
 My project is coded in Python language.
-I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}. 
+I have made my GitHub repository accessible at \url{https://github.com/ValentinVignal/midiGenerator}.
+
+\section{Google Forms}
+\ref{appendix:google-forms}
+
+% TODO: Finish the poll
+
+For this Dissertation I created some google form to determine what model was better than the other.
+Here are the link of all the google forms I have created:
+\begin{itemize}
+    \item For the size of the model (section \ref{sec:exp:size}):  \href{https://forms.gle/BdEcYZgYWXPigSdA6}{Google Form Links}
+\end{itemize}
 
 
 
