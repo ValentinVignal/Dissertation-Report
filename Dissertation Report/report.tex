@@ -2611,18 +2611,6 @@ However, the generated sample doesn't contain much tension and is not dissonant.
 \chapter{Experiments}
 \label{chap:experiments}
 
-% TODO:
-% This chapter needs  a lot of work. Perhaps you can give a sample of the generated music or provide it during the presentation. 
-
-% Try to first do like the others and provide some qualitative assessments. Do you have friends that you can have listen and give some input? 
-
-% Quantitatively: I suggest you show things like accuracy at predicting the next note on existing music samples. 
-
-% Or test generalizability somehow. 
-
-% You need to test each of the tasks you specified in the Chapter 4 
-
-
 In this chapter I expose the experiments I have conduct for this project.
 Evaluating a generated musical piece is a complex task.
 Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
@@ -2637,6 +2625,8 @@ I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Kera
 Because of that I had to launch every training manually.
 Moreover, training a model is very long, for example, the average time to train a model for 50 epochs was about 1 day and a half.
 Also, I was sharing the GPUs with limited memory provided by NUS with other student, so I couldn't use all the space to train all my different models at the same times.
+
+The appendix \ref{appendix:exp} contains some figures useful for this chapter.
 
 \section{Transpose the data}
 
@@ -2672,39 +2662,8 @@ The first one has been trained on non-transposed songs and the second one has be
 I tried to modify the model size to check if a bigger or smaller model could converge better.
 I tried several combinations with some Grid-Search algorithm, Bayesian-Search algorithm (see appendix \ref{appendix:hp-tuning}) and by manual tries.
 
-\begin{figure}[htbp]
-    \begin{minipage}{0.5\textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/size/loss-comparison-size.jpg}
-            \caption{Global loss between for size of models}
-            \label{fig:loss-comparison-size}
-        \end{center}
-    \end{minipage} \hfill
-    \begin{minipage}{0.5 \textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/size/kld-comparison-size.jpg}
-            \caption{KLD value for different size of models}
-            \label{fig:kld-comparison-size}
-        \end{center}
-    \end{minipage}
-\end{figure}
+The graph of this section are in the appendix \ref{appendix:size}.
 
-\begin{figure}[htbp]
-    \begin{minipage}{0.5\textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/size/loss-output-comparison-size.jpg}
-            \caption{Loss of one voice for different size of models}
-            \label{fig:loss-output-comparison-size}
-        \end{center}
-    \end{minipage} \hfill
-    \begin{minipage}{0.5 \textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/size/acc-output-comparison-size.jpg}
-            \caption{Loss of one voice for different size of models}
-            \label{fig:acc-output-comparison-size}
-        \end{center}
-    \end{minipage}
-\end{figure}
 
 The figures \ref{fig:loss-comparison-size}, \ref{fig:kld-comparison-size}, \ref{fig:loss-output-comparison-size} and \ref{fig:acc-output-comparison-size} shows respectively the value of the Global loss, the KLD, the loss of one output, the accuracy of one output through 50 epochs of training for different size of models.
 There are 3 size of models:
@@ -2778,24 +2737,72 @@ This confirms that the metrics used are actually meaningful and not just numbers
 \section{Custom losses}
 
 \subsection{Scale and Rhythm}
+\label{sec:exp:scale-rhythm}
 
-The figures \ref{fig:loss-comparison-scale-rhythm} and \ref{fig:acc-comparison-scale-rhythm} show the loss and the accuracy of an output through the training of two models.
-The first one doesn't use the custom loss functions \textit{Scale} (section and \ref{sec:scale}) and \textit{Rhythm} (section \ref{sec:rhythm}), but the second one uses them.
-As we can see, there is no difference between the 2 graphs.
+The appendix \ref{appendix:scale-rhythm} contains useful graph for this section.
+The following figures display the difference of some metrics through the training of two models. The first one doesn't use the Scale and Rhythm losses while the second one uses them.
+\begin{itemize}
+    \item The figure \ref{fig:exp:scale-rhythm:loss-output-comparison} shows the loss of an output
+    \item The figure     \ref{fig:exp:scale-rhythm:acc-output-comparison} shows the accuracy of an output
+    \item The figure     \ref{fig:exp:scale-rhythm:loss-comparison} shows the global loss
+    \item The figure \ref{fig:exp:scale-rhythm:kld-comparison} shows the value of the KLD
+    \item The figure \ref{fig:exp:scale-rhythm:harmony-comparison} shows the Harmony value. Both of the models are using the harmony loss
+    \item The figure \ref{fig:exp:scale-rhythm:all-output-comparison} shows the value of the Scale and Rhythm losses.
+\end{itemize}
 
-\begin{figure}[ht]
+As we can see on the figures, there is no much difference between the two models.
+However, for the validation set, the model which doesn't use the scale and rhythm losses performs better than the other one for the accuracy and the loss of an output (figures \ref{fig:exp:scale-rhythm:loss-output-comparison} and \ref{fig:exp:scale-rhythm:acc-output-comparison}) and the global loss and the KLD value (figures \ref{fig:exp:scale-rhythm:loss-comparison} and \ref{fig:exp:scale-rhythm:kld-comparison}).
+
+Both of the trained models here are using the accuracy loss.
+From the figure \ref{fig:exp:scale-rhythm:harmony-comparison}, we can see that both of the models have the same harmony value on the train and validation dataset.
+It would mean the scale and rhythm losses are independent from the harmony loss.
+
+The scale and rhythm loss value in the figure \ref{fig:exp:scale-rhythm:all-output-comparison} are obviously different between the two models since the first one doesn't use those loss functions.
+
+The figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without} show respectively 2 generated samples from the model using the Scale and Rhythm losses and the model which doesn't use it.
+
+
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{images/experiences/scale_rhythm/loss-comparison-scale-rhythm.jpg}
-    \caption{Loss comparison between models with and without Scale and Rhythm loss}
-    \label{fig:loss-comparison-scale-rhythm}
+    \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-with-scale-rhythm.jpg}
+    \caption{Generated sample with a model trained using the Scale and Rhythm losses}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/scale-rhythm-comparison/generated-with-scale-rhythm.mid}{Link})
+    \label{fig:exp:scale-rhythm:with}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-without-scale-rhythm.jpg}
+    \caption{Generated sample with a model trained which doesn't use the Scale and Rhythm losses}
+    (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/scale-rhythm-comparison/generated-without-scale-rhythm.mid}{Link})
+    \label{fig:exp:scale-rhythm:without}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{images/experiences/scale_rhythm/acc-comparison-scale-rhythm.jpg}
-    \caption{Accuracy comparison between models with and without Scale and Rhythm loss}
-    \label{fig:acc-comparison-scale-rhythm}
+From the samples showed in the figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without}, it looks like the sample from the model using the scale and rhythm losses is more complex and has more variations than the one generated by the other model.
+
+% TODO: Put results of the google forms for scale and rhythm
+
+I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSckCvIg1mZdXlh1fSv_yG68dEbfQRN-WwkGG2KVdcjQ4rQgbw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
+The figure \ref{fig:pie:scale-loss} display the result of the preference of the persons who answered to the poll.
+
+\begin{figure}
+    \begin{center}
+    \begin{tikzpicture}
+        \pie[rotate=180]{
+        65/With Scale and Rhythm losses,
+        35/Without Scale and Rhythm losses
+        }
+    \end{tikzpicture}
+    \caption{Google form result on Scale and Rhythm losses}
+    The preferred model by the people
+    \label{fig:pie:scale-loss}
+    \end{center}
 \end{figure}
+
+2 persons answered the google form.
+And in that case, the result of the survey doesn't match the metrics but match my feeling about the generated samples.
+People preferred the samples generated by the model with the scale and rhythm losses.
+
+
 
 \subsection{Harmony}
 \label{sec:exp:harmony}
@@ -2803,53 +2810,14 @@ As we can see, there is no difference between the 2 graphs.
 The following figures display the difference of some metrics through the training of two models.
 The first one uses the custom loss \textit{Harmony}, and the second one doesn't use it.
 \begin{itemize}
-    \item \ref{fig:acc-output-comparison-harmony} shows the accuracy of an output
-    \item \ref{fig:loss-output-comparison-harmony} shows the loss of an output
-    \item \ref{fig:loss-comparison-harmony} shows the global loss
-    \item \ref{fig:harmony-comparison-harmony} shows the harmony loss value
-    \item \ref{fig:kld-comparison-harmony} shows the KLD value
+    \item The figure \ref{fig:acc-output-comparison-harmony} shows the accuracy of an output
+    \item The figure \ref{fig:loss-output-comparison-harmony} shows the loss of an output
+    \item The figure \ref{fig:loss-comparison-harmony} shows the global loss
+    \item The figure \ref{fig:harmony-comparison-harmony} shows the harmony loss value
+    \item The figure \ref{fig:kld-comparison-harmony} shows the KLD value
 \end{itemize}
+The appendix \ref{appendix:harmony} contains useful graph for this section.
 
-\begin{figure}[htbp]
-    \begin{minipage}{0.5\textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/acc-output-comparison-harmony.jpg}
-            \caption{Accuracy value for one output comparison with and without harmony loss}
-            \label{fig:acc-output-comparison-harmony}
-        \end{center}
-    \end{minipage} \hfill
-    \begin{minipage}{0.5 \textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-output-comparison-harmony.jpg}
-            \caption{Loss value for one output comparison with and without harmony loss}
-            \label{fig:loss-output-comparison-harmony}
-        \end{center}
-    \end{minipage}
-\end{figure}
-
-\begin{figure}[htbp]
-    \begin{minipage}{0.5\textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-comparison-harmony.jpg}
-            \caption{Global loss value comparison with and without harmony loss}
-            \label{fig:loss-comparison-harmony}
-        \end{center}
-    \end{minipage} \hfill
-    \begin{minipage}{0.5 \textwidth}
-        \begin{center}
-            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/harmony-comparison-harmony.jpg}
-            \caption{Harmony loss value comparison with and without harmony loss}
-            \label{fig:harmony-comparison-harmony}
-        \end{center}
-    \end{minipage}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/experiences/harmony-rnn/kld-comparison-harmony.jpg}
-    \caption{KLD value comparison with and without harmony loss}
-    \label{fig:kld-comparison-harmony}
-\end{figure}
 
 As we can see in the figure \ref{fig:acc-output-comparison-harmony}, there is no difference between the two models, the accuracy of an output is basically the same.
 The same ascertainment can be done with the loss of an output (figure \ref{fig:loss-output-comparison-harmony}).
@@ -2868,17 +2836,17 @@ What we can notice, it that the final value of the KLD is basically the same for
 
 The figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without} show respectively 2 generated samples from the model using the Harmony loss and the model which doesn't use it.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/with-harmony.jpg}
     \caption{Generated sample with a model trained using the Harmony Loss}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_with_harmony.mid}{Link})
     \label{fig:exp:harmony:with}
 \end{figure}
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/without-harmony.jpg}
-    \caption{Generated sample with a model trained using the Harmony Loss}
+    \caption{Generated sample with a model trained which doesn't use the Harmony loss}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_without_harmony.mid}{Link})
     \label{fig:exp:harmony:without}
 \end{figure}
@@ -2895,8 +2863,8 @@ The figure \ref{fig:pie:harmony} display the result of the preference of the per
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        23.8/With Harmony loss,
-        76.2/Without Harmony loss
+        35.2/With Harmony loss,
+        64.8/Without Harmony loss
         }
     \end{tikzpicture}
     \caption{Google form result on Harmony loss}
@@ -3256,9 +3224,156 @@ For this Dissertation I created some google form to determine what model was bet
 Here are the link of all the google forms I have created:
 \begin{itemize}
     \item For the size of the model (section \ref{sec:exp:size}):  \href{https://forms.gle/BdEcYZgYWXPigSdA6}{Google Form link}
+    \item For scale and rhythm loss (section \ref{sec:exp:scale-rhythm}): \href{https://docs.google.com/forms/d/e/1FAIpQLSckCvIg1mZdXlh1fSv_yG68dEbfQRN-WwkGG2KVdcjQ4rQgbw/viewform?usp=sf_link}{Google Form link}
     \item For the harmony loss (section \ref{sec:exp:harmony}): \href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google From link}
 \end{itemize}
 
+\section{Experiment plots}
+\label{appendix:exp}
+
+This section contains the plots of the different experiments
+
+\subsection{Model size}
+\label{appendix:size}
+
+This section contains the graphs from the section \ref{sec:exp:size}.
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/loss-comparison-size.jpg}
+            \caption{Global loss between for size of models}
+            \label{fig:loss-comparison-size}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/kld-comparison-size.jpg}
+            \caption{KLD value for different size of models}
+            \label{fig:kld-comparison-size}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/loss-output-comparison-size.jpg}
+            \caption{Loss of one voice for different size of models}
+            \label{fig:loss-output-comparison-size}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/size/acc-output-comparison-size.jpg}
+            \caption{Loss of one voice for different size of models}
+            \label{fig:acc-output-comparison-size}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\subsection{Scale and Rhythm}
+\label{appendix:scale-rhythm}
+
+This section contains the graphs from the section \ref{sec:exp:scale-rhythm}.
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/loss-output-comparison-scale-rhythm.jpg}
+            \caption{Loss value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:loss-output-comparison}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/acc-output-comparison-scale-rhythm.jpg}
+            \caption{Accuracy value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:acc-output-comparison}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/loss-comparison-scale-rhythm.jpg}
+            \caption{Loss value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:loss-comparison}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/kld-comparison-scale-rhythm.jpg}
+            \caption{Loss value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:kld-comparison}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/harmony-comparison-scale-rhythm.jpg}
+            \caption{Harmony value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:harmony-comparison}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/loss-all-comparison-scale-rhythm.jpg}
+            \caption{Scale and Rhythm value for one output comparison with and without scale and rhythm loss}
+            \label{fig:exp:scale-rhythm:all-output-comparison}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\subsection{Harmony}
+\label{appendix:harmony}
+
+This section contains the graphs from the section \ref{sec:exp:harmony}.
+
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/acc-output-comparison-harmony.jpg}
+            \caption{Accuracy value for one output comparison with and without harmony loss}
+            \label{fig:acc-output-comparison-harmony}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-output-comparison-harmony.jpg}
+            \caption{Loss value for one output comparison with and without harmony loss}
+            \label{fig:loss-output-comparison-harmony}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/loss-comparison-harmony.jpg}
+            \caption{Global loss value comparison with and without harmony loss}
+            \label{fig:loss-comparison-harmony}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/harmony-comparison-harmony.jpg}
+            \caption{Harmony loss value comparison with and without harmony loss}
+            \label{fig:harmony-comparison-harmony}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/experiences/harmony-rnn/kld-comparison-harmony.jpg}
+    \caption{KLD value comparison with and without harmony loss}
+    \label{fig:kld-comparison-harmony}
+\end{figure}
 
 
 
