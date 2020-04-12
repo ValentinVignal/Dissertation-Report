@@ -225,7 +225,7 @@ The generated notes are mostly Quarter notes (\musQuarter).
 The model has the tendency to generated only around 3 different notes per voice and repeat a simple sequence.
 
 I conducted some experiments and created some google forms, to evaluate whether the additional loss functions actually help the model or not.
-Much to my disappointment, the results of these experiments and polls weren't in favour of my customs functions.
+Much to my disappointment, the results of these experiments and polls weren't in favour of my custom losses.
 Indeed, the results with a custom loss function are either equivalent or worse than without.
 
 
@@ -367,7 +367,7 @@ In this section I will explain how musicians represent music on paper, and from 
 
 \subsection{Musical stave}
 
-It is very useful for anyone to be able to write down their work to save it or share it with someone else. Musicians faced this issue too. They came up with the musical stave :
+It is very useful for anyone to be able to write down their work to save it or share it with someone else. Musicians faced this issue too. They came up with the musical stave (figure \ref{fig:musical_stave_example}).
 
 \begin{figure}[H]
     \centering
@@ -395,11 +395,15 @@ As said previously, the vertical position of a note indicates its frequency.
    \end{minipage}
 \end{figure}
 
-The figures \ref{fig:note_names} and \ref{fig:piano_keys} show the correspondence between the notes on a musical stave and on a piano keyboard. By default the notes correspond to the white keys of the piano (it is the C major scale).
+The figures \ref{fig:note_names} and \ref{fig:piano_keys} show the correspondence between the notes on a musical stave and on a piano keyboard.
+By default the notes correspond to the white keys of the piano (it is the C major scale).
 
-One thing to know is that, between 2 followings notes (or piano keys, including white and black keys), the ratio between the fundamental frequencies of the 2 notes is always equal to $\sqrt{12}$. It means that if we consider the notes $A4$ and $A5$ (2 $A$ notes in the octaves 4 and 5), the ratio between the fundamental frequencies is $2$. This information will help to understand chords construction.
+One thing to know is that, between 2 followings notes (or piano keys, including white and black keys), the ratio between the fundamental frequencies of the 2 notes is always equal to $\sqrt{12}$.
+It means that if we consider the notes $A4$ and $A5$ (2 $A$ notes in the octaves 4 and 5), the ratio between the fundamental frequencies is $2$.
+This information will help to understand chords construction.
 
-The length of a note is defined by its shape as shown in the Table \ref{tab:notes_duration}. This table is describing the relation between the length of a note, and its shape on the musical stave.
+The length of a note is defined by its shape as shown in the table \ref{tab:notes_duration}.
+This table describes the relation between the length of a note, and its shape on the musical stave.
 
 \begin{table} [ht]
     \begin{center}
@@ -417,7 +421,7 @@ The length of a note is defined by its shape as shown in the Table \ref{tab:note
     \end{center}
 \end{table}
 
-In this work, I won't consider shorter notes than Sixteenth notes because most of the songs are not using them. This is a common assumption in the existing work.
+In this work, I won't consider shorter notes than Sixteenth notes because most of the songs are not using them. This is a common assumption in the existing works.
 
 
 \subsection{MIDI}
@@ -438,7 +442,7 @@ The most important messages I will consider are:
     \begin{equation}
         <NoteOn, 0, 50, 127>
     \end{equation}
-    To describe the event \textit{Start to play the note $D3$ with the maximum velocity (127) for the channel (instrument) 0}
+    to describe the event \textit{"Start to play the note $D3$ with the maximum velocity (127) for the channel (instrument) 0"}.
     \item \textit{Note off} which indicates to stop playing a note (for instance, release the keyboard key). The given parameters are the same as the ones given to the \textit{Note On} event.
     \begin{equation}
         <NoteOff, 0, 50, 127>
@@ -481,7 +485,7 @@ They are several types of scales.
 The most common one is the \textit{Major Scale} or the \textit{Natural Minor Scale}.
 For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
 
-Another type of scale, often used by the musicians to creates their \textit{solos}, are the \textit{Pentatonic} scales.
+Another type of scale, often used by the musicians to creates their \textit{solos}, is the \textit{Pentatonic} scale.
 
 
 \begin{figure}[H]
@@ -498,7 +502,7 @@ It is known that playing in this scale will easily produce enjoyable and in-tune
 \subsubsection{Rhythm}
 
 The rhythm is an important part of current music like \textit{Pop Music}.
-It has the tendency to remain consistent through the song and to repeat some patterns.
+It has the tendency to remain consistent through the song and repeat some patterns.
 It helps the listener to easily follow the progression and allows him to listen what he's expecting to.
 
 However, rhythm is more flexible than scale and harmonies, and there is no rhythm theory someone could follow.
@@ -527,7 +531,7 @@ The $2^{nd}$ harmonic is $A5$ $880Hz$.
 The consequence is, when an instrument plays a $A4$, all the harmonics of a $A5$ are also present.
 Let us take one step further, the $3^{rd}$ harmonic of $A4$ is $E5$ $1320Hz$.
 It means it is possible to hear a $E5$ from a played $A4$.
-The table \ref{tab:A4_harmonics} is referencing the first harmonics of the $A4$ note.
+The table \ref{tab:A4_harmonics} references the first harmonics of the $A4$ note.
 
 \begin{table} [ht]
     \begin{center}
@@ -562,7 +566,7 @@ A Minor chords ($A$ $Minor$ is $A$, $C$, $E$) will also sounds acceptable to the
 
 \subsubsection{Dissonance}
 
-When 2 frequencies are close to each other and added up, it is possible to observe a resonance phenomena.
+When 2 frequencies are close to each other and added up, a resonance phenomena is observed.
 
 \begin{figure}[H]
     \centering
@@ -578,7 +582,7 @@ This resonance is explained by the trigonometric identity written in the equatio
     \label{eq:resonance}
 \end{equation}
 
-This phenomena is unpleasant to hear and this is why, musicians usually try to avoid to play notes that generate a resonance between their harmonics:
+This phenomena is unpleasant to hear and this is why, musicians usually avoid to play notes that generate a resonance between their harmonics:
 \begin{itemize}
     \item \textit{Semitone} interval (ex: $A$ and $A\sh$)
     \item \textit{Tone} interval (ex: $A$ and $B$)
@@ -615,7 +619,7 @@ The harmony parts will usually avoid unpleasant interval and mostly try to creat
 
 Arranging a song is an entire musical field an a job.
 It is the art of giving to an existing melody musical variety.
-To put it more simply, it means creating a accompaniment for an melody.
+To put it more simply, it means creating a accompaniment from a melody.
 To do so, the musician can include chords, change the rhythm, add other musical parts...
 
 To give an example, arranging a song could be creating piano, guitar, drums and bass parts from a voice melody with lyrics.
@@ -631,7 +635,7 @@ In this section, I will briefly describe some neural network architectures.
 \subsection{Convolutional neural network}
 
 Convolutional neural networks are often used on images because of their ability to preserve the spatial information.
-A CNN usually includes two types of layers :
+A CNN usually includes two types of layers:
 \begin{itemize}
     \item A convolutional layer
     \item A pooling layer
@@ -639,7 +643,7 @@ A CNN usually includes two types of layers :
 
 \subsubsection{Convolutional Layer}
 
-For a 2D convolution, the convolutional layer takes as an input a tensor of shape \texttt{(height, width, channels)}.
+For a 2D convolution, a convolutional layer takes as an input a tensor of shape \texttt{(height, width, channels)}.
 The \textit{filter} of the convolutional layer will have a shape \texttt{(h, w, channels)}.
 Then the layer will do a $2D$ convolutional operation between the filter and the input through the axes corresponding to the \texttt{height} and the \texttt{width}.
 
@@ -863,7 +867,7 @@ The figure \ref{fig:gan:directions-kld} shows the differences between the two di
     \label{fig:gan:directions-kld}
 \end{figure}
 Minimizing the reverse KL might be expected to yield better samples because the model will generate samples that come only from modes in the training distribution.
-It will ignore some modes and won't try to include all of them with the risk of generating some samples that don't belong from any training set mode.
+It will ignore some modes and won't try to include all of them with the risk of generating some samples that don't belong to any training set mode.
 
 \subsubsection{Summary and vulgarization of GANs}
 
@@ -1147,7 +1151,7 @@ where $x^{*}$ is the reconstructed input, $W$ are the same weights as the forwar
     \label{fig:arch:rbm}
 \end{figure}
 
-RBMs are Energy-based models and a join configuration $(x, h)$ has an energy given by:
+RBMs are Energy-based models and a joint configuration $(x, h)$ has an energy given by:
 \begin{equation}
     E(x, h) = -\sum_i a_i x_i - \sum_j b_j h_j - \sum_{(i, j)} x_i h_j w_{ij}
 \end{equation}
@@ -1162,7 +1166,7 @@ where $Z$ is the partition function:
     Z = \sum_{(x,h)} e^{- E(x, h)}
 \end{equation}
 
-Training a RBM consist of implementing a gradient descent of the log-likelihood to increase the value of $\log(p(x))$ for $x$ in the dataset.
+Training a RBM consists of implementing a gradient descent of the log-likelihood to increase the value of $\log(p(x))$ for $x$ in the dataset.
 \begin{equation*}
     \frac{\partial \log(p(x))}{\partial w_{ij}}
 \end{equation*}
@@ -1176,7 +1180,7 @@ Training a RBM consist of implementing a gradient descent of the log-likelihood 
 \label{chap:related-works}
 
 I will expose in this chapter the works that have already been done about music generation with deep neural networks.
-In the section \ref{sec:related-works:objectives}, I will expose the different objectives of some implementations.
+In the section \ref{sec:related-works:objectives}, I will present the different objectives of some implementations.
 In the sections \ref{sec:related-works:music-representation} and \ref{sec:related-works:encoding}, I will introduce how the music is represented.
 I will then enumerate in the section \ref{sec:related-works:architectures} what architectures have already been used. 
 Finally, in the section \ref{sec:related-works:generation-process}, I will illustrate what are the generation processes used.
@@ -1202,7 +1206,7 @@ For instance:
 First it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
 
 Secondly, it is possible to create several musical parts at the same time. Each one of them can be either monophonic or polyphonic.
-A musical part can be considered as an instrument or voice for a Chorale.
+A musical part can be considered as an instrument or voice for a chorale.
 The challenge is to create musical parts that work together.
 
 Generation is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
@@ -1299,7 +1303,7 @@ An upside-down triangle filled with diagonal lines in the figure \ref{fig:tonnet
 
 In Chuan's paper, they extended this matrix.
 The figure \ref{fig:tonnetz_extended} shows an extended tonnetz matrix example.
-They include this extended matrix the pitch (octave number) which was missing in the first one.
+They include to this extended matrix the pitch (octave number) which was missing in the first one.
 
 \begin{figure}[h]
     \centering
@@ -1343,7 +1347,7 @@ Another approach is to convert the MIDI format into text. \cite{hadjeres_deepbac
 
 The figure \ref{fig:pianoroll_to_text} shows a simple example of how it is possible to convert an pianoroll view to a text.
 However, using text to represent a pianoroll usually forces the framework to work only in a monophonic way.
-A common choice of the existing works that working with text is to embed the text into a fix-sized vector using a \texttt{word2vec} \cite{goldberg_word2vec_2014, karani_introduction_2018, rong_word2vec_2016, noauthor_beginners_nodate, mikolov_distributed_2013} model \cite{liang_automatic_2017, herremans_modeling_2017}.
+A common choice of the existing works that work with text is to embed the text into a fix-sized vector using a \texttt{word2vec} \cite{goldberg_word2vec_2014, karani_introduction_2018, rong_word2vec_2016, noauthor_beginners_nodate, mikolov_distributed_2013} model \cite{liang_automatic_2017, herremans_modeling_2017}.
 
 \bigskip
 
@@ -1428,7 +1432,7 @@ Deep Bach from Gaëtan Hadjeres et al.'s paper \cite{hadjeres_deepbach:_2016} co
 \end{figure}
 
 In this project I chose to not include any metadata in the model because of the difficulty to find or reconstruct them for the available dataset.
-However, I gives to the model the information about the beats number and subdivisions by considering the entire measure as one entier object or a step.
+However, I give to the model the information about the beats number and subdivisions by considering the entire measure as one entire object or step.
 
 \bigskip
 
@@ -1550,8 +1554,9 @@ The content similarities between the input and the content target is reduced thr
 In the same way, the style similarities between the style target and the input will be minimized.
 
 This process works well for images to create a new image combining content and style from 2 different images.
-People tried to apply the same methods on music \cite{kaliakatsos-papakostas_conceptual_2017, hung_musical_2019, brunner_symbolic_2018, lu_play_2018}, but as Shuqi et al. \cite{dai_music_2018} say, music is more complex and has several level of style (timber, performance and composition).
-Therefor, creating a music style transfer algorithm is more complicated than for images and the results are currently not as good.
+People tried to apply the same methods on music \cite{kaliakatsos-papakostas_conceptual_2017, hung_musical_2019, brunner_symbolic_2018, lu_play_2018}.
+However, as Shuqi et al. \cite{dai_music_2018} say, music is more complex and has several level of style (timber, performance and composition).
+Therefore, creating a music style transfer algorithm is more complicated than for images and the results are currently not as good.
 
 \subsection{Feed forward and RNN architecture}
 \label{sec:rw:feed-forward}
@@ -1559,7 +1564,7 @@ Therefor, creating a music style transfer algorithm is more complicated than for
 This is the easiest and most common generation process through all the works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, wu_hierarchical_2018}, and this is the one I chose for this project.
 An input is given to the model and the model returns an output.
 The figure \ref{fig:feed_forward_generation_process} illustrates this process.
-This output can be the next frame/beat/measure (in my case, a measure) of the music.
+This output can be the next frame/beat/measure of the music.
 
 In my case, the model returns the next measure of the music.
 
@@ -1607,15 +1612,15 @@ Unfortunately, the related works don't have a such objective and the used neural
 That is why I created a new architecture called Recurrent Multimodal Variational AutoEncoder.
 This architecture is explained in the section \ref{sec:rmvae}.
 
-Because of the difficulty of obtaining clean data and of extracting meta data from a musical score, I decided to not work on that part and mostly focus my effort on the deep learning part.
-However, the results I obtained didn't satisfied my.
+Because of the difficulty of obtaining clean data and of extracting meta data from a musical score, I decided to not work on that part and mostly focus my efforts on the deep learning part.
+However, the results I obtained didn't satisfied me.
 That is why I decided to transpose all the songs from my datasets in the $C$ major key or the $A$ minor key.
 
 I decided to use the pianoroll representation (section \ref{sec:rw:pianoroll}) because this is how I (as a pianist) personally visualize the music).
 And I chose to consider the measure as an entire object (and not a frame) because this is how I conceptualize music.
 
-Finally, all along my project, I had the hope to be able to play and jam with a trained model, that is why I chose to my generation process to be feed-forward (section \ref{sec:rw:feed-forward}).
-This is the simpliest way to consider the notes I play and build a real time application.
+Finally, all along my project, I had the hope to be able to play and jam with a trained model, that is why I chose my generation process to be feed-forward (section \ref{sec:rw:feed-forward}).
+This is the simplest way to consider the notes I play and build a real time application.
 
 % ----------------------------------------------------------------------------------------------------
 % Contribution
@@ -1626,7 +1631,7 @@ This is the simpliest way to consider the notes I play and build a real time app
 
 I will explain in this chapter what have been my original works for my Dissertation.
 In the section \ref{sec:objectives}, I will explain what I have been aiming to do.
-In the section \ref{sec:data_represetation}, I will explain how I decided to represent the and how I decided to work with it.
+In the section \ref{sec:data_represetation}, I will explain how I decided to represent the data and how I decided to work with it.
 In the section \ref{sec:rmvae}, I will describe my novel architecture (RMVAE) that I have created for my Dissertation.
 And finally, in the section \ref{sec:loss}, I'll illustrate how I gave some prior knowledge to the network with custom loss functions.
 
@@ -1653,7 +1658,7 @@ To summarize, the objective is to create a unique trained model which can genera
 This project works with MIDI data. These music representation is explained in the section \ref{sec:midi}. \\
 The shortest beat division is a quarter of a beat (sixteenth note: \musSixteenth) \\
 The considered music are binary and with 4 beats per measure. \\
-Because I think that a measure can be consider as an entire object (with its rhythm, its chords ...), I chose to divide music by measure. Thus, a time step for the neural network is the representation of an entire measure.
+Because I think that a measure can be considered as an entire object (with its rhythm, its chords ...), I chose to divide music by measure. Thus, a time step for the neural network is the representation of an entire measure.
 The shape of a tensor representing a measure will be \texttt{(16, 128, channels)}:
 \begin{itemize}
     \item \texttt{16} is the number of sixteenth notes (\musSixteenth) is a measure.
@@ -1750,7 +1755,7 @@ But because the MVAE doesn't handle time across the data, it had to be transform
 And that is basically what does the MDMM.
 However, the training process of a MDMM is quite complicated and slow.
 Because of this, I came up with a novel architecture that I call RMVAE (Recurrent Multimodal Varational AutoEncoder).
-This architecture is describe in the figure \ref{fig:rmvae_architecture}.
+This architecture is described in the figure \ref{fig:rmvae_architecture}.
 
 
 % Good example how to use tikz:
@@ -1832,14 +1837,14 @@ As explained in the section \ref{sec:data_represetation}, the input tensor for o
 
 I tried 2 different architectures of encoders and decoder.
 The first architecture (section \ref{sec:encoder:cnn}) considers a measure as an image and apply image operations on it with convolution layers.
-The second architecture (section \ref{sec:encoder:rnn}) considers a measure as a time series of notes and use an RNN architecture to encode it.
+The second architecture (section \ref{sec:encoder:rnn}) considers a measure as a time series of notes and uses an RNN architecture to encode it.
 
 \subsubsection{Convolutional encoder}
 \label{sec:encoder:cnn}
 
 For a given instrument $i$, and a given step $t$, the tensor (with a shape of \texttt{(16, 128, channels)}) can be considered as a pianoroll image, hence usual imaging operations can be applied.
 
-The encoder $\text{Enc}^i$ process each steps of a the instrument $i$. And encoder is composed of:
+The encoder $\text{Enc}^i$ processes each steps of a the instrument $i$. And encoder is composed of:
 \begin{enumerate}
     \item Convolutional layers and pooling layers
     \item Fully Connected layers
@@ -1860,7 +1865,7 @@ I chose this dimension so the receptive field of the first layer is a third majo
 \label{sec:encoder:rnn}
 
 For a given instrument $i$, and a given measure $m$, the tensor has a shape of \texttt{(16, 128, channels)}.
-The first dimensions ( \texttt{(16,)} ) corresponds of a sixteenth note (\musSixteenth) in time.
+The first dimension ( \texttt{(16,)} ) corresponds of a sixteenth note (\musSixteenth) in time.
 Therefore, I created an encoder using bidirectional LSTM cells.
 This architecture is shown in the figure \ref{fig:lstm-encoder}.
 
@@ -2112,7 +2117,7 @@ Every solo can be considered as a \textit{"ground truth"} if it sounds nice.
 I wanted my model to be able to \textit{improvise}, generate new music.
 
 I got the idea of helping the model to do \textit{acceptable mistakes} and restraint it do to \textit{unacceptable mistakes}.
-In other word, during the training part, if the model doesn't hit the note it should have hit, I don't want to \textit{punish} it to much with a high loss value if the note sounds actually nice with the music.
+In other words, during the training part, if the model doesn't hit the note it should have hit, I don't want to \textit{punish} it to much with a high loss value if the note sounds actually nice with the music.
 On the other side, I want to \textit{punish} it if the note it hits is completely wrong with a higher loss value.
 
 To summarize what I previously just said, during the training part, if the model hits a note which sounds nice, a reward is given by adding a negative number to the loss.
@@ -2355,7 +2360,7 @@ The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harm
 \label{chap:results}
 
 In this chapter I will share the results I got.
-In the section \ref{sec:results:samples}, what sample the model usually produces.
+In the section \ref{sec:results:samples}, I will describe what sample the model usually produces.
 In the section \ref{sec:results:note-continue}, I will show the results obtained when the model is using or not the $\text{note}_{\text{continue}}$ note.
 Finally, in the section \ref{sec:tasks}, I will enumerate what tasks I have actually implemented.
 To be fair, the results are quite poor and disappointing.
@@ -2671,13 +2676,13 @@ However, the generated sample doesn't contain much tension and is not dissonant.
 \chapter{Experiments}
 \label{chap:experiments}
 
-In this chapter I expose the experiments I have conduct for this project.
+In this chapter I expose the experiments I have conducted for this project.
 Evaluating a generated musical piece is a complex task.
 Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
-Most of the paper working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
+Most of the papers working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
 They create a poll and let the people decide what sample they prefer between several of them.
 
-By lack of time and result, I haven't been able to create many polls to evaluate the musical samples I generated.
+By lack of time and result, I haven't been able to create many polls to evaluate the musical samples my model generates.
 The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
 
 Conducting several of experiments was very laborious and slow.
@@ -2701,7 +2706,7 @@ The first model is trained on a transposed dataset while the second one is train
     \item The figure \ref{fig:harmony-comparison-transpose} shows the value of the harmony loss.
     \item The figure \ref{fig:all-outputs-comparison-transpose} shows the scale and rhythm loss value.
 \end{itemize}
-To help the model and get sharper distributions, I created a script to transpose all the music in C major or A minor scale.
+To help the model and get sharper distributions, I created a script to transpose all the musics in C major or A minor scale.
 
 Unfortunately, it didn't help much the model.
 The output and accuracy of an output stays the same for the train dataset, and becomes worse for the validation dataset (figures \ref{fig:loss-output-comparison-transpose}, \ref{fig:acc-output-comparison-transpose}, \ref{fig:loss-comparison-transpose}).
@@ -2709,7 +2714,7 @@ The value of KLD and the harmony loss is unchanged for the training and validati
 However, it looks like that for the scale and rhythm loss, the model performs better on the transposed validation set.
 
 From the metric figures, it seems that transposing the data doesn't help the model to train.
-However they is no noticeable difference between the samples generated of the two models.
+However there is no noticeable difference between the samples generated of the two models.
 The figures \ref{fig:exp:tranpose:with} and \ref{fig:exp:tranpose:without} respectively show a sample generated by the model trained and transposed data and a sample generated by the model train on the non transposed data.
 
 \begin{figure}[htbp]
@@ -2737,18 +2742,19 @@ The figure \ref{fig:pie:transpose} displays the result of the preference of the 
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        56.7/With transposed data,
-        43.3/Without transposed data
+        50/With transposed data,
+        50/Without transposed data
         }
     \end{tikzpicture}
-    \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSe3LEiDZFI9Y58OgWvHwKke4k1_2yPg8eJLQFBasSKUAdh3Ng/viewform?usp=sf_link}{Google Form} result on model size}
+    \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSe3LEiDZFI9Y58OgWvHwKke4k1_2yPg8eJLQFBasSKUAdh3Ng/viewform?usp=sf_link}{Google Form} result on transposed data}
     The preferred model by the people
     \label{fig:pie:transpose}
     \end{center}
 \end{figure}
 
-Only 3 persons answered the survey.
-There is no enough data to conclude anything.
+14 people answered the it.
+And the results match the expectations from the plots of the metrics.
+People didn't prefer a model to another.
 
 \section{Model size}
 \label{sec:exp:size}
@@ -2763,6 +2769,7 @@ There are 3 size of models:
     \item \textit{Medium}: with a size of about $8500Mib$ on GPU
     \item \textit{Large}: with a size of about $10500Mib$ on GPU
 \end{itemize}
+Those memory sizes correspond to a batch size of 64.
 
 I couldn't test with bigger model because of the GPU size limitation.
 
@@ -2818,9 +2825,9 @@ The figure \ref{fig:pie:size} displays the result of the preference of the perso
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        19.8/Small,
-        46.6/Medium,
-        33.6/Big
+        21.1/Small,
+        44.5/Medium,
+        34.4/Big
         }
     \end{tikzpicture}
     \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSdBn0DZZe-8YPvLYl-vovapk1iMnteeLzGfFJ7R00D3eA-Ydw/viewform?usp=sf_link}{Google Form} result on model size}
@@ -2829,8 +2836,8 @@ The figure \ref{fig:pie:size} displays the result of the preference of the perso
     \end{center}
 \end{figure}
 
-29 persons answered the google form, and surprisingly, the results follow the metrics even though the generated samples are pretty similar.
-This confirms that the metrics used are actually meaningful and not just numbers.
+32 persons answered the google form, and surprisingly, the results follow the metrics even though the generated samples are pretty similar.
+This confirms that the metrics could actually be meaningful.
 
 \section{Custom losses}
 
@@ -2886,8 +2893,8 @@ The figure \ref{fig:pie:scale-loss} display the result of the preference of the 
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        58/With Scale and Rhythm losses,
-        42/Without Scale and Rhythm losses
+        54.7/With Scale and Rhythm losses,
+        45.3/Without Scale and Rhythm losses
         }
     \end{tikzpicture}
     \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSckCvIg1mZdXlh1fSv_yG68dEbfQRN-WwkGG2KVdcjQ4rQgbw/viewform?usp=sf_link}{Google Form} result on Scale and Rhythm losses}
@@ -2896,7 +2903,7 @@ The figure \ref{fig:pie:scale-loss} display the result of the preference of the 
     \end{center}
 \end{figure}
 
-15 persons answered the google form.
+17 persons answered the google form.
 And in that case, the result of the survey doesn't match the metrics but match my feeling about the generated samples.
 People slightly preferred the samples generated by the model with the scale and rhythm losses.
 
@@ -2918,8 +2925,7 @@ The first one uses the custom loss \textit{Harmony}, and the second one doesn't 
 
 
 As we can see in the figure \ref{fig:acc-output-comparison-harmony}, there is no difference between the two models, the accuracy of an output is basically the same.
-The same ascertainment can be done with the loss of an output (figure \ref{fig:loss-output-comparison-harmony}).
-The value is pretty similar.
+The same ascertainment can be done with the loss of an output (figure \ref{fig:loss-output-comparison-harmony}), the values are pretty similar.
 
 However, the value of the loss function (figure \ref{fig:loss-comparison-harmony}) of the model which uses the Harmony loss is higher.
 It can been explain because the second model doesn't use the harmony loss (see figure \ref{fig:harmony-comparison-harmony}), therefore the harmony loss value is not added to the global loss.
@@ -2961,8 +2967,8 @@ The figure \ref{fig:pie:harmony} displays the result of the preference of the pe
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        42/With Harmony loss,
-        58/Without Harmony loss
+        41.5/With Harmony loss,
+        58.5/Without Harmony loss
         }
     \end{tikzpicture}
     \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google Form} result on Harmony loss}
@@ -2971,7 +2977,7 @@ The figure \ref{fig:pie:harmony} displays the result of the preference of the pe
     \end{center}
 \end{figure}
 
-21 persons answered the google form.
+22 persons answered the google form.
 Unfortunately, the people have preferred the model which doesn't use the harmony loss.
 It is quite disappointing and I was hoping the harmony loss would have helped the model.
 
@@ -2997,7 +3003,7 @@ On the figure \ref{fig:all-output-comparison-rpoe}, it appears that on the valid
 
 Finally, on the figures \ref{fig:loss-comparison-rpoe} and \ref{fig:kld-comparison-rpoe}, it appears the value of the KLD of the model using the RPoE is 2 times bigger than the one which doesn't use the RPoE.
 
-From these results, it appears that the model using a RPoE layer doesn't perform better than the model that doesn't use the RPoE layer.
+From these results, it seems that the model using a RPoE layer doesn't perform better than the model that doesn't use the RPoE layer.
 
 However, the samples sound a bit better to me when they are generated with the model containing a RPoE layer.
 In my opinion, there are more variations and the repeated sequence is more complex.
@@ -3028,17 +3034,17 @@ The figure \ref{fig:pie:rpoe} displays the result of the preference of the perso
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        49.1/With RPoE layer,
-        50.9/Without RPoE layer
+        48.5/With RPoE layer,
+        51.5/Without RPoE layer
         }
     \end{tikzpicture}
-    \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSf1tkCLj78u-IoMYjGWa3iTYWIT_gbPnGIShjFox4whfhkjLw/viewform?usp=sf_link}{Google Form} result on Harmony loss}
+    \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSf1tkCLj78u-IoMYjGWa3iTYWIT_gbPnGIShjFox4whfhkjLw/viewform?usp=sf_link}{Google Form} result on PRoE layer}
     The preferred model by the people
     \label{fig:pie:rpoe}
     \end{center}
 \end{figure}
 
-11 persons answered the google form.
+13 persons answered the google form.
 In that case the results of the survey match the suppositions from the metrics.
 Using a RPoE layer doesn't add anything to the generation.
 
@@ -3082,8 +3088,8 @@ Unfortunately, the results showed that a model using a custom loss were equivale
 I believe that this approach can lead to a well trained model able to generalize music and handle most of the tasks someone could ask to a neural network.
 
 It looks like the text encoding (section \ref{sec:rw:midi:text}) is the one which performs the best for Bach's style music generation \cite{hadjeres_deepbach:_2016, liang_automatic_2017}.
-This is something I can't explain because letters and words structure is, in my opinion, not linked to musical notes structure.
-Even though I don't understand why, this would be a possible solution to improve the model's performance.
+This is something I can't explain because letters and words structure is, in my opinion, not linked in any way to musical notes structure.
+Even though I don't understand it, this would be a possible solution to improve the model's performance.
 
 The \textit{Scale} and \textit{Rhythm} loss functions could be ameliorated.
 A scale template could be created to fit the local scale.
@@ -3161,7 +3167,7 @@ The figure \ref{fig:segment_sum} describes what the segment sum operation would 
 \section{$\text{Roll}_n$}
 \label{appendix:roll_n}
 
-The $\text{Roll}_n$ operation takes a one dimensional tensor, takes the first $n$ values and put append them at the end.
+The $\text{Roll}_n$ operation takes a one dimensional tensor, takes the first $n$ values and put them at the end.
 The algorithm \ref{alg:roll_n} explains how it works and the figure \ref{fig:roll_2} shows an example with $n=2$.
 
 \begin{algorithm}
@@ -3241,11 +3247,11 @@ The figure \ref{fig:arch:transformer} illustrates the transformer's architecture
 
 Tuning hyper-parameters to train the best possible model is a difficult task in deep learning.
 The reason is because every number or setting can be considered as a hyper-parameter and, most of time, there is no proof or rules to guide us to choose the best value a parameter should have.
-The only help the researcher can have is his intuition and his understanding on how a specific parameter will influence a specific process.
+The only help a researcher can have is his intuition and his understanding on how a specific parameter will influence a specific process.
 
 A common doing is to implement a grid-search algorithm.
 For each hyper-parameters, a set of possible value is specified and the algorithm is simply to train the model with all the possible combinations of parameters.
-However, the number of iteration grow exponentially with the number of hyper-parameters.
+However, the number of iterations grows exponentially with the number of hyper-parameters.
 
 It has been showed that a random-search algorithm is in average faster and better than a grid search.
 
@@ -3272,9 +3278,9 @@ To create and train my models I used the python frameworks Tensorflow \cite{noau
 
 \subsubsection{Hyper Parameters}
 
-The table \ref{tab:network-hp} is listing the principal value of the hyper-parameters used.
+The table \ref{tab:network-hp} lists the value of the principal hyper-parameters used.
 
-\begin{table}[]
+\begin{table}[htbp]
     \centering
     \begin{tabular}{c|c}
         Hyper Parameter & Value \\
