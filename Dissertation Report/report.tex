@@ -105,7 +105,7 @@
 \pagestyle{empty}
 \setlength{\parindent}{0cm}
 \begin{center}
-    {\textbf{\Large Generating new music with deep probabilistic models}}\\
+    {\textbf{\Large Music completion with deep probabilistic models}}\\
     \vspace{2cm}
     {\textbf{\Large Valentin Vignal}}\\
     \textbf{(BSc, CentraleSupélec)}\\
@@ -202,7 +202,7 @@ As a musician, I like to play music, improvise and create or arrange songs.
 
 However, most of the related works about music generation with a deep neural network aim to perform one and only one task.
 The main goal of this Dissertation is to create a neural network architecture able to handle several tasks a musician or a composer could perform with only one trained model.
-These tasks are, generating one or several musical parts, generating an accompaniment from a melody, generating a melody from an accompaniment, generating one or several musical parts from one or several other musical parts.
+These tasks are, generating one or several musical parts, creating an accompaniment from a melody, creating a melody from an accompaniment, creating one or several musical parts from one or several other musical parts.
 
 To this purpose, I created a new architecture that I call \textbf{RMVAE} (Recurrent Multimodal Variational AutoEncoder) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells.
 Only one trained model can be used to create a melody, or several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
@@ -216,15 +216,15 @@ The deep learning framework I used it Tensorflow/Keras \cite{noauthor_tensorflow
 I made my python code for this dissertation available online: \url{https://github.com/ValentinVignal/midiGenerator}.
 
 I constructed the \textbf{RMVAE} architecture in a way that, it is easy to implement a script to handle different tasks.
-The tasks I have implemented are, generate several musical parts, generate a musical part from other musical parts, and re-write a song by replacing one by one all the musical parts.
+The tasks I have implemented are, generate several musical parts, complete several musical parts, create a musical part from other musical parts, and re-write a song by replacing one by one all the musical parts.
 Other tasks can easily be derived from the one I have already implemented.
 
-Unfortunately, the generated samples from the \textbf{RMVAE} don't match my expectations.
+Unfortunately, the created samples from the \textbf{RMVAE} don't match my expectations.
 The model is consistent through its generation, but the quality of the created samples is poor.
-The generated notes are mostly Quarter notes (\musQuarter).
+The created notes are mostly Quarter notes (\musQuarter).
 The model has the tendency to generated only around 3 different notes per voice and repeat a simple sequence.
 
-I conducted some experiments and created some google forms, to evaluate whether the additional loss functions actually help the model or not.
+I conducted some experiments and created some google forms to evaluate whether the additional loss functions actually help the model or not.
 Much to my disappointment, the results of these experiments and polls weren't in favour of my custom losses.
 Indeed, the results with a custom loss function are either equivalent or worse than without.
 
@@ -331,7 +331,7 @@ My goal is to create a unique model able to execute as many tasks as I could per
 While I was spending my time learning about music, training my musical skills or playing with other people, I have learnt, understood and integrated some musical concepts.
 Instead of letting the model learn everything from scratch from the data, I also want to give it some prior knowledge about music.
 
-Thus, the first objective of my Dissertation is to create a unique trained model able to generate a melody, generate several musical parts, create an accompaniment from a melody, create a melody from an accompaniment...
+Thus, the first objective of my Dissertation is to create a unique trained model able to generate or complete a melody, generate or complete several musical parts, create an accompaniment from a melody, create a melody from an accompaniment...
 The second objective is to insert some prior knowledge about music to the model.
 
 The choices I have made for this project were mostly relying on my musical instinct.
@@ -711,7 +711,7 @@ The training's objective is to maximize the marginal likelihood of the data (cal
 \end{equation}
 However, since it is intractable (equation \ref{eq:vae:intractable}), the evidence lower bound is instead optimized. The ELBO is defined via a neural network $q_{\phi}(z|x)$, with parameters $\phi$ which serves as a intractable importance distribution (equation \ref{eq:vae:elbo}).
 \begin{equation}
-    \log (p_{\theta} (x)) - \log \left( \int_{z} p_{\theta} (x|z) p(z) dz\right)
+    \log (p_{\theta} (x)) = \log \left( \int_{z} p_{\theta} (x|z) p(z) dz\right)
     \label{eq:vae:intractable}
 \end{equation}
 \begin{equation}
@@ -836,7 +836,7 @@ If the discriminator performs too well compared to the generator, it will succes
 The gradient of the generator will then start to vanish.
 In the Heuristic, non-saturating game version, the generator cost is the equation \ref{eq:gan:heuristic}
 \begin{equation}
-    J^{(G)} = = - \frac{1}{2} \mathbb{E} (\log(D(G(z))))
+    J^{(G)} = - \frac{1}{2} \mathbb{E} (\log(D(G(z))))
     \label{eq:gan:heuristic}
 \end{equation}
 The motivation of this cost function is to ensure that each player has a strong gradient when it is \textit{"losing"} the game.
@@ -1195,7 +1195,7 @@ In this section, I will describe some examples of what it is possible to do with
 As explained in the section \ref{sec:objectives}, my Dissertation's goal is to create a single model able to do as many task as possible a musician or a composer could do.
 For instance:
 \begin{itemize}
-    \item Generate music with several part (for instance several instruments)
+    \item Generate or complete music with several parts (for instance several instruments)
     \item Create a accompaniment from a melody
     \item Create a melody from an accompaniment
     \item Create a musical part from other musical parts
@@ -1207,9 +1207,18 @@ First it is possible to create a music melody. It can be either monophonic (only
 
 Secondly, it is possible to create several musical parts at the same time. Each one of them can be either monophonic or polyphonic.
 A musical part can be considered as an instrument or voice for a chorale.
-The challenge is to create musical parts that work together.
+The challenge is to create musical parts that work together \cite{}.
 
-Generation is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
+% TODO: Add the music generation references (take from completion)
+
+\subsection{Completion}
+
+The completion challenge is the same as the generation challenge.
+The goal is to generate one or several musical parts (they can be either monophonic or polyphonic).
+The difference with the generation challenge is that the model takes as an input a \textit{seed}.
+The model will continue the musical parts present in the seed.
+
+Completion is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
 
 \subsection{Accompaniment}
 
@@ -1602,7 +1611,7 @@ The algorithm is describe in the figure \ref{fig:relatedworks:deepbach_architect
 
 As explained in the introduction, I aim to create only one model which can handle several tasks as:
 \begin{itemize}
-    \item Generate music with several musical parts (meaning several instruments)
+    \item Generate or complete music with several musical parts (meaning several instruments)
     \item Create a accompaniment from a melody
     \item Create a melody from a accompaniment
     \item Create a musical part from other musical parts
@@ -1838,6 +1847,9 @@ As explained in the section \ref{sec:data_represetation}, the input tensor for o
 I tried 2 different architectures of encoders and decoder.
 The first architecture (section \ref{sec:encoder:cnn}) considers a measure as an image and apply image operations on it with convolution layers.
 The second architecture (section \ref{sec:encoder:rnn}) considers a measure as a time series of notes and uses an RNN architecture to encode it.
+
+Each instrument or musical voice has its own couple of encoder and decoder.
+During the training, each couple of encoder and decoder will specialize themselves to represent the specificity of each voices in the best possible way.
 
 \subsubsection{Convolutional encoder}
 \label{sec:encoder:cnn}
@@ -2276,7 +2288,7 @@ From this figure, I realized there are actually 3 musical intervals to avoid:
     \item The \textit{tritone} interval. This interval was named \textit{"Diabolus in musica"} ("Devil in the music") and was forbidden by the church.
 \end{itemize}
 
-To prevent the model to generate such intervals, I created a loss function which gives a penalty every time there is one of this intervals.
+To prevent the model to produce such intervals, I created a loss function which gives a penalty every time there is one of this intervals.
 To do so, I created a sub-function $\text{harmony}_n$ which penalizes the presence of the $n^{th}$ interval (counted in semitone).
 
 The operations of the cost function harmony and $\text{harmony}_n$ are showed in the figures \ref{fig:loss_harmony} and \ref{fig:loss_harmony_n}.
@@ -2335,16 +2347,19 @@ The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harm
             
             \node[state, rectangle](s)[below left of=r]{scalar product};
             
-            \node[state](loss)[below of=s]{Loss};
+            \node[state, rectangle](sum)[below of=s]{sum};
+            
+            \node[state](loss)[below of=sum]{Loss};
             
             
             \path[]
                 (predict)   edge    node[anchor=center]{\texttt{(nb\_instruments, 16, 128)}}    (n1)
-                (n1)    edge    node{\texttt{(128,)}}   (n2)
-                (n2)    edge    node[right]{\texttt{(12,)}}    (r)
-                        edge    node[left]{\texttt{(12,)}}  (s)
-                (r)     edge    node[right]{\texttt{(12,)}} (s)
-                (s)     edge    node{\texttt{(1,)}} (loss);
+                (n1)    edge    node{\texttt{(16, 128)}}   (n2)
+                (n2)    edge    node[right]{\texttt{(16, 12)}}    (r)
+                        edge    node[left]{\texttt{(16, 12)}}  (s)
+                (r)     edge    node[right]{\texttt{(16, 12)}} (s)
+                (s)     edge    node{\texttt{(16,)}} (sum)
+                (sum)     edge    node{\texttt{(1,)}} (loss);
                 
             \end{tikzpicture}
         \end{center}
@@ -2353,6 +2368,7 @@ The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harm
     \end{minipage}
 \end{figure}
 
+
 % ----------------------------------------------------------------------------------------------------
 % Results
 % ----------------------------------------------------------------------------------------------------
@@ -2360,6 +2376,7 @@ The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harm
 \label{chap:results}
 
 In this chapter I will share the results I got.
+In the section \ref{sec:results:evaluation}, I will explained how I decided to evaluate the music samples created by my model.
 In the section \ref{sec:results:samples}, I will describe what sample the model usually produces.
 In the section \ref{sec:results:note-continue}, I will show the results obtained when the model is using or not the $\text{note}_{\text{continue}}$ note.
 Finally, in the section \ref{sec:tasks}, I will enumerate what tasks I have actually implemented.
@@ -2367,33 +2384,39 @@ To be fair, the results are quite poor and disappointing.
 
 % -------------------- Generated samples --------------------
 
-\section{Generated Samples}
+\section{Music evaluation}
+\label{sec:results:evaluation}
+
+% TODO: Explain how to evaluate the music
+
+
+\section{Created Samples}
 \label{sec:results:samples}
 
 \subsection{CNN Encoder Decoder}
 
 For a CNN encoder and decoder, the results weren't matching my expectation.
-To illustrate it with an image, the figure \ref{fig:rmvae-generated} shows a generated sample by a RMVAE.
+To illustrate it with an image, the figure \ref{fig:rmvae-generated} shows a completed sample by a RMVAE.
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/generated_cnn.jpg}
-    \caption{Generated pianoroll by the RMVAE with CNN encoder decoder}
-    The grey part is the seed given to the model and the black part is the generated part   (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated_pianoroll.mid}{Link})
+    \caption{Created pianoroll by the RMVAE with CNN encoder decoder}
+    The grey part is the seed given to the model and the black part is the created part   (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated_pianoroll.mid}{Link})
     \label{fig:rmvae-generated}
 \end{figure}
 
-As we can see on the figure \ref{fig:rmvae-generated}, the global shape of the the generated part is very different from the seed part.
+As we can see on the figure \ref{fig:rmvae-generated}, the global shape of the the created part is very different from the seed part.
 The main reason is a lack of rhythm and variation.
-Most of the generated notes are quarter notes (\musQuarter), and the model generates always the same notes.
+Most of the created notes are quarter notes (\musQuarter), and the model produces always the same notes.
 
-However, even though the generated sample have huge lack of rhythm and variation, it is not wrong.
-It is one tune, consistent with the seed, and the four voices work well together.
+However, even though the created sample have huge lack of rhythm and variation, it is not wrong.
+It is on tune, consistent with the seed, and the four voices work well together.
 
 \subsection{Recurrent Encoder Decoder}
 
 For the recurrent encoder and decoder, the results have been slightly better but not much.
-The generated samples are mostly composed of quarter notes (\musQuarter) and the variations are too poor.
+The created samples are mostly composed of quarter notes (\musQuarter) and the variations are too poor.
 One sample is showed in the figure \ref{fig:rrmvae-generated}.
 The generated sample seems more complex with more variations.
 And this is verified when you listen to it.
@@ -2402,8 +2425,8 @@ There are more small variations in the rhythm and the played note than the sampl
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/generated-rnn.jpg}
-    \caption{Generated pianoroll by the RMVAE with recurrent encoder decoder}
-    The grey part is the seed given to the model and the black part is the generated part   (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated-pianoroll-rnn.mid}{Link})
+    \caption{Created pianoroll by the RMVAE with recurrent encoder decoder}
+    The grey part is the seed given to the model and the black part is the created part   (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated-pianoroll-rnn.mid}{Link})
     \label{fig:rrmvae-generated}
 \end{figure}
 
@@ -2421,14 +2444,14 @@ The shape for a tensor describing a measure is \texttt{(16, 128 + 1)}.
 
 At the beginning, I considered the $note_{continue}$ as a \textit{normal} note, and apply a softmax activation through the \texttt{128 + 1} notes for each of the 16 frames.
 Unfortunately, it resulted with a too high probability for the $note_{continue}$ and the model wasn't generated anything.
-The figure \ref{fig:rmvae-generated-silence} shows a generated sample.
-As explained, the generated part (black part) contains only few notes.
+The figure \ref{fig:rmvae-generated-silence} shows a created sample.
+As explained, the produced part (black part) contains only few notes.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RMVAE/cnn_generation_silence.jpg}
-    \caption{Generated pianoroll by the RMVAE with a softmax activation}
-    The grey part is the seed given to the model and the black part is the generated part
+    \caption{Created pianoroll by the RMVAE with a softmax activation}
+    The grey part is the seed given to the model and the black part is the created part
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/generated_silence.mid}{Link})
     \label{fig:rmvae-generated-silence}
 \end{figure}
@@ -2441,7 +2464,7 @@ To counter this silence problem I changed the activation function of the notes:
     \item The \texttt{128} remaining notes are still going through a softmax activation to chose what is the note to be played (if $note_{continue} <0.5$).
 \end{itemize}
 
-By doing so, I helped the model to generate new notes and get results like the figure \ref{fig:rmvae-generated}.
+By doing so, I helped the model to produce new notes and get results like the figure \ref{fig:rmvae-generated}.
 However, the lack of rhythm is still present and most of the notes have a length of one beat (\musQuarter).
 
 
@@ -2450,13 +2473,13 @@ However, the lack of rhythm is still present and most of the notes have a length
 With the recurrent architecture (explained in sections \ref{sec:encoder:rnn} and \ref{sec:decoder:rnn}), I obtained the same behavior as with convolutional architecture (sections \ref{sec:encoder:cnn} and \ref{sec:decoder:cnn}).
 
 The figures \ref{fig:pianoroll:rrmvae:no-binary} and \ref{fig:pianoroll:rrmvae:with-binary} illustrate it.
-We can see on the pianoroll views that the generation is more consistent when the activation function on the note $note_{continue}$ is the sigmoid function.
+We can see on the pianoroll views that the created music is more consistent when the activation function on the note $note_{continue}$ is the sigmoid function.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-no-binary.jpg}
-    \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax activation}
-    The grey part is the seed given to the model and the black part is the generated part
+    \caption{Created pianoroll by the RMVAE with recurrent architecture with softmax activation}
+    The grey part is the seed given to the model and the black part is the created part
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/lstm_encoder_decoder.mid}{Link})
     \label{fig:pianoroll:rrmvae:no-binary}
 \end{figure}
@@ -2464,8 +2487,8 @@ We can see on the pianoroll views that the generation is more consistent when th
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/RRMVAE/pianoroll-rrmvae-with-binary.jpg}
-    \caption{Generated pianoroll by the RMVAE with recurrent architecture with softmax and sigmoid activation}
-    The grey part is the seed given to the model and the black part is the generated part
+    \caption{Created pianoroll by the RMVAE with recurrent architecture with softmax and sigmoid activation}
+    The grey part is the seed given to the model and the black part is the created part
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/results/rrmvae-with-binary.mid}{Link})
     \label{fig:pianoroll:rrmvae:with-binary}
 \end{figure}
@@ -2486,7 +2509,7 @@ Those tasks are:
 \end{itemize}
 
 
-\subsection{Generate}
+\subsection{Complete}
 \label{sec:tasks:generate}
 
 This is the simplest task I have created for the model.
@@ -2495,14 +2518,14 @@ The figure \ref{fig:tasks:generate} is the result of it.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate/generate.jpg}
-    \caption{Task \textit{Generate}}
+    \caption{Task \textit{Complete}}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/generate.mid}{Link})
     \label{fig:tasks:generate}
 \end{figure}
 
 The model is given a seed (grey part of the figure \ref{fig:tasks:generate}).
-From this seed it generates the next measure.
-It will then consider the seed and the previously generated measure to generate the next one.
+From this seed it creates the next measure.
+It will then consider the seed and the previously created measure to create the next one.
 And so one...
 
 The algorithm \ref{alg:tasks:generate} describes this task.
@@ -2512,7 +2535,7 @@ The algorithm \ref{alg:tasks:generate} describes this task.
         \Require{$seed$ (list of measures), $n$ (number of generated measures)} 
         \Ensure{$generation$ (list of measures)}
         \Statex
-        \Function{generate}{$seed$, $n$}
+        \Function{complete}{$seed$, $n$}
             \State $seed\_length \gets len(seed)$
             \State $generation \gets seed$
             \For{$k \gets 1$ to $n$}
@@ -2523,15 +2546,15 @@ The algorithm \ref{alg:tasks:generate} describes this task.
             \State \Return {$generation$}
         \EndFunction
         \end{algorithmic}
-    \caption{Generate function}
+    \caption{Complete function}
     \label{alg:tasks:generate}
 \end{algorithm}
 
 The RMVAE takes a mask as an input with a shape of \texttt{(nb\_instruments, nb\_measure)}.
 Therefore, to ignore one or several instrument(s), the only thing to do is to put $0$ at the positions $mask[i, :]$ for every instrument $i$ we want to ignore.
 
-However, as you can see in the figures \ref{fig:tasks:generate}, the generated sample is poor in variation and complexity.
-The accuracy of the model to generate the next measure is around $0.8$.
+However, as you can see in the figures \ref{fig:tasks:generate}, the created sample is poor in variation and complexity.
+The accuracy of the model to create the next measure is around $0.8$.
 
 \subsection{Fill}
 \label{sec:tasks:fill}
@@ -2556,7 +2579,7 @@ As an example, the figures \ref{fig:tasks:fill:truth} and \ref{fig:tasks:fill:0}
 \end{figure}
 
 I gave to the model the figure \ref{fig:tasks:fill:truth} and apply the fill algorithm on the voice $0$ (the one at the top, yellow in the figure \ref{fig:tasks:fill:truth} and pink in the figure \ref{fig:tasks:fill:0}).
-To do so, the model deletes the voice to fill and uses the remaining ones as a seed to generate the next measure of the missing voice.
+To do so, the model deletes the voice to fill and uses the remaining ones as a seed to create the next measure of the missing voice.
 This is described in the algorithm \ref{alg:tasks:fill}.
 
 
@@ -2667,7 +2690,12 @@ The notes are mostly quarter notes (\musQuarter).
 Each voice mostly stays on few notes.
 This is very repetitive.
 
-However, the generated sample doesn't contain much tension and is not dissonant.
+However, the created sample doesn't contain much tension and is not dissonant.
+
+\subsection{Generate}
+
+% TODO: Write the "generate part"
+% Completion part from noise
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
@@ -2677,19 +2705,19 @@ However, the generated sample doesn't contain much tension and is not dissonant.
 \label{chap:experiments}
 
 In this chapter I expose the experiments I have conducted for this project.
-Evaluating a generated musical piece is a complex task.
+Evaluating a produced musical piece is a complex task.
 Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
 Most of the papers working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
 They create a poll and let the people decide what sample they prefer between several of them.
 
-By lack of time and result, I haven't been able to create many polls to evaluate the musical samples my model generates.
+By lack of time and result, I haven't been able to create many polls to evaluate the musical samples my model creates.
 The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
 
 Conducting several of experiments was very laborious and slow.
 I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate} and faced a lot of memory leak issues \cite{noauthor_memory_nodate-1, noauthor_memory_nodate-2}.
 Because of that I had to launch every training manually.
 Moreover, training a model is very long, for example, the average time to train a model for 50 epochs was about 1 day and a half.
-Also, I was sharing the GPUs with limited memory provided by NUS with other student, so I couldn't use all the memory space to train all my different models in parallel.
+Also, I was sharing the GPUs with limited memory provided by NUS with other students, so I couldn't use all the memory space to train all my different models in parallel.
 
 The appendix \ref{appendix:exp} contains some figures useful for this chapter.
 
@@ -2714,13 +2742,13 @@ The value of KLD and the harmony loss is unchanged for the training and validati
 However, it looks like that for the scale and rhythm loss, the model performs better on the transposed validation set.
 
 From the metric figures, it seems that transposing the data doesn't help the model to train.
-However there is no noticeable difference between the samples generated of the two models.
-The figures \ref{fig:exp:tranpose:with} and \ref{fig:exp:tranpose:without} respectively show a sample generated by the model trained and transposed data and a sample generated by the model train on the non transposed data.
+However there is no noticeable difference between the samples created of the two models.
+The figures \ref{fig:exp:tranpose:with} and \ref{fig:exp:tranpose:without} respectively show a sample created by the model trained and transposed data and a sample generated by the model train on the non transposed data.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/transpose-rnn/generated-with-transpose.jpg}
-    \caption{Pianoroll generated by the model which was trained on transposed data}
+    \caption{Pianoroll created by the model which was trained on transposed data}
     \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/transpose-comparison/generated-with-transpose.mid}{Link}
     \label{fig:exp:tranpose:with}
 \end{figure}
@@ -2728,12 +2756,11 @@ The figures \ref{fig:exp:tranpose:with} and \ref{fig:exp:tranpose:without} respe
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/transpose-rnn/generated-without-transpose.jpg}
-    \caption{Pianoroll generated by the model which was trained on non transposed data}
+    \caption{Pianoroll created by the model which was trained on non transposed data}
     \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/transpose-comparison/generated-without-transpose.mid}{Link}
     \label{fig:exp:tranpose:without}
 \end{figure}
 
-% TODO: Put results of the google forms for transpose
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSe3LEiDZFI9Y58OgWvHwKke4k1_2yPg8eJLQFBasSKUAdh3Ng/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:transpose} displays the result of the preference of the persons who answered the survey.
@@ -2787,12 +2814,12 @@ However, the KLD value is slightly better when the model is bigger.
 
 For the validation data, the medium model seems to perform better for every metrics.
 
-However despite the difference of value between the different metrics, the generation is not very different, the notes are mostly quarter notes (\musQuarter) and there is no variation is the generated music.
+However despite the difference of value between the different metrics, the created samples are not very different, the notes are mostly quarter notes (\musQuarter) and there is no variation is the generated music.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-small.jpg}
-    \caption{Pianoroll generated by the small model}
+    \caption{Pianoroll created by the small model}
     \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/small.mid}{Link}
     \label{fig:exp:size:generation-small}
 \end{figure}
@@ -2800,7 +2827,7 @@ However despite the difference of value between the different metrics, the gener
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-medium.jpg}
-    \caption{Pianoroll generated by the medium model}
+    \caption{Pianoroll created by the medium model}
     \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/medium.mid}{Link}
     \label{fig:exp:size:generation-medium}
 \end{figure}
@@ -2808,15 +2835,14 @@ However despite the difference of value between the different metrics, the gener
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/size/generation-comparison-size-large.jpg}
-    \caption{Pianoroll generated by the large model}
+    \caption{Pianoroll created by the large model}
     \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/mode-size-comparison/large.mid}{Link}
     \label{fig:exp:size:generation-large}
 \end{figure}
 
-As shown in the figures \ref{fig:exp:size:generation-small}, \ref{fig:exp:size:generation-medium}, \ref{fig:exp:size:generation-large}, the generation is quite similar through all the models.
+As shown in the figures \ref{fig:exp:size:generation-small}, \ref{fig:exp:size:generation-medium}, \ref{fig:exp:size:generation-large}, the created samples are quite similar through all the models.
 The generated part is looping over the same notes.
 
-% TODO: Put results of the google forms for size
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSdBn0DZZe-8YPvLYl-vovapk1iMnteeLzGfFJ7R00D3eA-Ydw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:size} displays the result of the preference of the persons who answered the survey.
@@ -2848,8 +2874,8 @@ The appendix \ref{appendix:scale-rhythm} contains useful graphs for this section
 The following figures display the difference of some metrics through the training of two models. The first one doesn't use the Scale and Rhythm losses while the second one uses them.
 \begin{itemize}
     \item The figure \ref{fig:exp:scale-rhythm:loss-output-comparison} shows the loss of an output
-    \item The figure     \ref{fig:exp:scale-rhythm:acc-output-comparison} shows the accuracy of an output
-    \item The figure     \ref{fig:exp:scale-rhythm:loss-comparison} shows the global loss
+    \item The figure \ref{fig:exp:scale-rhythm:acc-output-comparison} shows the accuracy of an output
+    \item The figure  \ref{fig:exp:scale-rhythm:loss-comparison} shows the global loss
     \item The figure \ref{fig:exp:scale-rhythm:kld-comparison} shows the value of the KLD
     \item The figure \ref{fig:exp:scale-rhythm:harmony-comparison} shows the Harmony value. Both of the models are using the harmony loss
     \item The figure \ref{fig:exp:scale-rhythm:all-output-comparison} shows the value of the Scale and Rhythm losses.
@@ -2870,21 +2896,20 @@ The figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:withou
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-with-scale-rhythm.jpg}
-    \caption{Generated sample with a model trained using the Scale and Rhythm losses}
+    \caption{Created sample with a model trained using the Scale and Rhythm losses}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/scale-rhythm-comparison/generated-with-scale-rhythm.mid}{Link})
     \label{fig:exp:scale-rhythm:with}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-without-scale-rhythm.jpg}
-    \caption{Generated sample with a model trained which doesn't use the Scale and Rhythm losses}
+    \caption{Created sample with a model trained which doesn't use the Scale and Rhythm losses}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/scale-rhythm-comparison/generated-without-scale-rhythm.mid}{Link})
     \label{fig:exp:scale-rhythm:without}
 \end{figure}
 
 From the samples showed in the figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without}, it looks like the sample from the model using the scale and rhythm losses is more complex and has more variations than the one generated by the other model.
 
-% TODO: Put results of the google forms for scale and rhythm
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSckCvIg1mZdXlh1fSv_yG68dEbfQRN-WwkGG2KVdcjQ4rQgbw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:scale-loss} display the result of the preference of the persons who answered to the poll.
@@ -2905,7 +2930,7 @@ The figure \ref{fig:pie:scale-loss} display the result of the preference of the 
 
 17 persons answered the google form.
 And in that case, the result of the survey doesn't match the metrics but match my feeling about the generated samples.
-People slightly preferred the samples generated by the model with the scale and rhythm losses.
+People slightly preferred the samples created by the model with the scale and rhythm losses.
 
 
 
@@ -2937,28 +2962,26 @@ Therefore the $\beta$ annealing (appendix \ref{appendix:kld-annealing}) follows 
 What we can notice, it that the final value of the KLD is basically the same for the validation set and the training set.
 
 
-
 The figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without} show respectively 2 generated samples from the model using the Harmony loss and the model which doesn't use it.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/with-harmony.jpg}
-    \caption{Generated sample with a model trained using the Harmony Loss}
+    \caption{Created sample with a model trained using the Harmony Loss}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_with_harmony.mid}{Link})
     \label{fig:exp:harmony:with}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/without-harmony.jpg}
-    \caption{Generated sample with a model trained which doesn't use the Harmony loss}
+    \caption{Created sample with a model trained which doesn't use the Harmony loss}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/harmony-comparison/generated_without_harmony.mid}{Link})
     \label{fig:exp:harmony:without}
 \end{figure}
 
-From this samples, it is not obvious to determine whether the loss is helping the model or not.
-Maybe the generated samples from the model using the Harmony loss are \textit{"smoother"} than the other one, but this is very subtle.
+From these samples, it is not obvious to determine whether the loss is helping the model or not.
+Maybe the produced samples from the model using the Harmony loss are \textit{"smoother"} than the other one, but this is very subtle.
 
-% TODO: Put results of the google forms for harmony
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:harmony} displays the result of the preference of the persons who completed the survey.
@@ -3005,7 +3028,7 @@ Finally, on the figures \ref{fig:loss-comparison-rpoe} and \ref{fig:kld-comparis
 
 From these results, it seems that the model using a RPoE layer doesn't perform better than the model that doesn't use the RPoE layer.
 
-However, the samples sound a bit better to me when they are generated with the model containing a RPoE layer.
+However, the samples sound a bit better to me when they are produced by the model containing a RPoE layer.
 In my opinion, there are more variations and the repeated sequence is more complex.
 The figures \ref{fig:exp:rpoe:with} and \ref{fig:exp:rpoe:without} show 2 generated samples.
 The first one comes from the model with the RPoE layer and the second one comes from the model without the RPoE layer.
@@ -3013,14 +3036,14 @@ The first one comes from the model with the RPoE layer and the second one comes 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/rpoe-rnn/generated-with-rpoe.jpg}
-    \caption{Generated sample with a model trained using the RPoE layer}
+    \caption{Created sample with a model trained using the RPoE layer}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/rpoe-comparison/generated-with-rpoe.mid}{Link})
     \label{fig:exp:rpoe:with}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/experiences/rpoe-rnn/generated-without-rpoe.jpg}
-    \caption{Generated sample with a model trained which doesn't use the RPoE layer}
+    \caption{Created sample with a model trained which doesn't use the RPoE layer}
     (\href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/rpoe-comparison/generated-without-rpoe.mid}{Link})
     \label{fig:exp:rpoe:without}
 \end{figure}
@@ -3028,14 +3051,13 @@ The first one comes from the model with the RPoE layer and the second one comes 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSf1tkCLj78u-IoMYjGWa3iTYWIT_gbPnGIShjFox4whfhkjLw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:rpoe} displays the result of the preference of the persons who completed the survey.
 
-% TODO: Update the poll for RPoE
 
 \begin{figure}
     \begin{center}
     \begin{tikzpicture}
         \pie[rotate=180]{
-        48.5/With RPoE layer,
-        51.5/Without RPoE layer
+        52.9/With RPoE layer,
+        47.1/Without RPoE layer
         }
     \end{tikzpicture}
     \caption{\href{https://docs.google.com/forms/d/e/1FAIpQLSf1tkCLj78u-IoMYjGWa3iTYWIT_gbPnGIShjFox4whfhkjLw/viewform?usp=sf_link}{Google Form} result on PRoE layer}
@@ -3044,7 +3066,7 @@ The figure \ref{fig:pie:rpoe} displays the result of the preference of the perso
     \end{center}
 \end{figure}
 
-13 persons answered the google form.
+14 persons answered the google form.
 In that case the results of the survey match the suppositions from the metrics.
 Using a RPoE layer doesn't add anything to the generation.
 
@@ -3062,7 +3084,7 @@ However, the current works done about music generation using deep learning solut
 In this work, I have created a new architecture called \textbf{RMVAE} (Recurrent Multimodal Variational AutoEncoder).
 This architecture allows me to train only one model to perform several music generation tasks as:
 \begin{itemize}
-    \item Generating one or several musical parts
+    \item Generating or completing one or several musical parts
     \item Creating one or several musical part(s) from one or several musical part(s).
     Each of them could be an accompaniment or a melody part
     \item Redoing a song by iteratively change a musical part after another
@@ -3073,7 +3095,7 @@ And finally, I came up with 3 additional loss functions to give prior knowledge 
 These loss functions are based on my understanding of music and on some physical phenomena as the musical harmonics and the resonance phenomena.
 
 However, even though the \textbf{RMVAE} is general and can perform many tasks, the results are far from my expectations.
-While DeepBach \cite{hadjeres_deepbach:_2016} or BachBot \cite{liang_automatic_2017} generate realistic Bach's style music, my model gets stuck and usually generates the same sequence over and over.
+While DeepBach \cite{hadjeres_deepbach:_2016} or BachBot \cite{liang_automatic_2017} create realistic Bach's style music, my model gets stuck and usually produces the same sequence over and over.
 The looping sequence is usually composed of Quarter notes only (\musQuarter) and each musical parts use around 3 or 4 different notes.
 
 I have conducted some experiments and created several surveys to allow the population to evaluate the contribution from the custom losses.
@@ -3094,9 +3116,9 @@ Even though I don't understand it, this would be a possible solution to improve 
 The \textit{Scale} and \textit{Rhythm} loss functions could be ameliorated.
 A scale template could be created to fit the local scale.
 This template could contain some weights related the importance of the notes.
-A \textit{strong} weight would give a \textit{strong} reward to the generated notes.
+A \textit{strong} weight would give a \textit{strong} reward to the produced notes.
 Those weights would be decreasing following the harmonics order (Tonic, Fifth, Major Third...) or the Third cycle (Tonic, Major Third, Fifth...) to fit music and chords theory.
-This would encourage the model to generate notes that are not already in the target tensor but will (hopefully) still be musically correct.
+This would encourage the model to produce notes that are not already in the target tensor but will (hopefully) still be musically correct.
 
 If a dataset contains some additional information about music (like chords, local scale...), it would allow us integrate a deeper prior knowledge to the neural network.
 
@@ -3208,7 +3230,7 @@ The application I have created
     \item Allows the user to choose what part he wants to play in the \textit{"band"}
     \item Allows the user to choose what parts from the \textit{"band"} he wants to play with
     \item Feeds the model with the notes played 
-    \item Play the generated notes by the model with the user
+    \item Play the produced notes by the model with the user
     \item Display the notes played by the model and the user in a pianoroll view
 \end{itemize}
 
@@ -3370,11 +3392,31 @@ The equation \ref{eq:kld-annealing} and the figure \ref{fig:beta-annealing} show
     \label{fig:beta-annealing}
 \end{figure}
 
+\subsubsection{Sub-sample Training Paradigm}
+
+As explained in Mike Wu's paper for the MVAE \cite{wu_multimodal_2018}, a specific training paradigm is used to fully train the different experts.
+
+Given a complete dataset with no missing modalities (i.e. missing instruments in my work), optimizing the equation \ref{eq:vae:elbo} is not optimal: the individual inference networks are never trained and thus, the model does not know how to use them when it encounters any missing data at test time.
+Conversely, if the model is trained only on independent modalities, it will fail to capture the relationship between modalities in the generative model.
+The idea is to combine the two extremes, including ELBO terms for whole and partial observations.
+However, if there are $N$ modalities, training on every possible subsets would be computationally intractable (there are $2^{N}$ subsets).
+To reduce the cost, the ELBO terms to optimize are sub-sampled.
+Specifically, they chosen ones are (1) the ELBO using the product of $N$ Gaussians, (2) all ELBO terms using a single modality, and (3) $k$ ELBO terms using $k$ randomly chosen subsets $X_k$.
+For each minibatch, I evaluate a random subset of the $2^{N}$ ELBO terms.
+In expectation, it approximates the full objective.
+
+The sub-sampled objective can be written as in the equation \ref{eq:appendix:sub-sampled-elbo}.
+
+\begin{equation}
+    ELBO(x_1, \dots, x_M) + \sum_{i=1}^{N} ELBO(x_i) + \sum_{j=1}^{k} ELBO(X_j)
+    \label{eq:appendix:sub-sampled-elbo}
+\end{equation}
+
+In practice, $k = 2$
 
 \section{Google Forms}
 \label{appendix:google-forms}
 
-% TODO: Finish the poll
 
 For this Dissertation I created several google forms to determine what model was better than the other.
 Here are the links of all the google forms I have created:
@@ -3648,6 +3690,7 @@ This section contains the graphs from the section \ref{sec:exp:rpoe}(figures \re
         \end{center}
     \end{minipage}
 \end{figure}
+
 
 
 
