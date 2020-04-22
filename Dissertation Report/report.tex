@@ -1207,9 +1207,7 @@ First it is possible to create a music melody. It can be either monophonic (only
 
 Secondly, it is possible to create several musical parts at the same time. Each one of them can be either monophonic or polyphonic.
 A musical part can be considered as an instrument or voice for a chorale.
-The challenge is to create musical parts that work together \cite{}.
-
-% TODO: Add the music generation references (take from completion)
+The challenge is to create musical parts that work together \cite{donahue_adversarial_2019}.
 
 \subsection{Completion}
 
@@ -1218,7 +1216,7 @@ The goal is to generate one or several musical parts (they can be either monopho
 The difference with the generation challenge is that the model takes as an input a \textit{seed}.
 The model will continue the musical parts present in the seed.
 
-Completion is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}.
+Completion is the most common objective choice among the existing works \cite{liang_automatic_2017, chuan_modeling_nodate, huang_counterpoint_2017, boulanger-lewandowski_modeling_2012, lattner_imposing_2018}
 
 \subsection{Accompaniment}
 
@@ -1642,7 +1640,8 @@ I will explain in this chapter what have been my original works for my Dissertat
 In the section \ref{sec:objectives}, I will explain what I have been aiming to do.
 In the section \ref{sec:data_represetation}, I will explain how I decided to represent the data and how I decided to work with it.
 In the section \ref{sec:rmvae}, I will describe my novel architecture (RMVAE) that I have created for my Dissertation.
-And finally, in the section \ref{sec:loss}, I'll illustrate how I gave some prior knowledge to the network with custom loss functions.
+In the section \ref{sec:loss}, I'll illustrate how I gave some prior knowledge to the network with custom loss functions.
+And finally, in the section \ref{sec:learning-process}, I will explain how the RMVAE is trained and how it can be used to create a new song.
 
 % -------------------- Objectives --------------------
 
@@ -2300,7 +2299,7 @@ It will return a positive and high value if an interval of $n$ semitones is pres
 The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harmony}_{2}$ and $\text{harmony}_{6}$ which respectively handle the semitone, tone, and tritone intervals.
 
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \begin{minipage}{0.5\textwidth}
         \begin{center}
             \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
@@ -2368,6 +2367,29 @@ The function Harmony do the sum of the functions $\text{harmony}_1$, $\text{harm
     \end{minipage}
 \end{figure}
 
+\section{Learning process}
+\label{sec:learning-process}
+
+% TODO: training : prediction
+% DONE
+
+In this section I will describe how I train the Recurrent Multimodal Variational AutoEncoder.
+I use the model differently between the training time and the creation time.
+
+During the training, the model is trained to predict the next measure of a song from a fixed number of measures.
+In practice, I give 8 measures of a song from the Bach Chorale corpus and ask the model to predict the next one.
+The goal is not to \textit{over fit} the training dataset.
+During the training time, the model will try to \textit{guess} and learn what is the next measure from the previous ones for the songs in the dataset.
+This idea is that the model will not learn all the songs \textit{by heart}, but it will learn music in a more general and meaningful way.
+It will learn musical rules tendencies, and styles from the dataset.
+
+Then, when the model is correctly trained, it will be able to complete a song in a consistent way from the given seed and the train dataset.
+When 8 measures from the test dataset are given to the model, it will create the next measure which can be a possible continuation of the given seed.
+Obviously the model won't be able to guess and recreate the correct measure from the song because it is impossible to \textit{guess} a song without hearing it before.
+So the model will create an alternative continuation of a song and this is how it can be used to create a new song.
+
+Alternatively, the seed given to the model can be random so the RMVAE will generate new measures on its own. 
+
 
 % ----------------------------------------------------------------------------------------------------
 % Results
@@ -2388,6 +2410,12 @@ To be fair, the results are quite poor and disappointing.
 \label{sec:results:evaluation}
 
 % TODO: Explain how to evaluate the music
+
+Music is by definition an art, it is therefore subjective.
+
+\subsection{Prediction evaluation}
+
+\subsection{Creation evaluation}
 
 
 \section{Created Samples}
@@ -2696,6 +2724,80 @@ However, the created sample doesn't contain much tension and is not dissonant.
 
 % TODO: Write the "generate part"
 % Completion part from noise
+
+The \textit{generate} task is used to generate a song from a noise.
+The model task a random seed from a noise, and apply the generate task on this seed.
+In that way, the model creates its own music and doesn't continue an existing song.
+The results from generate task are quite surprising because they are consistent with the previous tasks.
+
+I tried 3 different kind of noise:
+\begin{itemize}
+    \item Gaussian
+    \item Uniform
+    \item Binomial
+\end{itemize}
+
+As a reminder, for a monophonic music, there is only one \texttt{channel}: the channel \textit{activation}.
+The dimension of a tensor for an instrument is \texttt{(16, 128 + 1, channel=1)}.
+\texttt{16} is the number of Sixteenth notes (\musSixteenth) in a measure, \texttt{128} is the number of possible pitches provided by the MIDI format.
+An extra note ($\text{note}_{\text{continue}}$) is added to symbolize the fact that the previous note is continued and no new note is played.
+for the pitch dimension (\texttt{128 + 1}), all the values are $0$, and there is only one $1$ at the adequate position.
+
+The results from the different noises are similar.
+Except for the Gaussian loss which produces samples less complex than the others.
+
+\subsubsection{Gaussian}
+
+I give to the model a Gaussian noise with a mean of $0.5$: $\mathcal{N}(0.5, 1)$.
+
+The figure \ref{fig:task:noise:gaussian} shows a sample generated by the model from this noise.
+The grey part at the beginning is the noise given as a seed.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate-noise/generate-noise-gaussian.jpg}
+    \caption{Generation of music by the model from a \textit{Gaussian} noise}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/generated_noise_gaussian.mid}{Link}
+    \label{fig:task:noise:gaussian}
+\end{figure}
+
+\subsubsection{Uniform}
+
+The second noise is a Uniform noise.
+At the beginning, all the values of the seed are $0$.
+For each Sixteenth notes (\musSixteenth) for each measures of each instruments, a value is chosen between $\{0, 1, \dots, 128\}$ with a uniform probability ($\frac{1}{129}$).
+A $1$ is put at the index of the chosen value.
+
+The figure \ref{fig:task:noise:uniform} shows as sample generated by the model with the \textit{Uniform} noise.
+The grey part at the beginning is the noise given as a seed.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate-noise/generate-noise-softmax.jpg}
+    \caption{Generation of music by the model from a \textit{Uniform} noise}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/generated_noise_softmax.mid}{Link}
+    \label{fig:task:noise:uniform}
+\end{figure}
+
+\subsubsection{Binomial}
+
+The last noisy seed I created is called \textit{Binomial}.
+First, for each sixteenth notes of each measure of each instruments, the value of the $\text{note}_{\text{continue}}$ as a probability $p_0=0.5$ to be set to $0$ and a probability $p_1=0.5$ to be set to $1$.
+If $\text{note}_{\text{continue}} = 1$, then all the others notes are set to $0$.
+And if $\text{note}_{\text{continue}} = 0$ then, one of the other notes is set to $1$ and the others to $0$.
+The activated note is chosen uniformly among the \texttt{128} remaining ones ($p=\frac{1}{128}$).
+
+The figure \ref{fig:task:noise:binomial} shows as sample generated by the model with the \textit{Binomial} noise.
+The grey part at the beginning is the noise given as a seed.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate-noise/generate-noise-binary.jpg}
+    \caption{Generation of music by the model from a \textit{Binomial} noise}
+    \href{https://github.com/ValentinVignal/midiGenerator/blob/master/samples/tasks/generated_noise_binary.mid}{Link}
+    \label{fig:task:noise:binomial}
+\end{figure}
+
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
