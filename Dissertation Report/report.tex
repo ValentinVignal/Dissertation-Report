@@ -2413,9 +2413,122 @@ To be fair, the results are quite poor and disappointing.
 
 Music is by definition an art, it is therefore subjective.
 
+
+It is subjective
+Music is a hit = good music ?
+I'm sure everyone has conter examples
+
+Rule: classic, jazz, pop ?
+Always a counter example depending on the
+- style
+- instrument (sound)
+- music line
+- player
+
 \subsection{Prediction evaluation}
 
+During the training time, the model performs a prediction task, the objective is to reconstruct the next measure from the previous ones given as in input.
+Therefore, several metrics can be used to evaluate the performance of the neural network.
+I will enumerate here the metrics I have been using to evaluate a train.
+The objective is to reach the best value of the following metrics on the train and validation dataset (mostly validation data).
+
+\subsubsection{Loss Function}
+
+The loss function is a categorical cross-entropy loss function from a softmax activation (equations \ref{eq:ce} and \ref{eq:softmax}).
+The goal is to obtain a loss as low as possible because this is an error function.
+
+\begin{equation}
+    CE = - \sum_{c=1}^{C} y_{truth} \log(y_{predict})
+    \label{eq:ce}
+\end{equation}
+\begin{equation}
+    \text{Softmax}(x)_{i} = \frac{e^{x_i}}{\sum_{c=1}^{C} e^{x_{c}}}
+    \label{eq:softmax}
+\end{equation}
+
+However, two facts don't allow us to be able to generalize and rely to much on this loss value.
+\begin{enumerate}
+    \item This value is \textit{directly} minimized by the gradient descent algorithm.
+    Therefore, the value has no choice but decrease through time.
+    \item This value is artificial and is not musically meaningful.
+    I have constructed this loss from a computer student's point of view.
+    There is no direct link with music quality.
+\end{enumerate}
+
+\subsubsection{Accuracy metric}
+
+The accuracy between the output of the model and the actual next measure of song can be calculated.
+The accuracy represents the proportion of notes the model correctly predicts (including the note $\text{note}_{\text{continue}}$).
+The algorithm \ref{alg:accuracy} describes how the accuracy is calculated.
+The objective is to inscrease the accuracy as much as possible.
+
+\begin{algorithm}
+    \begin{algorithmic}[1]
+        \Require{$truth$ (tensor of shape \texttt{(16, 128 + 1)}), $predict$ (tensor of shape \texttt{(16, 128 + 1)})} 
+        \Ensure{$acc$}
+        \Statex
+        \Function{accuracy}{$truth$, $predict$}
+            \State $truthArgs \gets argmax(truth, axis=1)$ \texttt{// (16,)}
+            \State $predictArgs \gets argmax(predict, axis=1)$ \texttt{// (16,)}
+            \State $acc = 0$
+            \For{$k \gets 0$ to $15$}
+                \If{$truthArgs[k] == predictArgs[k]$}
+                    \State $acc \gets acc + 1$
+                \EndIf
+            \EndFor
+            \State $acc \gets acc / 16$
+            \State \Return {$acc$}
+        \EndFunction
+        \end{algorithmic}
+    \caption{Accuracy function}
+    \label{alg:accuracy}
+\end{algorithm}
+
+This accuracy is more meaningful than the loss because it is not directly minimized by the gradient descent algorithm.
+However, it is still strongly linked to the loss value by the way it is constructed.
+As the loss value, the accuracy is not musically meaningful.
+
+For example, in the figure \ref{fig:acc-difference}, let us say the first measure is the target measure, and the measures 2 and 3 are 2 measures created by 2 different model.
+\begin{itemize}
+    \item  The measures 1 and 2 are musically similar: both of them are a arpeggio of the $G$ major chord and the accuracy computed would be $0.5$.
+    \item The measures 1 and 3 are not musically alike, the measure 3 contains a melody which is not in $G$ major.
+    However, the accuracy computed would be $0.75$.
+\end{itemize}
+The first model would be the best for a musician but for a computer student or an gird search algorithm, the second model would be the preferred one.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/metrics/training/acc.jpg}
+    \caption{musical measure examples}
+    \label{fig:acc-difference}
+\end{figure}
+
+\subsubsection{KLD}
+
+The KLD is a cost function applied on the latent space of the VAE, MVAE and RMVAE.
+The goal is to have a KLD as low as possible.
+The lower the KLD value is, the higher are the chances the model is not overfitting and generalizing in a meaningful the data it is feed with.
+However, this value is directly minimized by the gradient descent and has no link with musical quality.
+
+\subsubsection{Custom loss functions}
+
+The custom loss functions I have created for this project (Scale, Rhythm and Harmony) can be used as metric to evaluate a model.
+For all of them, the objective is to have a value as low as possible.
+However there are several issues with these values:
+\begin{itemize}
+    \item The values of the loss functions are directly minimized by the gradient descent algorithm.
+    The values are forced to decreased and a low value won't necessarily imply a successful train.
+    \item I have constructed these values from my understanding and music.
+    As said previously, there is no fixed rules in music, and the logic behind these functions can sometimes goes against a song philosophy.
+\end{itemize}
+
 \subsection{Creation evaluation}
+
+\subsubsection{Harmony loss function}
+
+\subsubsection{Public opinion}
+
+
 
 
 \section{Created Samples}
