@@ -2412,18 +2412,27 @@ To be fair, the results are quite poor and disappointing.
 % TODO: Explain how to evaluate the music
 
 Music is by definition an art, it is therefore subjective.
+There is no way to measure the \textit{goodness} of a song.
+Some people can like a music while others won't consider it is not enjoyable.
+A way to rank songs is to look at how famous they are.
+The most famous songs are the ones liked by more, therefore they must be good ?
+This is not wrong but I am sure everyone reading this sentence can come with multiple famous songs they really don't like and multiple unknown songs they consider as outstanding...
+It is possible to extract some rules, trends or recurrent patterns from music and this is what I have been trying to do during my all project.
 
-
-It is subjective
-Music is a hit = good music ?
-I'm sure everyone has conter examples
-
-Rule: classic, jazz, pop ?
-Always a counter example depending on the
-- style
-- instrument (sound)
-- music line
-- player
+However musicians always try to break these rules in different elegant ways to add some variation, originality and keep their songs interesting.
+Consequently, every time I was identifying a trend, I was then facing a huge number of counter example to invalidate my thinking.
+These counter examples can be encountered for different reasons:
+\begin{itemize}
+    \item The style of music is different.
+    Classical, jazz or pop musics don't have the same rules and trends within each other.
+    \item The instrument is different.
+    A guitar musical line and an organ musical line are different.
+    These differences comes from 2 factors.
+    The first one is because of the way the instruments are played by the player.
+    A guitar gives access of only 6 strings to the guitarist and the organ provides several keyboards to the organist.
+    The sound also is important, the harmonics, the sustain, attack, release of a instrument impacts how it is played.
+    As a comparison, harpsichord, piano and organ songs are  very different whereas the players have access to a keyboard to play.
+\end{itemize}
 
 \subsection{Prediction evaluation}
 
@@ -2511,6 +2520,7 @@ The lower the KLD value is, the higher are the chances the model is not overfitt
 However, this value is directly minimized by the gradient descent and has no link with musical quality.
 
 \subsubsection{Custom loss functions}
+\label{sec:evaluate:train:custom-loss}
 
 The custom loss functions I have created for this project (Scale, Rhythm and Harmony) can be used as metric to evaluate a model.
 For all of them, the objective is to have a value as low as possible.
@@ -2524,12 +2534,43 @@ However there are several issues with these values:
 
 \subsection{Creation evaluation}
 
+After the training, the trained model has learnt a representation about music and generalized it in its own way.
+As explained in the section \ref{sec:learning-process}, the model is will either generate a song or complete one in a consistent way.
+During this creation process, there is no ground truth to compare the generation with as during the training time.
+As I said previously, the model is expected to \textit{create a new song} with new musical part as it was performing a solo or composing music.
+And every solo can be considered as \textit{correct} as long as it sounds nice to us, which is very subjective.
+
+However for this project, I need to evaluation the created musical parts by my different model.
+To do so, I can look at the harmony loss value I created (section \ref{sec:harmony}).
+And the most common process to evaluate music through the related works about music is to ask the public.
+Some survey are organized, and people are answering them to vote for the best produced song.
+
 \subsubsection{Harmony loss function}
+\label{sec:eval:creation:harmony}
+
+The harmony loss function I have created in the section \ref{sec:harmony}, is a cost function which takes as an input only the created tensor.
+It doesn't need the truth tensor from the training, therefore I can evaluate its value with a created sample.
+
+However, as explained previously in the section \ref{sec:evaluate:train:custom-loss}, the harmony value is directly minimized by the gradient descent and a low value doesn't necessarily mean the produced music is satisfactory.
+
+Unfortunately, after several creation of music sample in the section \ref{sec:tasks} and some comparisons between different models in the chapter \ref{chap:experiments}, it appears the value of the harmony loss function doesn't add any understanding to the quality to the music...
+The harmony value between a seed and the completed part (explained in the section \ref{sec:tasks:generate}) is not actually different.
+
+Therefore, I won't use it to evaluate created sample in this report and I will only mention it when I consider it pertinent.
+
+Moreover, \textit{real music} doesn't have an harmony value of $0$ because the compositors and players like to put some \textit{tension} in their songs.
+That is another reason to not focus too long on the harmony value, a low value doesn't imply it is a good song.
 
 \subsubsection{Public opinion}
+\label{sec:eval:creation:public}
 
+The strongest evaluation for music is the general opinion.
+Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
+Most of the papers working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
+They create a poll and let the people decide what sample they prefer between several of them.
 
-
+By lack of time and result, I haven't been able to create many polls to evaluate the musical samples my model creates.
+The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
 
 \section{Created Samples}
 \label{sec:results:samples}
@@ -2644,9 +2685,10 @@ For instance, in the figure \ref{fig:pianoroll:rrmvae:with-binary}, the first vo
 I created several scripts to use a single trained model for several tasks.
 Those tasks are:
 \begin{itemize}
-    \item Generate (section \ref{sec:tasks:generate})
+    \item Complete (section \ref{sec:tasks:generate})
     \item Fill (section \ref{sec:tasks:fill})
     \item Redo (section \ref{sec:tasks:redo})
+    \item Generate (section \ref{sec:tasks:generate-noise})
 \end{itemize}
 
 
@@ -2695,7 +2737,7 @@ The RMVAE takes a mask as an input with a shape of \texttt{(nb\_instruments, nb\
 Therefore, to ignore one or several instrument(s), the only thing to do is to put $0$ at the positions $mask[i, :]$ for every instrument $i$ we want to ignore.
 
 However, as you can see in the figures \ref{fig:tasks:generate}, the created sample is poor in variation and complexity.
-The accuracy of the model to create the next measure is around $0.8$.
+The accuracy of the model to create the next measure is around $0.8$, the harmony loss value of the  
 
 \subsection{Fill}
 \label{sec:tasks:fill}
@@ -2834,6 +2876,7 @@ This is very repetitive.
 However, the created sample doesn't contain much tension and is not dissonant.
 
 \subsection{Generate}
+\label{sec:tasks:generate-noise}
 
 % TODO: Write the "generate part"
 % Completion part from noise
@@ -2860,6 +2903,7 @@ The results from the different noises are similar.
 Except for the Gaussian loss which produces samples less complex than the others.
 
 \subsubsection{Gaussian}
+\label{sec:task:generate-noise:gaussian}
 
 I give to the model a Gaussian noise with a mean of $0.5$: $\mathcal{N}(0.5, 1)$.
 
@@ -2911,6 +2955,21 @@ The grey part at the beginning is the noise given as a seed.
     \label{fig:task:noise:binomial}
 \end{figure}
 
+\subsubsection{Better than noise}
+
+The good news is that the RMVAE generates better sample than noise.
+First it is obvious when you listen to the samples, but also the harmony value is here relevant.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/generated_midis/tasks/generate-noise/generate-noise-gaussian-harmony.jpg}
+    \caption{Harmony value per measure for generated sample from a Gaussian noise}
+    \label{fig:task:noise:gaussian-harmony}
+\end{figure}
+
+The figure \ref{fig:task:noise:gaussian-harmony} shows the value of the harmony loss of the sample generated with a Gaussian noise in the section \ref{sec:task:generate-noise:gaussian} (figure \ref{fig:task:noise:gaussian}).
+As showed, the harmony value is much lower on the created musical part than on the seed (8 first measures).
+In average the harmony value of a noise is 10 times higher than the one for the generated part (respectively around $0.6$ and $0.04$).
 
 % ----------------------------------------------------------------------------------------------------
 % Experiments
@@ -2920,13 +2979,8 @@ The grey part at the beginning is the noise given as a seed.
 \label{chap:experiments}
 
 In this chapter I expose the experiments I have conducted for this project.
-Evaluating a produced musical piece is a complex task.
-Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
-Most of the papers working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
-They create a poll and let the people decide what sample they prefer between several of them.
-
-By lack of time and result, I haven't been able to create many polls to evaluate the musical samples my model creates.
-The appendix \ref{appendix:google-forms} contains the list of all the different polls I have made for this Dissertation.
+Evaluating a produced musical piece is a complex task, I have explained this issue in the section \ref{sec:results:evaluation}.
+The best way to evaluate a musical piece is to ask the population by creating some polls.
 
 Conducting several of experiments was very laborious and slow.
 I use the python framework Tensorflow \cite{noauthor_tensorflow_nodate} and Keras \cite{noauthor_keras_nodate} and faced a lot of memory leak issues \cite{noauthor_memory_nodate-1, noauthor_memory_nodate-2}.
@@ -3085,6 +3139,9 @@ This confirms that the metrics could actually be meaningful.
 \subsection{Scale and Rhythm}
 \label{sec:exp:scale-rhythm}
 
+% with scale and rhythm : r0sr11h1b1p1
+% without : r0sr00h1b1p1
+
 The appendix \ref{appendix:scale-rhythm} contains useful graphs for this section.
 The following figures display the difference of some metrics through the training of two models. The first one doesn't use the Scale and Rhythm losses while the second one uses them.
 \begin{itemize}
@@ -3125,6 +3182,13 @@ The figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:withou
 
 From the samples showed in the figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without}, it looks like the sample from the model using the scale and rhythm losses is more complex and has more variations than the one generated by the other model.
 
+We could think that with the help of the scale loss, the harmony value of the generated samples would show some pertinent results.
+Unfortunately, it was not the case, the harmony value of the seeds given to the model was in average $0.094$,
+From all the samples I have generated the harmony value for the model without the scale and rhythm loss is $0.087$ and the one using the custom loss function is $0.081$ which is slightly lower.
+The figures \ref{fig:exp:scale-rhythm:harmony-generated:with} and \ref{fig:exp:scale-rhythm:harmony-generated:without} respectively show the value of the harmony value per measure of the samples showed in the figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without}.
+
+
+
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLSckCvIg1mZdXlh1fSv_yG68dEbfQRN-WwkGG2KVdcjQ4rQgbw/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:scale-loss} display the result of the preference of the persons who answered to the poll.
@@ -3151,6 +3215,9 @@ People slightly preferred the samples created by the model with the scale and rh
 
 \subsection{Harmony}
 \label{sec:exp:harmony}
+
+% With: r0sr00h1b1p1
+% Without: r0sr00h0b1p1
 
 The appendix \ref{appendix:harmony} contains useful graphs for this section.
 The following figures display the differences for some metrics through the training of two models.
@@ -3197,6 +3264,10 @@ The figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without} show re
 From these samples, it is not obvious to determine whether the loss is helping the model or not.
 Maybe the produced samples from the model using the Harmony loss are \textit{"smoother"} than the other one, but this is very subtle.
 
+The harmony value of the samples created by the different model are in average $0.092$ for the one not using the harmony loss and $0.087$ for the one using it.
+The average of the harmony value in the seeds is $0.095$.
+As expected the value of the harmony loss is lower for the model using the custom loss function.
+The figures \ref{fig:exp:harmony:generated-harmony:with} and \ref{fig:exp:harmony:generated-harmony:without} respectively show the harmony value per measure of the samples showed in the figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without}.
 
 I created a \href{https://docs.google.com/forms/d/e/1FAIpQLScZ1ZAkCxwIRiuewNlDUFgZcpEY2O-Yg0T8IEQzp4k9_BCCJg/viewform?usp=sf_link}{Google Form} so people can evaluate what is the best model.
 The figure \ref{fig:pie:harmony} displays the result of the preference of the persons who completed the survey.
@@ -3749,6 +3820,7 @@ This section contains the graphs from the section \ref{sec:exp:size} (figures \r
 
 This section contains the graphs from the section \ref{sec:exp:scale-rhythm} (figures \ref{fig:exp:scale-rhythm:loss-output-comparison}, \ref{fig:exp:scale-rhythm:acc-output-comparison}, \ref{fig:exp:scale-rhythm:loss-comparison}, \ref{fig:exp:scale-rhythm:kld-comparison}, \ref{fig:exp:scale-rhythm:harmony-comparison},
 \ref{fig:exp:scale-rhythm:all-output-comparison}).
+The figures \ref{fig:exp:scale-rhythm:harmony-generated:with} and \ref{fig:exp:scale-rhythm:harmony-generated:without} respectively show the harmony value per measure for the created samples from the figures \ref{fig:exp:scale-rhythm:with} and \ref{fig:exp:scale-rhythm:without}.
 
 \begin{figure}[htbp]
     \begin{minipage}{0.5\textwidth}
@@ -3801,10 +3873,31 @@ This section contains the graphs from the section \ref{sec:exp:scale-rhythm} (fi
     \end{minipage}
 \end{figure}
 
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-harmony-with-scale-rhythm.jpg}
+            \caption{Harmony value for per measure for the sample generated with the model using the Scale and Rhythm loss}
+            Sample of the figure \ref{fig:exp:scale-rhythm:with}
+            \label{fig:exp:scale-rhythm:harmony-generated:with}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/scale-rhythm-rnn/generated-harmony-without-scale-rhythm.jpg}
+            \caption{Harmony value for per measure for the sample generated with the model not using the Scale and Rhythm loss}
+            Sample of the figure \ref{fig:exp:scale-rhythm:without}
+            \label{fig:exp:scale-rhythm:harmony-generated:without}
+        \end{center}
+    \end{minipage}
+\end{figure}
+
 \subsection{Harmony}
 \label{appendix:harmony}
 
 This section contains the graphs from the section \ref{sec:exp:harmony} (figures \ref{fig:acc-output-comparison-harmony}, \ref{fig:loss-output-comparison-harmony}, \ref{fig:loss-comparison-harmony}, \ref{fig:kld-comparison-harmony}, \ref{fig:harmony-comparison-harmony}).
+The figures \ref{fig:exp:harmony:generated-harmony:with} and \ref{fig:exp:harmony:generated-harmony:without} respectively show the harmony value per measure of the produced samples from a model using the harmony loss and a model that doesn't use it.
+The samples are the ones from the figures \ref{fig:exp:harmony:with} and \ref{fig:exp:harmony:without}.
 
 
 \begin{figure}[htbp]
@@ -3848,6 +3941,24 @@ This section contains the graphs from the section \ref{sec:exp:harmony} (figures
     \label{fig:kld-comparison-harmony}
 \end{figure}
 
+\begin{figure}[htbp]
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/generated-harmony-with-harmony.jpg}
+            \caption{Harmony value for per measure for the sample generated with the model using the Harmony loss}
+            Sample of the figure \ref{fig:exp:harmony:without}
+            \label{fig:exp:harmony:generated-harmony:with}
+        \end{center}
+    \end{minipage} \hfill
+    \begin{minipage}{0.5 \textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{images/experiences/harmony-rnn/generated-harmony-without-harmony.jpg}
+            \caption{Harmony value for per measure for the sample generated with the model no using the Harmony loss}
+            Sample of the figure \ref{fig:exp:harmony:without}
+            \label{fig:exp:harmony:generated-harmony:without}
+        \end{center}
+    \end{minipage}
+\end{figure}
 
 \subsection{RPoE}
 \label{appendix:exp:rpoe}
