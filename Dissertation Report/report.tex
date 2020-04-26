@@ -202,17 +202,17 @@ As a musician, I like to play music, improvise and create or arrange songs.
 
 However, most of the related works about music generation with a deep neural network aim to perform one and only one task.
 The main goal of this Dissertation is to create a neural network architecture able to handle several tasks a musician or a composer could perform with only one trained model.
-These tasks are, generating one or several musical parts, creating an accompaniment from a melody, creating a melody from an accompaniment, creating one or several musical parts from one or several other musical parts.
+These tasks are, completing or generating one or several musical parts, creating an accompaniment from a melody, creating a melody from an accompaniment, creating one or several musical parts from one or several other musical parts.
 
 To this purpose, I created a new architecture that I call \textbf{RMVAE} (Recurrent Multimodal Variational AutoEncoder) which combines the MVAE architecture \cite{wu_multimodal_2018} and LSTM cells.
 Only one trained model can be used to create a melody, or several musical parts at the same time, harmonize a melody or reconstruct missing parts in a song.
 
-As a Musician, I have some knowledge about musical rules and tendencies.
+As a musician, I have some knowledge about musical rules and tendencies.
 Therefore, I tried to incorporate some prior knowledge to the neural network with some additional custom loss functions.
 I came up with 3 different functions that I named \textit{Scale}, \textit{Rhythm} and \textit{Harmony}.
 
 For this project, I used a MIDI dataset which is Bach's Chorales dataset from the music21 corpus \cite{noauthor_music21corpuschorales_nodate} and used their framework \cite{noauthor_music21_nodate} to open and create MIDI files.
-The deep learning framework I used it Tensorflow/Keras \cite{noauthor_tensorflow_nodate, noauthor_keras_nodate}.
+The deep learning framework I used is Tensorflow/Keras \cite{noauthor_tensorflow_nodate, noauthor_keras_nodate}.
 I made my python code for this dissertation available online: \url{https://github.com/ValentinVignal/midiGenerator}.
 
 I constructed the \textbf{RMVAE} architecture in a way that, it is easy to implement a script to handle different tasks.
@@ -222,7 +222,7 @@ Other tasks can easily be derived from the one I have already implemented.
 Unfortunately, the created samples from the \textbf{RMVAE} don't match my expectations.
 The model is consistent through its generation, but the quality of the created samples is poor.
 The created notes are mostly Quarter notes (\musQuarter).
-The model has the tendency to generated only around 3 different notes per voice and repeat a simple sequence.
+The model tends to generated only around 3 different notes per voice and repeat a simple sequence over and over.
 
 I conducted some experiments and created some google forms to evaluate whether the additional loss functions actually help the model or not.
 Much to my disappointment, the results of these experiments and polls weren't in favour of my custom losses.
@@ -435,14 +435,14 @@ In this work, I won't consider shorter notes than Sixteenth notes because most o
 
 The \textit{MIDI} format ($.mid$) is a technical standard that describes a protocol.
 It was first used to carry musical messages between electronic instruments, software and any musical devices.
-These messages are musical events. It can contains note information as the pitch,  the velocity, or the panning, and some other parameters (for example, vibrato, volume...). 
+These messages are musical events. It contains note information as the pitch, the velocity, or the panning, and some other parameters (for example, vibrato, volume...). 
 The most important messages I will consider are:
 \begin{itemize}
     \item \textit{Note on} which indicates that a note has to be played. It contains the channel information (which can be considered as an instrument), the pitch information (what note should be played) and the velocity. We could right an event as follow :
     \begin{equation}
         <NoteOn, 0, 50, 127>
     \end{equation}
-    to describe the event \textit{"Start to play the note $D3$ with the maximum velocity (127) for the channel (instrument) 0"}.
+    to describe the event \textit{"Start to play the note $D3$ (50) with the maximum velocity (127) for the channel (instrument) 0"}.
     \item \textit{Note off} which indicates to stop playing a note (for instance, release the keyboard key). The given parameters are the same as the ones given to the \textit{Note On} event.
     \begin{equation}
         <NoteOff, 0, 50, 127>
@@ -481,9 +481,9 @@ The rules I am going to explain are the most common ones and most of the songs t
 A \textit{scale} is a set of notes.
 Because the human ear is now used to it, the notes of a scale will sound nice when they are played together.
 In traditional Western music, it generally consists of 7 notes.
-They are several types of scales.
+There are several types of scales.
 The most common one is the \textit{Major Scale} or the \textit{Natural Minor Scale}.
-For example, the C Major scale uses all the white keys of the piano (Figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
+For example, the C Major scale uses all the white keys of the piano (figure \ref{fig:piano_keys}: A, B, C, D, E, F and G), as well as the A Natural Minor scale.
 
 Another type of scale, often used by the musicians to creates their \textit{solos}, is the \textit{Pentatonic} scale.
 
@@ -582,7 +582,7 @@ This resonance is explained by the trigonometric identity written in the equatio
     \label{eq:resonance}
 \end{equation}
 
-This phenomena is unpleasant to hear and this is why, musicians usually avoid to play notes that generate a resonance between their harmonics:
+This phenomena is unpleasant to hear and this is why, musicians usually avoid to play notes that generate a resonance with their harmonics:
 \begin{itemize}
     \item \textit{Semitone} interval (ex: $A$ and $A\sh$)
     \item \textit{Tone} interval (ex: $A$ and $B$)
@@ -718,11 +718,11 @@ However, since it is intractable (equation \ref{eq:vae:intractable}), the eviden
     \text{ELBO}(x) = \mathbb{E}_{q_{\phi}(z|x)} \left[ \log (p_{\theta}(x|z)) \right] - \mathbb{D}_{KL} \left( q_{\phi}(z|x), p(z) \right)
     \label{eq:vae:elbo}
 \end{equation}
-Where $\mathbb{D}_{KL}(p, q)$ is the Killback-Leibler divergence between distributions $p$ and $q$.
+Where $\mathbb{D}_{KL}(p, q)$ is the Kullback-Leibler divergence between distributions $p$ and $q$.
 The ELBO is usually optimized via stochastic gradient descent, using reparameterization trick to estimate the gradient \cite{kingma_auto-encoding_2014}.
 
 The figure \ref{fig:vae:reparameterization-trick} shows the reparameterization trick.
-At training-time, VAE is implemented as a feed forward neural network, where $P(x|z)$ is Gaussian.
+At training-time, VAE is implemented as a feed forward neural network, where $p(x|z)$ is Gaussian.
 Left is without the reparameterization trick, and right is with it.
 Red shows sampling operations that are non-differentiable.
 Blue shows loss layers.
@@ -747,7 +747,7 @@ A VAE  is an autoencoder. The steps are the following:
 
 By encoding the normal distribution and not directly the latent space, it is possible to regularize the output of the encoder to avoid overfitting and ensure that the latent space has good properties to enable generative process.
 
-To regularize the output of the decoder, an extra term is added to the loss function : Kulback-Leibler Divergence (KLD) between the encoded distribution and the centred and reduced normal distribution :
+To regularize the output of the decoder, an extra term is added to the loss function : Kullback-Leibler Divergence (KLD) between the encoded distribution and the centred and reduced normal distribution :
 
 \begin{equation}
     \mathbb{D}_{KL} (\mathcal{N}(\mu_{encoded}, \sigma_{encoded}), \mathcal{N}(0, 1))
@@ -1040,7 +1040,7 @@ The figure \ref{fig:mvae_architecture} and equation \ref{eq:poe} show how the Po
 \subsection{Neural Autoregressive Distribution Estimation}
 \label{sec:back:nade}
 
-A NADE \cite{uria_neural_2016, uria_deep_2014} is a neural network made to support a $D$-dimensional distribution $p(x)$ which verify the \ref{eq:background:nade:eq1}.
+A NADE \cite{uria_neural_2016, uria_deep_2014} is a neural network made to support a $D$-dimensional distribution $p(x)$ which verify the equation \ref{eq:background:nade:eq1}.
 \begin{equation}
     p(x) = \prod_{d=1}^{D} p(x_{o_{d}} | x_{o_{<d}})
     \label{eq:background:nade:eq1}
@@ -1203,7 +1203,7 @@ For instance:
 
 \subsection{Generator}
 
-First it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
+First, it is possible to create a music melody. It can be either monophonic (only one note played at one time) or polyphonic (several notes can be played at the same time).
 
 Secondly, it is possible to create several musical parts at the same time. Each one of them can be either monophonic or polyphonic.
 A musical part can be considered as an instrument or voice for a chorale.
@@ -1358,7 +1358,7 @@ A common choice of the existing works that work with text is to embed the text i
 
 \bigskip
 
-Despite the text constraints, Feynman Liang and al. \cite{liang_automatic_2017} managed to encode polyphonic music in text and use it to correctly train their model: "BachBot".
+Despite the text constraints, Feynman Liang and al. \cite{liang_automatic_2017} managed to encode polyphonic music in text and use it to correctly train their model: \textit{"BachBot"}.
 
 They quantize time into sixteenth notes (\musEighth). Consecutive frames are separated by a unique delimiter ("\texttt{|||}").
 Within each frame, they represent individual notes rather than entire chords.
@@ -1651,7 +1651,7 @@ And finally, in the section \ref{sec:learning-process}, I will explain how the R
 As a musician, I wanted to create a model architecture who could copy the way I think about music.
 The challenge is to use only one trained model to be able to:
 \begin{itemize}
-    \item Generate music with several musical parts (meaning several instruments)
+    \item Generate or complete music with several musical parts (meaning several instruments)
     \item Create a accompaniment from a melody
     \item Create a melody from a accompaniment
     \item Create a musical part from other musical parts
@@ -1663,7 +1663,7 @@ To summarize, the objective is to create a unique trained model which can genera
 \section{Data representation}
 \label{sec:data_represetation}
 
-This project works with MIDI data. These music representation is explained in the section \ref{sec:midi}. \\
+This project works with MIDI data. This music representation is explained in the section \ref{sec:midi}. \\
 The shortest beat division is a quarter of a beat (sixteenth note: \musSixteenth) \\
 The considered music are binary and with 4 beats per measure. \\
 Because I think that a measure can be considered as an entire object (with its rhythm, its chords ...), I chose to divide music by measure. Thus, a time step for the neural network is the representation of an entire measure.
@@ -1726,7 +1726,7 @@ If a note is not activated (activation channel $ = 0$), then the duration channe
 The goal was too reduce the memory space and simplify the model for monophonic music.
 Since monophonic music means there is a maximum of one note played simultaneously at one time $t$, I chose to not consider musical rests and consider that every notes last until the next note is played.\\
 Thus, I deleted the duration channel.
-Now, the number of \texttt{channels} $ = 1$.
+Now, the number of $\texttt{channels} = 1$.
 
 An \textit{additional note} is inserted which is the $note_{continue}$.
 The tensor shape of a step is now \texttt{(16, 128 + 1, 1)}.
@@ -1754,7 +1754,7 @@ And since I consider in this part only monophonic music, there is only on note (
 
 I have created a new architecture which is able to handle all the objectives defined in the section \ref{sec:objectives}.
 
-To do so, I continued the work of Mike We et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) (see section \ref{sec:back:mvae}) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
+To do so, I continued the work of Mike Wu et al. \cite{wu_multimodal_2018} and their Multimodal Varational AutoEncoder (MVAE) (see section \ref{sec:back:mvae}) and I simplified the work of Tan Zhi-Xuan et al. \cite{tan_factorized_2019} and their Multimodal Deep Markov Models (MDMM).
 
 \subsection{Global Architecture}
 
@@ -2380,8 +2380,8 @@ During the training, the model is trained to predict the next measure of a song 
 In practice, I give 8 measures of a song from the Bach Chorale corpus and ask the model to predict the next one.
 The goal is not to \textit{over fit} the training dataset.
 During the training time, the model will try to \textit{guess} and learn what is the next measure from the previous ones for the songs in the dataset.
-This idea is that the model will not learn all the songs \textit{by heart}, but it will learn music in a more general and meaningful way.
-It will learn musical rules tendencies, and styles from the dataset.
+The idea is that the model will not learn all the songs \textit{by heart}, but it will learn music in a more general and meaningful way.
+It will learn musical rules, tendencies, and styles from the dataset.
 
 Then, when the model is correctly trained, it will be able to complete a song in a consistent way from the given seed and the train dataset.
 When 8 measures from the test dataset are given to the model, it will create the next measure which can be a possible continuation of the given seed.
@@ -2430,8 +2430,10 @@ These counter examples can be encountered for different reasons:
     These differences comes from 2 factors.
     The first one is because of the way the instruments are played by the player.
     A guitar gives access of only 6 strings to the guitarist and the organ provides several keyboards to the organist.
-    The sound also is important, the harmonics, the sustain, attack, release of a instrument impacts how it is played.
-    As a comparison, harpsichord, piano and organ songs are  very different whereas the players have access to a keyboard to play.
+    The sound also is important, the harmonics, the sustain, attack, release of a instrument impact how it is played.
+    As a comparison, harpsichord, piano and organ songs are very different whereas the players have access to a keyboard to play.
+    \item The player or composer is different.
+    Different people will have different opinion and preferences about how their music should be.
 \end{itemize}
 
 \subsection{Prediction evaluation}
@@ -2497,7 +2499,7 @@ This accuracy is more meaningful than the loss because it is not directly minimi
 However, it is still strongly linked to the loss value by the way it is constructed.
 As the loss value, the accuracy is not musically meaningful.
 
-For example, in the figure \ref{fig:acc-difference}, let us say the first measure is the target measure, and the measures 2 and 3 are 2 measures created by 2 different model.
+For example, in the figure \ref{fig:acc-difference}, let us say the first measure is the target measure, and the measures 2 and 3 are 2 measures created by 2 different models.
 \begin{itemize}
     \item  The measures 1 and 2 are musically similar: both of them are a arpeggio of the $G$ major chord and the accuracy computed would be $0.5$.
     \item The measures 1 and 3 are not musically alike, the measure 3 contains a melody which is not in $G$ major.
@@ -2535,15 +2537,15 @@ However there are several issues with these values:
 \subsection{Creation evaluation}
 
 After the training, the trained model has learnt a representation about music and generalized it in its own way.
-As explained in the section \ref{sec:learning-process}, the model is will either generate a song or complete one in a consistent way.
+As explained in the section \ref{sec:learning-process}, the model will either generate a song or complete one in a consistent way.
 During this creation process, there is no ground truth to compare the generation with as during the training time.
 As I said previously, the model is expected to \textit{create a new song} with new musical part as it was performing a solo or composing music.
 And every solo can be considered as \textit{correct} as long as it sounds nice to us, which is very subjective.
 
-However for this project, I need to evaluation the created musical parts by my different model.
+However for this project, I need to evaluate the created musical parts by my different models.
 To do so, I can look at the harmony loss value I created (section \ref{sec:harmony}).
 And the most common process to evaluate music through the related works about music is to ask the public.
-Some survey are organized, and people are answering them to vote for the best produced song.
+Some surveys are organized, and people are answering them to vote for the best produced sample.
 
 \subsubsection{Harmony loss function}
 \label{sec:eval:creation:harmony}
@@ -2565,7 +2567,7 @@ That is another reason to not focus too long on the harmony value, a low value d
 \label{sec:eval:creation:public}
 
 The strongest evaluation for music is the general opinion.
-Despite the existence of the some musical rules, judging and evaluating a musical piece is a subjective task.
+Despite the existence of some musical rules, judging and evaluating a musical piece is a subjective task.
 Most of the papers working on music use the population to evaluate whether their model is qualitative enough. \cite{huang_counterpoint_2017, hadjeres_deepbach:_2016, huang_music_2018, liang_automatic_2017, huang_bach_2019}.
 They create a poll and let the people decide what sample they prefer between several of them.
 
@@ -2958,7 +2960,9 @@ The grey part at the beginning is the noise given as a seed.
 \subsubsection{Better than noise}
 
 The good news is that the RMVAE generates better sample than noise.
-First it is obvious when you listen to the samples, but also the harmony value is here relevant.
+First it is obvious when you listen to the samples, the musical quality of the generated parts is actually surprising.
+There are some variation of notes and sometimes rhythm too.
+Also, the harmony value is here relevant.
 
 \begin{figure}[htbp]
     \centering
@@ -3382,7 +3386,7 @@ These loss functions are based on my understanding of music and on some physical
 
 However, even though the \textbf{RMVAE} is general and can perform many tasks, the results are far from my expectations.
 While DeepBach \cite{hadjeres_deepbach:_2016} or BachBot \cite{liang_automatic_2017} create realistic Bach's style music, my model gets stuck and usually produces the same sequence over and over.
-The looping sequence is usually composed of Quarter notes only (\musQuarter) and each musical parts use around 3 or 4 different notes.
+The looping sequence is usually mostly composed of Quarter notes (\musQuarter) and each musical parts use around 3 or 4 different notes.
 
 I have conducted some experiments and created several surveys to allow the population to evaluate the contribution from the custom losses.
 Unfortunately, the results showed that a model using a custom loss were equivalent or worse than a model that doesn't use it.
@@ -4011,7 +4015,7 @@ This section contains the graphs from the section \ref{sec:exp:rpoe}(figures \re
     \begin{minipage}{0.5 \textwidth}
         \begin{center}
             \includegraphics[width=\textwidth]{images/experiences/rpoe-rnn/all-output-comparison-rpoe.jpg}
-            \caption{Scale and Rhyhtm losses value comparison with and without RPoE layer}
+            \caption{Scale and Rhythm losses value comparison with and without RPoE layer}
             \label{fig:all-output-comparison-rpoe}
         \end{center}
     \end{minipage}
